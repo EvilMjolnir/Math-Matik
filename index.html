@@ -16,11 +16,15 @@
             },
             colors: {
               parchment: {
-                100: '#fdf6e3',
-                200: '#eee8d5',
-                300: '#d5c4a1',
-                800: '#5c4839',
-                900: '#3e3025',
+                100: '#EBEBEB',
+                200: '#D6D5D6', /* Taupe */
+                300: '#B0BDBA',
+                400: '#88A09A', /* Celadon */
+                500: '#6EA09A',
+                600: '#468882',
+                700: '#2E8179',
+                800: '#16796F', /* Blue Green 2 */
+                900: '#10564F', /* Blue Green 1 */
               },
               mythic: '#9333ea',
               legendary: '#d97706',
@@ -34,8 +38,22 @@
     </script>
     <style>
       body {
-        background-color: #1a1614;
-        color: #eee8d5;
+        background-color: #10564F; /* Blue Green 1 */
+        color: #D6D5D6; /* Taupe */
+      }
+      /* Custom scrollbar to match theme */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #10564F; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #88A09A; 
+        border-radius: 5px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #D6D5D6; 
       }
     </style>
   <script type="importmap">
