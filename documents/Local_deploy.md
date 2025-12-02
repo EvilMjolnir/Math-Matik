@@ -14,8 +14,9 @@ To serve files locally, you need to create a dedicated directory for your static
 ├── localization/     <-- Language files (included in source)
 ├── tomes/            <-- Game data (included in source)
 └── assets/           <-- Create this folder for media
-    ├── images/       <-- For backgrounds, icons, textures
+    ├── images/       <-- For backgrounds, icons, textures, tome art
     │   ├── background.png
+    │   ├── tome1_forest.png
     │   └── texture.png
     ├── audio/        <-- For sfx and music
     │   ├── click.mp3
@@ -43,9 +44,20 @@ Currently, background textures are loaded via URL in `App.tsx`.
 <div className="fixed inset-0 pointer-events-none opacity-10 bg-[url('./assets/images/dark-leather.png')]"></div>
 ```
 
+### Tome Images (Quest Art)
+The game now supports displaying an image for the active Tome. This can be configured via the **Admin Panel** (`User: Gandalf`).
+
+1. Save your image to `assets/images/your-tome-art.png`.
+2. Open the Game and log in as Admin.
+3. Go to the **Admin Panel** -> **Tomes**.
+4. Select the Tome you want to edit.
+5. In the **Image URL** field, enter the relative path:
+   `./assets/images/your-tome-art.png`
+6. Click Close/Save (changes persist in memory during the session or can be hardcoded in `tomes/tomeX.ts`).
+
 ## 3. Managing Audio
 
-To add music or sound effects (Roadmap v1.6):
+To add music or sound effects (Roadmap v1.7):
 
 1. Place your `.mp3` or `.wav` files in `assets/audio/`.
 2. In your React components load them using the native `Audio` API.

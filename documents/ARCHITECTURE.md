@@ -22,13 +22,16 @@
     - `Combat.tsx`: Logic for multiplication, timer, and Encounters.
     - `Recherche.tsx`: Logic for division, Gold spending, and loot generation.
     - `Options.tsx`: Configuration interface.
+    - `AdminPanel.tsx`: Dashboard for Game Master controls, including Tome image management and user administration.
 - **services/**: Business logic and external API communication.
     - `mathService.ts`: Pure functions to generate math problems.
     - `geminiService.ts`: Handles communication with Google Gemini.
+    - `storageService.ts`: LocalStorage wrapper for persisting user data.
 - **tomes/**: Game content definitions.
-    - Contains configuration files for specific levels (Tomes), including enemy data and difficulty settings.
+    - Contains configuration files for specific levels (Tomes), including enemy data, difficulty settings, and **visual assets (images)**.
 - **localization/**: Internationalization files.
     - `en.ts`, `fr.ts`: Translation strings.
+    - `UI_locale.ts`: Central dictionary mapping keys to both languages.
     - `index.ts`: Context provider for language switching.
 
 ## Data Flow
@@ -43,6 +46,9 @@
 
 3. **AI Integration**:
    - The `geminiService.ts` requests structured JSON data for RPG items based on rarity from the Google Gemini API.
+
+4. **Administration**:
+   - The `AdminPanel` allows runtime modification of the `tomes` state, enabling dynamic updates to descriptions, difficulty config, and **images**.
 
 ## Styling System
 The application uses a custom Tailwind configuration injected in `index.html`.
