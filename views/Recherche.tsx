@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { GameConfig, MathProblem, Rarity, Item, Card, MinigameProps, LootWeight } from '../types';
 import { generateDivision } from '../services/mathService';
-import { generateLootItem } from '../services/geminiService';
+import { generateLootItem } from '../services/lootService';
 import Keypad from '../components/Keypad';
 import { RARITY_COLORS, RARITY_TEXT_COLORS } from '../constants';
 import { ChevronLeft, Gift, Search, Loader2, Coins, AlertTriangle } from 'lucide-react';

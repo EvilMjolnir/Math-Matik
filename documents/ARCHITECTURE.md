@@ -8,7 +8,6 @@
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS (via CDN)
 - **Icons**: Lucide React
-- **AI Integration**: Google Gemini API (`@google/genai`) via `services/geminiService.ts`
 
 ## Directory Structure
 - **root**: Contains entry points (`index.html`, `index.tsx`, `App.tsx`) and configuration (`constants.ts`, `types.ts`).
@@ -25,7 +24,7 @@
     - `AdminPanel.tsx`: Dashboard for Game Master controls, including Tome image management and user administration.
 - **services/**: Business logic and external API communication.
     - `mathService.ts`: Pure functions to generate math problems.
-    - `geminiService.ts`: Handles communication with Google Gemini.
+    - `lootService.ts`: Handles loot generation from static data.
     - `storageService.ts`: LocalStorage wrapper for persisting user data.
 - **tomes/**: Game content definitions.
     - Contains configuration files for specific levels (Tomes), including enemy data, difficulty settings, and **visual assets (images)**.
@@ -33,6 +32,8 @@
     - `en.ts`, `fr.ts`: Translation strings.
     - `UI_locale.ts`: Central dictionary mapping keys to both languages.
     - `index.ts`: Context provider for language switching.
+- **data/**: Static game data.
+    - `loot.ts`: Definitions of items and rarities.
 
 ## Data Flow
 1. **State Management**:
@@ -44,10 +45,7 @@
    - **Encounters**: Triggered in `App.tsx`, these lock the view to *Combat* mode until resolved.
    - **Localization**: A `LocalizationProvider` wraps the app, supplying the `t` object for text strings based on the selected language.
 
-3. **AI Integration**:
-   - The `geminiService.ts` requests structured JSON data for RPG items based on rarity from the Google Gemini API.
-
-4. **Administration**:
+3. **Administration**:
    - The `AdminPanel` allows runtime modification of the `tomes` state, enabling dynamic updates to descriptions, difficulty config, and **images**.
 
 ## Styling System

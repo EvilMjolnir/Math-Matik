@@ -27,7 +27,7 @@ Focuses on **Division**.
 - **Loot**: 
     - Choose a card based on Rarity (Common to Mythic).
     - Solve a division problem to open the chest.
-    - **AI Integration**: Upon success, the Google Gemini API generates a unique fantasy item description based on the rarity.
+    - **Rewards**: Receive a unique fantasy item with a description and rarity from the game's loot table.
 
 ### 4. Mouvement (Movement)
 Focuses on **Addition and Subtraction**.
@@ -49,13 +49,9 @@ A powerful dashboard accessible to administrators (User: Gandalf).
 
 This application is built to run in a browser environment that supports ES modules and React.
 
-### Prerequisites
-- A valid Google Gemini API Key is required via `process.env.API_KEY` for the "Recherche" loot generation feature.
-
 ### Installation
 No build process is required if serving `index.html` with an appropriate Import Map setup (as provided in the source).
 
 ## Credits
 - Built with React & TypeScript.
-- AI powered by Google Gemini.
 - Icons by Lucide.
