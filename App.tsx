@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight } from './types';
 import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS } from './constants';
@@ -495,7 +496,7 @@ const Home: React.FC<HomeProps> = ({
           <MenuCard 
             title={t.titles.movement}
             icon={<Footprints className="w-14 h-14" />} 
-            description="Journey through the lands by solving equations."
+            description={t.home.menuDescMovement}
             onClick={() => onViewChange(GameView.MOVEMENT)}
             color="hover:bg-green-900/90 hover:border-green-600"
             disabled={!canMove}
@@ -503,7 +504,7 @@ const Home: React.FC<HomeProps> = ({
           <MenuCard 
             title={t.titles.combat} 
             icon={<Sword className="w-14 h-14" />} 
-            description="Fight enemies or test your speed."
+            description={t.home.menuDescCombat}
             onClick={() => onViewChange(GameView.COMBAT)}
             color={activeEncounter ? "bg-red-900/90 border-red-500 animate-pulse hover:bg-red-900" : "hover:bg-red-900/90 hover:border-red-600"}
             disabled={!canCombat}
@@ -511,7 +512,7 @@ const Home: React.FC<HomeProps> = ({
           <MenuCard 
             title={t.titles.recherche} 
             icon={<Search className="w-14 h-14" />} 
-            description="Unlock ancient tomes to find magical items."
+            description={t.home.menuDescRecherche}
             onClick={() => onStartRecherche(rechercheCost)}
             color="hover:bg-blue-900/90 hover:border-blue-600"
             disabled={!canMove || !canAffordRecherche}

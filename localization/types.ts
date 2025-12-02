@@ -52,6 +52,9 @@ export interface Translation {
     selectChallenge: string;
     encounterActive: string;
     encounterDesc: string;
+    menuDescMovement: string;
+    menuDescCombat: string;
+    menuDescRecherche: string;
   };
   recherche: {
     exitWarning: string;

@@ -54,6 +54,9 @@ export const UI_SOURCE = {
     selectChallenge: { en: "Select a challenge to begin your journey.", fr: "Choisissez un défi pour commencer votre voyage." },
     encounterActive: { en: "Encounter!", fr: "Rencontre !" },
     encounterDesc: { en: "The path is blocked. You must fight!", fr: "Le chemin est bloqué. Vous devez combattre !" },
+    menuDescMovement: { en: "Journey through the lands by solving equations.", fr: "Voyagez à travers les terres en résolvant des équations." },
+    menuDescCombat: { en: "Fight enemies or test your speed.", fr: "Combattez des ennemis ou testez votre vitesse." },
+    menuDescRecherche: { en: "Unlock ancient tomes to find magical items.", fr: "Déverrouillez des tomes anciens pour trouver des objets magiques." },
   },
   recherche: {
     exitWarning: { en: "You have paid the entry fee. If you leave now, your gold will be lost. Are you sure?", fr: "Vous avez payé les frais d'entrée. Si vous partez maintenant, votre or sera perdu. Êtes-vous sûr ?" },
@@ -131,6 +134,9 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       selectChallenge: UI_SOURCE.home.selectChallenge[lang],
       encounterActive: UI_SOURCE.home.encounterActive[lang],
       encounterDesc: UI_SOURCE.home.encounterDesc[lang],
+      menuDescMovement: UI_SOURCE.home.menuDescMovement[lang],
+      menuDescCombat: UI_SOURCE.home.menuDescCombat[lang],
+      menuDescRecherche: UI_SOURCE.home.menuDescRecherche[lang],
     },
     recherche: {
       exitWarning: UI_SOURCE.recherche.exitWarning[lang],
