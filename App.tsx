@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight } from './types';
 import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS } from './constants';
@@ -438,7 +437,7 @@ const Home: React.FC<HomeProps> = ({
         <div className="absolute bottom-6 right-6 z-30">
           <button 
             onClick={onToggleLang}
-            className="p-3 bg-parchment-800 rounded-full hover:bg-parchment-700 transition-all shadow-lg border-2 border-parchment-600 font-bold font-serif w-12 h-12 flex items-center justify-center"
+            className="p-3 bg-parchment-800 rounded-full hover:bg-parchment-700 transition-all shadow-lg border-2 border-parchment-600 font-bold font-serif w-12 h-12 flex items-center justify-center text-lg"
             title="Switch Language"
           >
             {lang.toUpperCase()}
@@ -446,75 +445,75 @@ const Home: React.FC<HomeProps> = ({
         </div>
        
         <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-6xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-parchment-200 to-amber-500 mb-4 drop-shadow-md">
+          <h1 className="text-5xl md:text-7xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-parchment-200 to-amber-500 mb-4 drop-shadow-md">
             {t.titles.home}
           </h1>
-          <p className="text-xl text-parchment-400 tracking-widest font-serif uppercase">{t.home.subtitle}</p>
+          <p className="text-2xl text-parchment-400 tracking-widest font-serif uppercase">{t.home.subtitle}</p>
         </div>
 
         {/* Tome Status / Encounter Alert */}
-        <div className={`w-full max-w-2xl p-4 rounded-lg border mb-8 backdrop-blur-sm min-h-[100px] flex flex-col justify-center transition-colors duration-500
-           ${activeEncounter ? 'bg-red-900/60 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.4)]' : 'bg-parchment-900/60 border-parchment-700'}
+        <div className={`w-full max-w-2xl p-6 rounded-lg border-2 mb-8 backdrop-blur-sm min-h-[120px] flex flex-col justify-center transition-colors duration-500
+           ${activeEncounter ? 'bg-red-900/80 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.4)]' : 'bg-parchment-900/80 border-parchment-700'}
         `}>
            {activeEncounter ? (
              <div className="flex flex-col items-center animate-pulse">
-                <div className="flex items-center text-red-400 font-bold text-2xl mb-1">
-                  <Skull className="w-8 h-8 mr-2" />
+                <div className="flex items-center text-red-400 font-bold text-3xl mb-1">
+                  <Skull className="w-10 h-10 mr-2" />
                   {t.home.encounterActive}
                 </div>
-                <p className="text-parchment-200">{t.home.encounterDesc}</p>
+                <p className="text-parchment-200 text-lg">{t.home.encounterDesc}</p>
              </div>
            ) : activeTome ? (
              <>
-               <div className="flex justify-between items-center mb-2">
-                  <span className="text-parchment-300 font-serif flex items-center">
-                      <Map className="w-4 h-4 mr-2" />
+               <div className="flex justify-between items-center mb-3">
+                  <span className="text-parchment-300 font-serif flex items-center text-xl">
+                      <Map className="w-6 h-6 mr-2" />
                       {t.home.currentQuest}: <span className="text-amber-400 font-bold ml-2">{getTomeTitle(activeTome)}</span>
                   </span>
-                  <span className="text-xs text-parchment-400">{activeTome.currentDistance} / {activeTome.totalDistance}</span>
+                  <span className="text-sm text-parchment-400 font-bold">{activeTome.currentDistance} / {activeTome.totalDistance}</span>
                </div>
-               <div className="w-full h-4 bg-gray-900 rounded-full overflow-hidden border border-gray-700 relative">
+               <div className="w-full h-5 bg-gray-900 rounded-full overflow-hidden border border-gray-700 relative">
                    <div 
                        className="h-full bg-gradient-to-r from-blue-700 to-blue-500 transition-all duration-1000"
                        style={{ width: `${(activeTome.currentDistance / activeTome.totalDistance) * 100}%` }}
                    />
                </div>
-               <p className="text-xs text-parchment-500 mt-2 italic">{getTomeDesc(activeTome)}</p>
+               <p className="text-base text-parchment-500 mt-2 italic">{getTomeDesc(activeTome)}</p>
              </>
            ) : (
              <div className="flex flex-col items-center justify-center text-parchment-400">
-               <div className="flex items-center text-2xl font-serif font-bold text-mythic mb-2">
-                 <Infinity className="w-8 h-8 mr-2" />
+               <div className="flex items-center text-3xl font-serif font-bold text-mythic mb-2">
+                 <Infinity className="w-10 h-10 mr-2" />
                  {t.home.infiniteMode}
                </div>
-               <p className="text-sm italic">{t.home.infiniteDesc}</p>
+               <p className="text-lg italic">{t.home.infiniteDesc}</p>
              </div>
            )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-5xl px-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl px-4">
           <MenuCard 
             title={t.titles.movement}
-            icon={<Footprints className="w-12 h-12" />} 
+            icon={<Footprints className="w-14 h-14" />} 
             description="Journey through the lands by solving equations."
             onClick={() => onViewChange(GameView.MOVEMENT)}
-            color="hover:bg-green-900/40 hover:border-green-600"
+            color="hover:bg-green-900/90 hover:border-green-600"
             disabled={!canMove}
           />
           <MenuCard 
             title={t.titles.combat} 
-            icon={<Sword className="w-12 h-12" />} 
+            icon={<Sword className="w-14 h-14" />} 
             description="Fight enemies or test your speed."
             onClick={() => onViewChange(GameView.COMBAT)}
-            color={activeEncounter ? "bg-red-900/40 border-red-500 animate-pulse hover:bg-red-900/60" : "hover:bg-red-900/40 hover:border-red-600"}
+            color={activeEncounter ? "bg-red-900/90 border-red-500 animate-pulse hover:bg-red-900" : "hover:bg-red-900/90 hover:border-red-600"}
             disabled={!canCombat}
           />
           <MenuCard 
             title={t.titles.recherche} 
-            icon={<Search className="w-12 h-12" />} 
+            icon={<Search className="w-14 h-14" />} 
             description="Unlock ancient tomes to find magical items."
             onClick={() => onStartRecherche(rechercheCost)}
-            color="hover:bg-blue-900/40 hover:border-blue-600"
+            color="hover:bg-blue-900/90 hover:border-blue-600"
             disabled={!canMove || !canAffordRecherche}
             cost={rechercheCost}
           />
@@ -546,30 +545,30 @@ const MenuCard: React.FC<MenuCardProps> = ({ title, icon, description, onClick, 
     onClick={onClick}
     disabled={disabled}
     className={`
-      flex flex-col items-center justify-center p-8 rounded-xl border-2 transition-all duration-300 group relative overflow-hidden
+      flex flex-col items-center justify-center p-8 rounded-xl border-4 transition-all duration-300 group relative overflow-hidden
       ${disabled 
-        ? 'bg-gray-800/50 border-gray-700 opacity-50 cursor-not-allowed grayscale' 
-        : `bg-parchment-900/40 border-parchment-700 ${color} hover:scale-105 hover:shadow-2xl`
+        ? 'bg-gray-800/80 border-gray-700 opacity-70 cursor-not-allowed grayscale' 
+        : `bg-parchment-900/85 border-parchment-600 ${color} hover:scale-105 hover:shadow-2xl`
       }
     `}
   >
     {cost !== undefined && !disabled && (
-      <div className="absolute top-0 right-0 bg-amber-600 text-white px-3 py-1 text-sm font-bold rounded-bl-lg flex items-center shadow-md z-10">
-        <Coins className="w-3 h-3 mr-1" />
+      <div className="absolute top-0 right-0 bg-amber-600 text-white px-4 py-1 text-base font-bold rounded-bl-lg flex items-center shadow-md z-10">
+        <Coins className="w-4 h-4 mr-1" />
         {cost}
       </div>
     )}
     {cost !== undefined && disabled && cost > 0 && (
-       <div className="absolute top-0 right-0 bg-red-800/80 text-white px-3 py-1 text-sm font-bold rounded-bl-lg flex items-center shadow-md z-10">
-        <Coins className="w-3 h-3 mr-1" />
+       <div className="absolute top-0 right-0 bg-red-800/90 text-white px-4 py-1 text-base font-bold rounded-bl-lg flex items-center shadow-md z-10">
+        <Coins className="w-4 h-4 mr-1" />
         {cost}
       </div>
     )}
     <div className={`mb-4 transition-transform duration-300 ${disabled ? '' : 'group-hover:scale-110 group-hover:rotate-3'} text-parchment-200`}>
       {icon}
     </div>
-    <h2 className="text-2xl font-serif font-bold text-parchment-100 mb-2">{title}</h2>
-    <p className="text-center text-parchment-400 text-sm font-serif">{description}</p>
+    <h2 className="text-3xl font-serif font-bold text-parchment-100 mb-2">{title}</h2>
+    <p className="text-center text-parchment-300 text-base font-serif">{description}</p>
   </button>
 );
 

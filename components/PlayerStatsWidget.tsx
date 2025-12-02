@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { PlayerStats } from '../types';
 import { XP_TABLE } from '../constants';
@@ -21,41 +20,41 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
   const xpPercentage = Math.min(100, Math.max(0, (xpInLevel / xpNeededForLevel) * 100));
 
   return (
-    <div className="bg-parchment-800/90 border-r-4 border-parchment-600 p-4 h-full w-full max-w-[280px] flex flex-col items-center shadow-2xl relative">
+    <div className="bg-parchment-800/95 border-4 border-double border-parchment-400 p-4 h-full w-full max-w-[300px] flex flex-col items-center shadow-2xl relative">
       {/* Logout Section */}
-      <div className="w-full border-b border-parchment-600 pb-2 mb-4 px-2">
+      <div className="w-full border-b-2 border-parchment-600 pb-2 mb-4 px-2">
         <button 
           onClick={onLogout}
-          className="w-full flex items-center justify-center space-x-2 text-parchment-400 hover:text-red-400 transition-colors py-1 group"
+          className="w-full flex items-center justify-center space-x-2 text-parchment-300 hover:text-red-400 transition-colors py-1 group"
           title="Logout"
         >
-          <LogOut className="w-4 h-4 group-hover:scale-110 transition-transform" />
-          <span className="text-xs font-bold uppercase tracking-widest">Logout</span>
+          <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
+          <span className="text-sm font-bold uppercase tracking-widest">Logout</span>
         </button>
       </div>
 
       {/* Header / Avatar */}
-      <div className="w-24 h-24 bg-parchment-200 rounded-full border-4 border-amber-600 flex items-center justify-center mb-4 shadow-inner">
-        <User className="w-14 h-14 text-parchment-800" />
+      <div className="w-28 h-28 bg-parchment-200 rounded-full border-4 border-amber-600 flex items-center justify-center mb-4 shadow-inner">
+        <User className="w-16 h-16 text-parchment-800" />
       </div>
       
       <div className="text-center mb-6 w-full">
-        <h3 className="font-serif font-bold text-amber-500 text-lg truncate px-2">{player.username}</h3>
-        <div className="flex items-center justify-center text-parchment-300 text-sm">
-           <Crown className="w-4 h-4 mr-1 text-yellow-500" />
+        <h3 className="font-serif font-bold text-amber-500 text-2xl truncate px-2 mb-1">{player.username}</h3>
+        <div className="flex items-center justify-center text-parchment-200 text-base">
+           <Crown className="w-5 h-5 mr-1 text-yellow-500" />
            <span>{t.common.level} {player.level}</span>
         </div>
       </div>
 
       {/* Stats Compact */}
-      <div className="w-full space-y-4 mb-8">
+      <div className="w-full space-y-5 mb-8">
         {/* HP */}
         <div>
-          <div className="flex justify-between text-xs text-parchment-300 mb-1">
-            <span className="flex items-center"><Heart className="w-3 h-3 mr-1 text-red-500" /> {t.common.hp}</span>
+          <div className="flex justify-between text-sm text-parchment-200 mb-1 font-bold">
+            <span className="flex items-center"><Heart className="w-4 h-4 mr-1 text-red-500" /> {t.common.hp}</span>
             <span>{player.currentHp}/{player.maxHp}</span>
           </div>
-          <div className="w-full h-3 bg-gray-900 rounded-full overflow-hidden border border-gray-700">
+          <div className="w-full h-4 bg-gray-900 rounded-full overflow-hidden border border-gray-700">
             <div 
               className="h-full bg-red-700" 
               style={{ width: `${(player.currentHp / player.maxHp) * 100}%` }}
@@ -65,11 +64,11 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
 
         {/* XP */}
         <div>
-           <div className="flex justify-between text-xs text-parchment-300 mb-1">
-            <span className="flex items-center"><Star className="w-3 h-3 mr-1 text-yellow-500" /> {t.common.xp}</span>
+           <div className="flex justify-between text-sm text-parchment-200 mb-1 font-bold">
+            <span className="flex items-center"><Star className="w-4 h-4 mr-1 text-yellow-500" /> {t.common.xp}</span>
             <span>{Math.floor(xpPercentage)}%</span>
           </div>
-          <div className="w-full h-3 bg-gray-900 rounded-full overflow-hidden border border-gray-700">
+          <div className="w-full h-4 bg-gray-900 rounded-full overflow-hidden border border-gray-700">
             <div 
               className="h-full bg-yellow-600" 
               style={{ width: `${xpPercentage}%` }}
@@ -78,13 +77,13 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
         </div>
         
         {/* Defense & Gold Row */}
-        <div className="flex justify-between pt-2">
-            <div className="flex items-center text-parchment-200" title="Defense">
-                <Shield className="w-4 h-4 mr-1 text-blue-400" />
+        <div className="flex justify-between pt-3 px-2">
+            <div className="flex items-center text-parchment-100 text-lg" title="Defense">
+                <Shield className="w-6 h-6 mr-2 text-blue-400" />
                 <span className="font-bold">{player.defense}</span>
             </div>
-             <div className="flex items-center text-parchment-200" title="Gold">
-                <Coins className="w-4 h-4 mr-1 text-amber-400" />
+             <div className="flex items-center text-parchment-100 text-lg" title="Gold">
+                <Coins className="w-6 h-6 mr-2 text-amber-400" />
                 <span className="font-bold">{player.gold}</span>
             </div>
         </div>
@@ -93,9 +92,9 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
       <div className="mt-auto w-full">
         <button 
           onClick={onExpand}
-          className="w-full py-2 bg-parchment-700 hover:bg-parchment-600 text-parchment-100 rounded flex items-center justify-center transition-colors border border-parchment-500"
+          className="w-full py-3 bg-parchment-700 hover:bg-parchment-600 text-parchment-100 rounded flex items-center justify-center transition-colors border-2 border-parchment-500 text-lg font-bold"
         >
-          <Maximize2 className="w-4 h-4 mr-2" />
+          <Maximize2 className="w-5 h-5 mr-2" />
           {t.buttons.details}
         </button>
       </div>
