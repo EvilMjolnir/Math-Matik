@@ -24,8 +24,8 @@ export const DEFAULT_PLAYER: PlayerStats = {
   currentXp: 0,
   currentHp: 20,
   maxHp: 20,
-  defense: 5,
-  gold: 10, // Start with a little gold to try mechanics
+  defense: 0,
+  gold: 5, // Start with a little gold to try mechanics
   itemBonuses: ["+2 Calculation Speed"],
   companions: [
     { name: "Pythagoras the Owl", role: "Advisor", level: 1 },
