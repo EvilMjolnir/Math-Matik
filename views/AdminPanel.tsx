@@ -125,6 +125,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                                 />
                             </div>
                             <div>
+                                <label className="block font-bold text-sm">Image URL</label>
+                                <input 
+                                    className="w-full p-2 border border-parchment-500 rounded bg-white"
+                                    value={tome.image || ''}
+                                    placeholder="https://..."
+                                    onChange={(e) => updateTome(tome.id, 'image', e.target.value)}
+                                />
+                            </div>
+                            <div>
                                 <label className="block font-bold text-sm">Total Distance (Steps)</label>
                                 <input 
                                     type="number"

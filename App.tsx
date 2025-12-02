@@ -465,22 +465,35 @@ const Home: React.FC<HomeProps> = ({
                 <p className="text-parchment-200 text-lg">{t.home.encounterDesc}</p>
              </div>
            ) : activeTome ? (
-             <>
-               <div className="flex justify-between items-center mb-3">
-                  <span className="text-parchment-300 font-serif flex items-center text-xl">
-                      <Map className="w-6 h-6 mr-2" />
-                      {t.home.currentQuest}: <span className="text-amber-400 font-bold ml-2">{getTomeTitle(activeTome)}</span>
-                  </span>
-                  <span className="text-sm text-parchment-400 font-bold">{activeTome.currentDistance} / {activeTome.totalDistance}</span>
-               </div>
-               <div className="w-full h-5 bg-gray-900 rounded-full overflow-hidden border border-gray-700 relative">
-                   <div 
-                       className="h-full bg-gradient-to-r from-blue-700 to-blue-500 transition-all duration-1000"
-                       style={{ width: `${(activeTome.currentDistance / activeTome.totalDistance) * 100}%` }}
-                   />
-               </div>
-               <p className="text-base text-parchment-500 mt-2 italic">{getTomeDesc(activeTome)}</p>
-             </>
+             <div className="flex flex-col md:flex-row items-center gap-6 w-full">
+                {activeTome.image && (
+                  <div className="relative shrink-0">
+                      <div className="w-24 h-24 md:w-32 md:h-32 rounded-lg border-4 border-amber-700 shadow-[0_0_15px_rgba(0,0,0,0.5)] overflow-hidden bg-black/50">
+                          <img src={activeTome.image} alt="Quest Location" className="w-full h-full object-cover" />
+                      </div>
+                       <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-amber-400"></div>
+                       <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-amber-400"></div>
+                       <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-amber-400"></div>
+                       <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-amber-400"></div>
+                  </div>
+                )}
+                <div className="flex-1 w-full">
+                   <div className="flex justify-between items-center mb-3">
+                      <span className="text-parchment-300 font-serif flex items-center text-xl">
+                          <Map className="w-6 h-6 mr-2" />
+                          {t.home.currentQuest}: <span className="text-amber-400 font-bold ml-2">{getTomeTitle(activeTome)}</span>
+                      </span>
+                      <span className="text-sm text-parchment-400 font-bold">{Math.floor(activeTome.currentDistance)} / {activeTome.totalDistance}</span>
+                   </div>
+                   <div className="w-full h-5 bg-gray-900 rounded-full overflow-hidden border border-gray-700 relative">
+                       <div 
+                           className="h-full bg-gradient-to-r from-blue-700 to-blue-500 transition-all duration-1000"
+                           style={{ width: `${(activeTome.currentDistance / activeTome.totalDistance) * 100}%` }}
+                       />
+                   </div>
+                   <p className="text-base text-parchment-500 mt-2 italic">{getTomeDesc(activeTome)}</p>
+                </div>
+             </div>
            ) : (
              <div className="flex flex-col items-center justify-center text-parchment-400">
                <div className="flex items-center text-3xl font-serif font-bold text-mythic mb-2">

@@ -7,6 +7,7 @@ export const tome1: Tome = {
   title_fr: 'La Forêt des Entiers',
   description: 'A dense woodland where numbers grow on trees. Clear a path to find the ancient ruins.',
   description_fr: 'Une forêt dense où les nombres poussent sur les arbres. Frayez-vous un chemin pour trouver les ruines antiques.',
+  image: 'https://iili.io/fzRK4LX.md.png',
   totalDistance: 50,
   currentDistance: 0,
   isUnlocked: true,

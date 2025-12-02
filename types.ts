@@ -73,6 +73,7 @@ export interface Tome {
   title_fr?: string;
   description: string;
   description_fr?: string;
+  image?: string;
   totalDistance: number;
   currentDistance: number;
   isUnlocked: boolean;
