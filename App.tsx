@@ -399,7 +399,7 @@ const Home: React.FC<HomeProps> = ({
          />
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center p-6 relative">
+      <div className="flex-1 flex flex-col items-center pt-16 p-6 relative overflow-y-auto custom-scrollbar">
         <button 
           onClick={() => setIsProfileOpen(true)}
           className="md:hidden absolute top-6 left-6 p-3 bg-parchment-800 rounded-full border-2 border-parchment-600 shadow-lg z-30"
@@ -445,92 +445,94 @@ const Home: React.FC<HomeProps> = ({
           </button>
         </div>
        
-        <div className="text-center mb-8">
+        <div className="text-center mt-4 flex-shrink-0 z-10">
           <h1 className="text-5xl md:text-7xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-parchment-200 to-amber-500 mb-4 drop-shadow-md">
             {t.titles.home}
           </h1>
           <p className="text-2xl text-parchment-400 tracking-widest font-serif uppercase">{t.home.subtitle}</p>
         </div>
 
-        {/* Tome Status / Encounter Alert */}
-        <div className={`w-full max-w-2xl p-6 rounded-lg border-2 mb-8 backdrop-blur-sm min-h-[120px] flex flex-col justify-center transition-colors duration-500
-           ${activeEncounter ? 'bg-red-900/80 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.4)]' : 'bg-parchment-900/80 border-parchment-700'}
-        `}>
-           {activeEncounter ? (
-             <div className="flex flex-col items-center animate-pulse">
-                <div className="flex items-center text-red-400 font-bold text-3xl mb-1">
-                  <Skull className="w-10 h-10 mr-2" />
-                  {t.home.encounterActive}
+        <div className="flex-1 flex flex-col justify-center items-center w-full max-w-6xl z-10 py-8">
+            {/* Tome Status / Encounter Alert */}
+            <div className={`w-full p-6 rounded-lg border-2 mb-8 backdrop-blur-sm min-h-[120px] flex flex-col justify-center transition-colors duration-500
+            ${activeEncounter ? 'bg-red-900/80 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.4)]' : 'bg-parchment-900/80 border-parchment-700'}
+            `}>
+            {activeEncounter ? (
+                <div className="flex flex-col items-center animate-pulse">
+                    <div className="flex items-center text-red-400 font-bold text-3xl mb-1">
+                    <Skull className="w-10 h-10 mr-2" />
+                    {t.home.encounterActive}
+                    </div>
+                    <p className="text-parchment-200 text-lg">{t.home.encounterDesc}</p>
                 </div>
-                <p className="text-parchment-200 text-lg">{t.home.encounterDesc}</p>
-             </div>
-           ) : activeTome ? (
-             <div className="flex flex-col md:flex-row items-center gap-6 w-full">
-                {activeTome.image && (
-                  <div className="relative shrink-0">
-                      <div className="w-24 h-24 md:w-32 md:h-32 rounded-lg border-4 border-amber-700 shadow-[0_0_15px_rgba(0,0,0,0.5)] overflow-hidden bg-black/50">
-                          <img src={activeTome.image} alt="Quest Location" className="w-full h-full object-cover" />
-                      </div>
-                       <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-amber-400"></div>
-                       <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-amber-400"></div>
-                       <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-amber-400"></div>
-                       <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-amber-400"></div>
-                  </div>
-                )}
-                <div className="flex-1 w-full">
-                   <div className="flex justify-between items-center mb-3">
-                      <span className="text-parchment-300 font-serif flex items-center text-xl">
-                          <Map className="w-6 h-6 mr-2" />
-                          {t.home.currentQuest}: <span className="text-amber-400 font-bold ml-2">{getTomeTitle(activeTome)}</span>
-                      </span>
-                      <span className="text-sm text-parchment-400 font-bold">{Math.floor(activeTome.currentDistance)} / {activeTome.totalDistance}</span>
-                   </div>
-                   <div className="w-full h-5 bg-gray-900 rounded-full overflow-hidden border border-gray-700 relative">
-                       <div 
-                           className="h-full bg-gradient-to-r from-blue-700 to-blue-500 transition-all duration-1000"
-                           style={{ width: `${(activeTome.currentDistance / activeTome.totalDistance) * 100}%` }}
-                       />
-                   </div>
-                   <p className="text-base text-parchment-500 mt-2 italic">{getTomeDesc(activeTome)}</p>
+            ) : activeTome ? (
+                <div className="flex flex-col md:flex-row items-center gap-6 w-full">
+                    {activeTome.image && (
+                    <div className="relative shrink-0">
+                        <div className="w-24 h-24 md:w-32 md:h-32 rounded-lg border-4 border-amber-700 shadow-[0_0_15px_rgba(0,0,0,0.5)] overflow-hidden bg-black/50">
+                            <img src={activeTome.image} alt="Quest Location" className="w-full h-full object-cover" />
+                        </div>
+                        <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-amber-400"></div>
+                        <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-amber-400"></div>
+                        <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-amber-400"></div>
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-amber-400"></div>
+                    </div>
+                    )}
+                    <div className="flex-1 w-full">
+                    <div className="flex justify-between items-center mb-3">
+                        <span className="text-parchment-300 font-serif flex items-center text-xl">
+                            <Map className="w-6 h-6 mr-2" />
+                            {t.home.currentQuest}: <span className="text-amber-400 font-bold ml-2">{getTomeTitle(activeTome)}</span>
+                        </span>
+                        <span className="text-sm text-parchment-400 font-bold">{Math.floor(activeTome.currentDistance)} / {activeTome.totalDistance}</span>
+                    </div>
+                    <div className="w-full h-5 bg-gray-900 rounded-full overflow-hidden border border-gray-700 relative">
+                        <div 
+                            className="h-full bg-gradient-to-r from-blue-700 to-blue-500 transition-all duration-1000"
+                            style={{ width: `${(activeTome.currentDistance / activeTome.totalDistance) * 100}%` }}
+                        />
+                    </div>
+                    <p className="text-base text-parchment-500 mt-2 italic">{getTomeDesc(activeTome)}</p>
+                    </div>
                 </div>
-             </div>
-           ) : (
-             <div className="flex flex-col items-center justify-center text-parchment-400">
-               <div className="flex items-center text-3xl font-serif font-bold text-mythic mb-2">
-                 <Infinity className="w-10 h-10 mr-2" />
-                 {t.home.infiniteMode}
-               </div>
-               <p className="text-lg italic">{t.home.infiniteDesc}</p>
-             </div>
-           )}
-        </div>
+            ) : (
+                <div className="flex flex-col items-center justify-center text-parchment-400">
+                <div className="flex items-center text-3xl font-serif font-bold text-mythic mb-2">
+                    <Infinity className="w-10 h-10 mr-2" />
+                    {t.home.infiniteMode}
+                </div>
+                <p className="text-lg italic">{t.home.infiniteDesc}</p>
+                </div>
+            )}
+            </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl px-4">
-          <MenuCard 
-            title={t.titles.movement}
-            icon={<Footprints className="w-14 h-14" />} 
-            description={t.home.menuDescMovement}
-            onClick={() => onViewChange(GameView.MOVEMENT)}
-            color="hover:bg-green-900/90 hover:border-green-600"
-            disabled={!canMove}
-          />
-          <MenuCard 
-            title={t.titles.combat} 
-            icon={<Sword className="w-14 h-14" />} 
-            description={t.home.menuDescCombat}
-            onClick={() => onViewChange(GameView.COMBAT)}
-            color={activeEncounter ? "bg-red-900/90 border-red-500 animate-pulse hover:bg-red-900" : "hover:bg-red-900/90 hover:border-red-600"}
-            disabled={!canCombat}
-          />
-          <MenuCard 
-            title={t.titles.recherche} 
-            icon={<Search className="w-14 h-14" />} 
-            description={t.home.menuDescRecherche}
-            onClick={() => onStartRecherche(rechercheCost)}
-            color="hover:bg-blue-900/90 hover:border-blue-600"
-            disabled={!canMove || !canAffordRecherche}
-            cost={rechercheCost}
-          />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full px-4">
+                <MenuCard 
+                    title={t.titles.movement}
+                    icon={<Footprints className="w-14 h-14" />} 
+                    description={t.home.menuDescMovement}
+                    onClick={() => onViewChange(GameView.MOVEMENT)}
+                    color="hover:bg-green-900/90 hover:border-green-600"
+                    disabled={!canMove}
+                />
+                <MenuCard 
+                    title={t.titles.combat} 
+                    icon={<Sword className="w-14 h-14" />} 
+                    description={t.home.menuDescCombat}
+                    onClick={() => onViewChange(GameView.COMBAT)}
+                    color={activeEncounter ? "bg-red-900/90 border-red-500 animate-pulse hover:bg-red-900" : "hover:bg-red-900/90 hover:border-red-600"}
+                    disabled={!canCombat}
+                />
+                <MenuCard 
+                    title={t.titles.recherche} 
+                    icon={<Search className="w-14 h-14" />} 
+                    description={t.home.menuDescRecherche}
+                    onClick={() => onStartRecherche(rechercheCost)}
+                    color="hover:bg-blue-900/90 hover:border-blue-600"
+                    disabled={!canMove || !canAffordRecherche}
+                    cost={rechercheCost}
+                />
+            </div>
         </div>
       </div>
 
