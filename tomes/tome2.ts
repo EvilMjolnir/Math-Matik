@@ -38,7 +38,8 @@ export const tome2: Tome = {
       description_fr: 'Une armure animée monte la garde.',
       threshold: 15,
       hpLoss: 10,
-      goldReward: 25
+      goldReward: 25,
+      xpReward: 60
     },
     {
       id: 't2_golem',
@@ -48,7 +49,8 @@ export const tome2: Tome = {
       description_fr: 'Un colosse fait d\'équations lourdes.',
       threshold: 20,
       hpLoss: 15,
-      goldReward: 35
+      goldReward: 35,
+      xpReward: 80
     }
   ]
 };

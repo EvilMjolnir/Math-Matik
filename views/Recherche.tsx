@@ -13,7 +13,7 @@ interface RechercheProps extends MinigameProps {
   config: GameConfig['recherche'];
 }
 
-const XP_REWARD = 15;
+const XP_REWARD = 10;
 
 const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgressTome, playerGold = 0, lootWeights = [] }) => {
   const { t } = useLocalization();

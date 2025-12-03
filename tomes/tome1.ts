@@ -16,7 +16,7 @@ export const tome1: Tome = {
   config: {
     movement: {
       minVal: 1,
-      maxVal: 10,
+      maxVal: 30,
       targetSegments: 3,
     },
     combat: {
@@ -39,7 +39,8 @@ export const tome1: Tome = {
       description_fr: 'Un loup grondant bloque le chemin !',
       threshold: 8,
       hpLoss: 5,
-      goldReward: 10
+      goldReward: 10,
+      xpReward: 30
     },
     {
       id: 't1_goblin',
@@ -49,7 +50,8 @@ export const tome1: Tome = {
       description_fr: 'Il exige les bonnes réponses ou votre or !',
       threshold: 10,
       hpLoss: 3,
-      goldReward: 15
+      goldReward: 15,
+      xpReward: 40
     }
   ]
 };

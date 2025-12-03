@@ -38,7 +38,8 @@ export const tome5: Tome = {
       description_fr: 'Une entité qui défie les lois de l\'arithmétique.',
       threshold: 70,
       hpLoss: 40,
-      goldReward: 200
+      goldReward: 200,
+      xpReward: 400
     },
     {
       id: 't5_dragon',
@@ -48,7 +49,8 @@ export const tome5: Tome = {
       description_fr: 'L\'ancien dévoreur de toutes valeurs.',
       threshold: 90,
       hpLoss: 50,
-      goldReward: 300
+      goldReward: 300,
+      xpReward: 500
     }
   ]
 };

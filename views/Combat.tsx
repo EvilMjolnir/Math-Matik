@@ -86,7 +86,8 @@ const Combat: React.FC<CombatProps> = ({
       if (score >= encounter.threshold) {
         setIsVictory(true);
         // Note: We do NOT call onEncounterComplete here. We wait for user to click button in modal.
-        const xpEarned = score * 3;
+        // Use defined XP reward or fallback to score calculation
+        const xpEarned = encounter.xpReward || (score * 3);
         onAddXp(xpEarned);
         if (onAddGold && encounter.goldReward) {
           onAddGold(encounter.goldReward);
@@ -295,7 +296,7 @@ const Combat: React.FC<CombatProps> = ({
 
           {isVictory && (
              <p className="text-lg font-bold text-yellow-500">
-               +{score * (encounter ? 3 : 2)} {t.common.xp}
+               +{encounter ? (encounter.xpReward || score * 3) : score * 2} {t.common.xp}
              </p>
           )}
         </div>

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { Tome, Encounter, LootWeight, Rarity, PlayerStats } from '../types';
-import { ChevronLeft, Save, Edit3, Trash2, Plus, Sliders, Users, Key, Crown, Coins } from 'lucide-react';
+import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType } from '../types';
+import { ChevronLeft, Edit3, Trash2, Sliders, Users, Key, Crown, Coins, Download, Copy, Plus, Activity } from 'lucide-react';
 import { getAllUsers, deleteUser } from '../services/storageService';
 
 interface AdminPanelProps {
@@ -39,6 +39,27 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
     setTomes(tomes.map(t => t.id === id ? { ...t, [field]: value } : t));
   };
 
+  const updateTomeConfig = (tomeId: string, section: keyof GameConfig, field: string, value: number) => {
+    setTomes(tomes.map(t => {
+      if (t.id !== tomeId) return t;
+      
+      // Ensure config structure exists
+      const currentConfig = t.config || {};
+      const sectionConfig = currentConfig[section] || {};
+
+      return {
+        ...t,
+        config: {
+          ...currentConfig,
+          [section]: {
+            ...sectionConfig,
+            [field]: value
+          }
+        }
+      };
+    }));
+  };
+
   // --- Encounter Handlers ---
   const updateEncounter = (tomeId: string, encounterId: string, field: keyof Encounter, value: any) => {
     setTomes(tomes.map(t => {
@@ -50,11 +71,62 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
     }));
   };
 
+  const addEncounter = (tomeId: string) => {
+    setTomes(tomes.map(t => {
+      if (t.id !== tomeId) return t;
+      const newEncounter: Encounter = {
+        id: `enc_${Date.now()}`,
+        name: 'New Enemy',
+        description: 'A new challenger appears.',
+        threshold: 10,
+        hpLoss: 5,
+        goldReward: 10,
+        xpReward: 20,
+        type: 'normal'
+      };
+      return { ...t, possibleEncounters: [...t.possibleEncounters, newEncounter] };
+    }));
+  };
+
+  const removeEncounter = (tomeId: string, encounterId: string) => {
+    if(!window.confirm("Are you sure you want to remove this enemy?")) return;
+    setTomes(tomes.map(t => {
+      if (t.id !== tomeId) return t;
+      return { ...t, possibleEncounters: t.possibleEncounters.filter(e => e.id !== encounterId) };
+    }));
+  };
+
   // --- Loot Handlers ---
   const updateLootWeight = (rarity: Rarity, weight: number) => {
     setLootWeights(lootWeights.map(lw => 
       lw.rarity === rarity ? { ...lw, weight: weight } : lw
     ));
+  };
+
+  // --- Export / Import Utils ---
+  const generateTsContent = (tome: Tome) => {
+    // Basic formatting to make it look like source code
+    return `import { Tome } from '../types';\n\nexport const ${tome.id}: Tome = ${JSON.stringify(tome, null, 2)};`;
+  };
+
+  const handleDownloadTome = (tome: Tome) => {
+    const content = generateTsContent(tome);
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${tome.id}.ts`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleCopyToClipboard = (tome: Tome) => {
+    const content = generateTsContent(tome);
+    navigator.clipboard.writeText(content).then(() => {
+      alert("Tome configuration copied to clipboard!");
+    });
   };
 
   return (
@@ -114,12 +186,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
 
                 {editingTomeId === tome.id && (
                     <div className="p-6 border-t border-parchment-400">
-                        {/* Tome Fields */}
+                        {/* Tome Basic Fields */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                             <div>
                                 <label className="block font-bold text-sm">Title (EN)</label>
                                 <input 
-                                    className="w-full p-2 border border-parchment-500 rounded bg-white"
+                                    className="w-full p-2 border border-parchment-500 rounded bg-white text-gray-900"
                                     value={tome.title}
                                     onChange={(e) => updateTome(tome.id, 'title', e.target.value)}
                                 />
@@ -127,7 +199,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                             <div>
                                 <label className="block font-bold text-sm">Image URL</label>
                                 <input 
-                                    className="w-full p-2 border border-parchment-500 rounded bg-white"
+                                    className="w-full p-2 border border-parchment-500 rounded bg-white text-gray-900"
                                     value={tome.image || ''}
                                     placeholder="https://..."
                                     onChange={(e) => updateTome(tome.id, 'image', e.target.value)}
@@ -137,7 +209,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                                 <label className="block font-bold text-sm">Total Distance (Steps)</label>
                                 <input 
                                     type="number"
-                                    className="w-full p-2 border border-parchment-500 rounded bg-white"
+                                    className="w-full p-2 border border-parchment-500 rounded bg-white text-gray-900"
                                     value={tome.totalDistance}
                                     onChange={(e) => updateTome(tome.id, 'totalDistance', parseInt(e.target.value))}
                                 />
@@ -145,55 +217,186 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                             <div className="col-span-2">
                                 <label className="block font-bold text-sm">Description</label>
                                 <textarea 
-                                    className="w-full p-2 border border-parchment-500 rounded bg-white"
+                                    className="w-full p-2 border border-parchment-500 rounded bg-white text-gray-900"
                                     value={tome.description}
                                     onChange={(e) => updateTome(tome.id, 'description', e.target.value)}
                                 />
                             </div>
                         </div>
 
+                        {/* Minigame Configs */}
+                        <div className="mb-6 bg-parchment-100 p-4 rounded border border-parchment-300">
+                            <h3 className="font-serif font-bold text-lg mb-3 text-parchment-800 border-b border-parchment-300 pb-1 flex items-center">
+                                <Activity className="w-4 h-4 mr-2"/> Minigame Configuration
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {/* Movement */}
+                                <div className="space-y-2">
+                                    <h4 className="font-bold text-sm text-green-700">Movement</h4>
+                                    <div className="flex space-x-2">
+                                        <div className="flex-1">
+                                            <label className="text-xs font-bold block">Min</label>
+                                            <input type="number" className="w-full p-1 border rounded bg-white text-gray-900" 
+                                                value={tome.config?.movement?.minVal} 
+                                                onChange={(e) => updateTomeConfig(tome.id, 'movement', 'minVal', parseInt(e.target.value))} />
+                                        </div>
+                                        <div className="flex-1">
+                                            <label className="text-xs font-bold block">Max</label>
+                                            <input type="number" className="w-full p-1 border rounded bg-white text-gray-900" 
+                                                value={tome.config?.movement?.maxVal} 
+                                                onChange={(e) => updateTomeConfig(tome.id, 'movement', 'maxVal', parseInt(e.target.value))} />
+                                        </div>
+                                    </div>
+                                </div>
+                                {/* Combat */}
+                                <div className="space-y-2">
+                                    <h4 className="font-bold text-sm text-red-700">Combat</h4>
+                                    <div>
+                                        <label className="text-xs font-bold block">Max Multiplier</label>
+                                        <input type="number" className="w-full p-1 border rounded bg-white text-gray-900" 
+                                            value={tome.config?.combat?.multiplicationMax} 
+                                            onChange={(e) => updateTomeConfig(tome.id, 'combat', 'multiplicationMax', parseInt(e.target.value))} />
+                                    </div>
+                                </div>
+                                {/* Recherche */}
+                                <div className="space-y-2">
+                                    <h4 className="font-bold text-sm text-blue-700">Recherche</h4>
+                                    <div>
+                                        <label className="text-xs font-bold block">Max Dividend</label>
+                                        <input type="number" className="w-full p-1 border rounded bg-white text-gray-900" 
+                                            value={tome.config?.recherche?.divisionMaxDividend} 
+                                            onChange={(e) => updateTomeConfig(tome.id, 'recherche', 'divisionMaxDividend', parseInt(e.target.value))} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Encounters */}
-                        <h3 className="font-serif font-bold text-lg mb-2 border-b border-parchment-500 pb-1 text-red-800 flex items-center">
-                            <Trash2 className="w-4 h-4 mr-2" />
-                            Enemies
-                        </h3>
+                        <div className="flex justify-between items-center mb-2 border-b border-parchment-500 pb-1">
+                            <h3 className="font-serif font-bold text-lg text-red-800 flex items-center">
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Enemies List
+                            </h3>
+                            <button 
+                                onClick={() => addEncounter(tome.id)}
+                                className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 flex items-center"
+                            >
+                                <Plus className="w-3 h-3 mr-1"/> Add Enemy
+                            </button>
+                        </div>
+                        
                         <div className="space-y-4">
                             {tome.possibleEncounters.map(encounter => (
-                                <div key={encounter.id} className="bg-white/50 p-4 rounded border border-parchment-300">
-                                    <div className="flex justify-between mb-2">
-                                        <h4 className="font-bold text-red-700">{encounter.name}</h4>
+                                <div 
+                                    key={encounter.id} 
+                                    className={`bg-white p-4 rounded shadow-sm relative group
+                                        ${encounter.type === 'boss' || encounter.type === 'miniboss' ? 'border-4 border-yellow-500' : 'border border-parchment-300'}
+                                    `}
+                                >
+                                     <button 
+                                        onClick={() => removeEncounter(tome.id, encounter.id)}
+                                        className="absolute top-2 right-2 p-1 text-red-400 hover:text-red-700 hover:bg-red-100 rounded transition-colors"
+                                        title="Remove Enemy"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                    </button>
+                                    
+                                    <div className="flex justify-between mb-2 mr-6">
+                                        <input 
+                                            className="font-bold text-red-900 bg-transparent border-b border-dashed border-gray-300 focus:border-red-500 outline-none w-full"
+                                            value={encounter.name}
+                                            onChange={(e) => updateEncounter(tome.id, encounter.id, 'name', e.target.value)}
+                                        />
                                     </div>
-                                    <div className="grid grid-cols-3 gap-2">
+                                    <div className="grid grid-cols-4 gap-2 mb-2">
                                         <div>
-                                            <label className="text-xs font-bold block">Win Score</label>
+                                            <label className="text-xs font-bold block text-gray-600">Win Score</label>
                                             <input 
                                                 type="number"
-                                                className="w-full p-1 border rounded"
+                                                className="w-full p-1 border rounded bg-white text-gray-900"
                                                 value={encounter.threshold}
                                                 onChange={(e) => updateEncounter(tome.id, encounter.id, 'threshold', parseInt(e.target.value))}
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-xs font-bold block">HP Damage</label>
+                                            <label className="text-xs font-bold block text-gray-600">HP Damage</label>
                                             <input 
                                                 type="number"
-                                                className="w-full p-1 border rounded"
+                                                className="w-full p-1 border rounded bg-white text-gray-900"
                                                 value={encounter.hpLoss}
                                                 onChange={(e) => updateEncounter(tome.id, encounter.id, 'hpLoss', parseInt(e.target.value))}
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-xs font-bold block">Gold Reward</label>
+                                            <label className="text-xs font-bold block text-gray-600">Gold Reward</label>
                                             <input 
                                                 type="number"
-                                                className="w-full p-1 border rounded"
+                                                className="w-full p-1 border rounded bg-white text-gray-900"
                                                 value={encounter.goldReward}
                                                 onChange={(e) => updateEncounter(tome.id, encounter.id, 'goldReward', parseInt(e.target.value))}
                                             />
                                         </div>
+                                        <div>
+                                            <label className="text-xs font-bold block text-gray-600">XP Reward</label>
+                                            <input 
+                                                type="number"
+                                                className="w-full p-1 border rounded bg-white text-gray-900"
+                                                value={encounter.xpReward || 0}
+                                                onChange={(e) => updateEncounter(tome.id, encounter.id, 'xpReward', parseInt(e.target.value))}
+                                            />
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Type Selector */}
+                                    <div className="flex items-center space-x-2 bg-gray-100 p-2 rounded">
+                                        <div className="flex-1">
+                                            <label className="text-xs font-bold block text-gray-600">Type</label>
+                                            <select 
+                                                className="w-full p-1 border rounded bg-white text-gray-900"
+                                                value={encounter.type || 'normal'}
+                                                onChange={(e) => updateEncounter(tome.id, encounter.id, 'type', e.target.value as EncounterType)}
+                                            >
+                                                <option value="normal">Normal</option>
+                                                <option value="boss">Boss (End of Tome)</option>
+                                                <option value="miniboss">Mini-Boss</option>
+                                            </select>
+                                        </div>
+                                        {encounter.type === 'miniboss' && (
+                                            <div className="flex-1">
+                                                <label className="text-xs font-bold block text-gray-600">Trigger Step</label>
+                                                <input 
+                                                    type="number"
+                                                    placeholder="Step count..."
+                                                    className="w-full p-1 border rounded bg-white text-gray-900"
+                                                    value={encounter.triggerStep || 0}
+                                                    onChange={(e) => updateEncounter(tome.id, encounter.id, 'triggerStep', parseInt(e.target.value))}
+                                                />
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             ))}
+                            {tome.possibleEncounters.length === 0 && (
+                                <p className="text-center text-gray-500 italic text-sm">No enemies in this tome.</p>
+                            )}
+                        </div>
+
+                        {/* Export Actions */}
+                        <div className="mt-6 flex justify-end space-x-2 border-t border-parchment-400 pt-4">
+                            <button 
+                                onClick={() => handleCopyToClipboard(tome)}
+                                className="flex items-center px-3 py-2 bg-parchment-800 text-parchment-100 rounded hover:bg-parchment-700 text-sm"
+                            >
+                                <Copy className="w-4 h-4 mr-2" />
+                                Copy Code
+                            </button>
+                             <button 
+                                onClick={() => handleDownloadTome(tome)}
+                                className="flex items-center px-3 py-2 bg-blue-700 text-white rounded hover:bg-blue-600 text-sm"
+                            >
+                                <Download className="w-4 h-4 mr-2" />
+                                Export .ts
+                            </button>
                         </div>
                     </div>
                 )}
@@ -227,7 +430,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                             type="number"
                             value={lw.weight}
                             onChange={(e) => updateLootWeight(lw.rarity, parseInt(e.target.value))}
-                            className="w-20 p-2 border border-parchment-500 rounded font-mono font-bold"
+                            className="w-20 p-2 border border-parchment-500 rounded font-mono font-bold bg-white text-gray-900"
                         />
                     </div>
                 ))}

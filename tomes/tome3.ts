@@ -38,7 +38,8 @@ export const tome3: Tome = {
       description_fr: 'Une ombre qui consume les nombres.',
       threshold: 25,
       hpLoss: 20,
-      goldReward: 50
+      goldReward: 50,
+      xpReward: 100
     },
     {
       id: 't3_wizard',
@@ -48,7 +49,8 @@ export const tome3: Tome = {
       description_fr: 'Il lance des sorts de confusion !',
       threshold: 35,
       hpLoss: 25,
-      goldReward: 75
+      goldReward: 75,
+      xpReward: 150
     }
   ]
 };

@@ -13,7 +13,7 @@ interface MovementProps extends MinigameProps {
 
 type SegmentStatus = 'empty' | 'correct' | 'wrong';
 
-const XP_PER_CORRECT = 5;
+const XP_PER_CORRECT = 1;
 
 const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgressTome }) => {
   const { t } = useLocalization();

@@ -38,7 +38,8 @@ export const tome4: Tome = {
       description_fr: 'Un être composé de pur foudre et tonnerre.',
       threshold: 45,
       hpLoss: 30,
-      goldReward: 100
+      goldReward: 100,
+      xpReward: 200
     },
     {
       id: 't4_sorcerer',
@@ -48,7 +49,8 @@ export const tome4: Tome = {
       description_fr: 'Il tisse des équations complexes pour piéger les voyageurs.',
       threshold: 55,
       hpLoss: 35,
-      goldReward: 125
+      goldReward: 125,
+      xpReward: 250
     }
   ]
 };

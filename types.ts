@@ -56,6 +56,8 @@ export interface Companion {
   level: number;
 }
 
+export type EncounterType = 'normal' | 'boss' | 'miniboss';
+
 export interface Encounter {
   id: string;
   name: string;
@@ -65,6 +67,9 @@ export interface Encounter {
   threshold: number; // Score needed to win
   hpLoss: number; // HP lost on failure
   goldReward: number; // Gold earned on victory
+  xpReward: number; // XP earned on victory
+  type?: EncounterType; // Defaults to 'normal'
+  triggerStep?: number; // Only for 'miniboss', the step at which it appears
 }
 
 export interface Tome {
