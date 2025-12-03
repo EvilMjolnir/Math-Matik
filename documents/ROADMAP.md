@@ -1,21 +1,23 @@
 # Product Roadmap
 
-## Completed Features (v1.6)
+## Completed Features (v1.6 & v1.7)
 - [x] **Tome System**: Structured progression with distinct chapters (Tomes).
 - [x] **Economy System**: Gold currency, earning via combat, spending via research.
 - [x] **Random Encounters**: Enemy ambushes that block progress until defeated.
-- [x] **Full Localization**: English and French support, including menu descriptions and dynamic content.
+- [x] **Full Localization**: English and French support.
 - [x] **Leveling System**: XP tracking, Level ups, and HP growth.
 - [x] **Admin Dashboard**: Tools to edit tomes, manage images, tweak loot weights, and moderate users.
 - [x] **Visual Quest Tracking**: Immersive framed images for the active Tome in the Home view.
+- [x] **Boss/Mini-Boss Logic**: Specific tags for encounters to trigger at set steps or end of Tome.
+- [x] **UI Refactoring**: Modularized Home screen with dedicated components (`ActiveQuestPanel`, `GameMenu`).
+- [x] **Static Loot System**: Migrated from AI generation to a robust, predefined loot table.
 
-## Short Term (v1.7)
+## Short Term (v1.8)
 - [ ] **Sound Effects**: Add audio feedback for correct/incorrect answers, button clicks, and ambient background music.
 - [ ] **Mobile Optimization**: Further refine touch targets for smaller screens and landscape mode.
 
 ## Medium Term (v2.0)
 - [ ] **Inventory UI**: Create a dedicated screen to view collected Items and active bonuses (currently items are just a list).
-- [ ] **Boss Battle**: Implement a unique "Boss" encounter mechanism at the end of a Tome (currently just a progress bar completion).
 - [ ] **Companion System**: Ability to level up or swap companions for different passive bonuses.
 
 ## Long Term (v3.0)

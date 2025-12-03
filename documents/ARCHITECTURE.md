@@ -12,6 +12,8 @@
 ## Directory Structure
 - **root**: Contains entry points (`index.html`, `index.tsx`, `App.tsx`) and configuration (`constants.ts`, `types.ts`).
 - **components/**: Reusable UI elements.
+    - `ActiveQuestPanel.tsx`: Displays current Tome progress, boss alerts, or Infinite mode status.
+    - `GameMenu.tsx`: The main navigation grid for the three minigames.
     - `Keypad.tsx`: Numeric input for touch/mouse optimization.
     - `Modal.tsx`: Generic overlay for success/failure states.
     - `PlayerStatsWidget.tsx`: HUD for HP, XP, and Gold.
@@ -21,8 +23,8 @@
     - `Combat.tsx`: Logic for multiplication, timer, and Encounters.
     - `Recherche.tsx`: Logic for division, Gold spending, and loot generation.
     - `Options.tsx`: Configuration interface.
-    - `AdminPanel.tsx`: Dashboard for Game Master controls, including Tome image management and user administration.
-- **services/**: Business logic and external API communication.
+    - `AdminPanel.tsx`: Dashboard for Game Master controls, including Enemy management, Tome config, and User administration.
+- **services/**: Business logic.
     - `mathService.ts`: Pure functions to generate math problems.
     - `lootService.ts`: Handles loot generation from static data.
     - `storageService.ts`: LocalStorage wrapper for persisting user data.
@@ -33,20 +35,21 @@
     - `UI_locale.ts`: Central dictionary mapping keys to both languages.
     - `index.ts`: Context provider for language switching.
 - **data/**: Static game data.
-    - `loot.ts`: Definitions of items and rarities.
+    - `loot.ts`: Definitions of items and rarities (Typescript object).
 
 ## Data Flow
 1. **State Management**:
    - `App.tsx` serves as the central store for `PlayerStats` (HP, XP, Gold, Level), `Tome` progress, and `GameConfig`.
-   - **Tome Progress**: Moving in the *Movement* view calls `handleTomeProgress`, which checks distance against `encounterRate` to trigger events.
+   - **Tome Progress**: Moving in the *Movement* view calls `handleTomeProgress`, which checks distance against `encounterRate` and specific Boss/Mini-Boss triggers.
    - **Economy**: Gold is added via `handleEncounterComplete` and spent via `onSpendGold` in *Recherche*.
 
 2. **Game Logic**:
-   - **Encounters**: Triggered in `App.tsx`, these lock the view to *Combat* mode until resolved.
+   - **Encounters**: Triggered in `App.tsx`, these lock the view to *Combat* mode until resolved. Logic prioritizes Mini-Bosses (step-based) and Bosses (end-of-tome) over random encounters.
    - **Localization**: A `LocalizationProvider` wraps the app, supplying the `t` object for text strings based on the selected language.
 
 3. **Administration**:
-   - The `AdminPanel` allows runtime modification of the `tomes` state, enabling dynamic updates to descriptions, difficulty config, and **images**.
+   - The `AdminPanel` allows runtime modification of the `tomes` state.
+   - **Features**: Edit enemy stats, tag encounters as Bosses, adjust XP rewards, change Tome images, and export configurations to `.ts` files.
 
 ## Styling System
 The application uses a custom Tailwind configuration injected in `index.html`.

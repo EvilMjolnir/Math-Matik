@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight } from './types';
 import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS } from './constants';
@@ -11,9 +10,11 @@ import AdminPanel from './views/AdminPanel';
 import PlayerStatsWidget from './components/PlayerStatsWidget';
 import PlayerProfileModal from './components/PlayerProfileModal';
 import TomeSelectionModal from './components/TomeSelectionModal';
+import ActiveQuestPanel from './components/ActiveQuestPanel';
+import GameMenu from './components/GameMenu';
 import Modal from './components/Modal';
 import AuthScreen from './components/AuthScreen';
-import { Settings, Sword, Footprints, Search, Star, BookOpen, Map, Infinity as InfinityIcon, Skull, Coins, ShieldCheck } from 'lucide-react';
+import { Settings, BookOpen, ShieldCheck, Footprints } from 'lucide-react';
 import { LocalizationProvider, useLocalization } from './localization';
 import { saveUserProfile, createAdminProfile } from './services/storageService';
 
@@ -388,7 +389,8 @@ const App: React.FC = () => {
         colorClass="bg-purple-900 border-yellow-500 text-white"
       >
         <div className="flex flex-col items-center">
-          <Star className="w-16 h-16 text-yellow-400 mb-4 animate-spin-slow" />
+          {/* Use imported lucide icon if needed or keep existing SVG */}
+          <div className="w-16 h-16 text-yellow-400 mb-4 animate-spin-slow">⭐</div>
           <p className="text-xl">You have reached Level {leveledUpTo}!</p>
           <p className="mt-2 text-yellow-200">+5 Max HP</p>
           <p className="text-yellow-200">Full Health Restored</p>
@@ -436,9 +438,6 @@ const Home: React.FC<HomeProps> = ({
   // Recherche Cost logic
   const rechercheCost = activeConfig.recherche.baseCost + (player.researchPlayCount * activeConfig.recherche.costIncrement);
   const canAffordRecherche = player.gold >= rechercheCost;
-
-  const getTomeTitle = (tome: Tome) => (lang === 'fr' && tome.title_fr) ? tome.title_fr : tome.title;
-  const getTomeDesc = (tome: Tome) => (lang === 'fr' && tome.description_fr) ? tome.description_fr : tome.description;
 
   return (
     <div className="h-full flex flex-col justify-center">
@@ -513,90 +512,25 @@ const Home: React.FC<HomeProps> = ({
           </div>
 
           {/* Center Content: Quest & Buttons */}
-          <div className="flex-1 flex flex-col justify-center items-center w-full max-w-6xl z-10 py-8 px-6">
+          <div className="flex-1 flex flex-col justify-center items-center w-full max-w-6xl z-10 py-12 px-6">
               
-              {/* Tome Status / Encounter Alert */}
-              <div className={`w-full p-6 rounded-lg border-2 mb-8 backdrop-blur-sm min-h-[120px] flex flex-col justify-center transition-colors duration-500
-              ${activeEncounter ? 'bg-red-900/80 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.4)]' : 'bg-parchment-900/80 border-parchment-700'}
-              `}>
-              {activeEncounter ? (
-                  <div className="flex flex-col items-center animate-pulse">
-                      <div className="flex items-center text-red-400 font-bold text-3xl mb-1">
-                      <Skull className="w-10 h-10 mr-2" />
-                      {t.home.encounterActive}
-                      </div>
-                      <p className="text-parchment-200 text-lg">{t.home.encounterDesc}</p>
-                      {activeEncounter.type === 'boss' && <span className="text-red-500 font-bold uppercase tracking-widest mt-2 border border-red-500 px-2 py-1 rounded">BOSS BATTLE</span>}
-                      {activeEncounter.type === 'miniboss' && <span className="text-amber-500 font-bold uppercase tracking-widest mt-2 border border-amber-500 px-2 py-1 rounded">MINI-BOSS</span>}
-                  </div>
-              ) : activeTome ? (
-                  <div className="flex flex-col md:flex-row items-center gap-6 w-full">
-                      {activeTome.image && (
-                      <div className="relative shrink-0">
-                          <div className="w-24 h-24 md:w-32 md:h-32 rounded-lg border-4 border-amber-700 shadow-[0_0_15px_rgba(0,0,0,0.5)] overflow-hidden bg-black/50">
-                              <img src={activeTome.image} alt="Quest Location" className="w-full h-full object-cover" />
-                          </div>
-                          <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-amber-400"></div>
-                          <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-amber-400"></div>
-                          <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-amber-400"></div>
-                          <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-amber-400"></div>
-                      </div>
-                      )}
-                      <div className="flex-1 w-full">
-                      <div className="flex justify-between items-center mb-3">
-                          <span className="text-parchment-300 font-serif flex items-center text-xl">
-                              <Map className="w-6 h-6 mr-2" />
-                              {t.home.currentQuest}: <span className="text-amber-400 font-bold ml-2">{getTomeTitle(activeTome)}</span>
-                          </span>
-                          <span className="text-sm text-parchment-400 font-bold">{Math.floor(activeTome.currentDistance)} / {activeTome.totalDistance}</span>
-                      </div>
-                      <div className="w-full h-5 bg-gray-900 rounded-full overflow-hidden border border-gray-700 relative">
-                          <div 
-                              className="h-full bg-gradient-to-r from-blue-700 to-blue-500 transition-all duration-1000"
-                              style={{ width: `${(activeTome.currentDistance / activeTome.totalDistance) * 100}%` }}
-                          />
-                      </div>
-                      <p className="text-base text-parchment-500 mt-2 italic">{getTomeDesc(activeTome)}</p>
-                      </div>
-                  </div>
-              ) : (
-                  <div className="flex flex-col items-center justify-center text-parchment-400">
-                  <div className="flex items-center text-3xl font-serif font-bold text-mythic mb-2">
-                      <InfinityIcon className="w-10 h-10 mr-2" />
-                      {t.home.infiniteMode}
-                  </div>
-                  <p className="text-lg italic">{t.home.infiniteDesc}</p>
-                  </div>
-              )}
-              </div>
+              <ActiveQuestPanel 
+                activeEncounter={activeEncounter}
+                activeTome={activeTome}
+                t={t}
+                lang={lang}
+              />
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full">
-                  <MenuCard 
-                      title={t.titles.movement}
-                      icon={<Footprints className="w-14 h-14" />} 
-                      description={t.home.menuDescMovement}
-                      onClick={() => onViewChange(GameView.MOVEMENT)}
-                      color="hover:bg-green-900/90 hover:border-green-600"
-                      disabled={!canMove}
-                  />
-                  <MenuCard 
-                      title={t.titles.combat} 
-                      icon={<Sword className="w-14 h-14" />} 
-                      description={t.home.menuDescCombat}
-                      onClick={() => onViewChange(GameView.COMBAT)}
-                      color={activeEncounter ? "bg-red-900/90 border-red-500 animate-pulse hover:bg-red-900" : "hover:bg-red-900/90 hover:border-red-600"}
-                      disabled={!canCombat}
-                  />
-                  <MenuCard 
-                      title={t.titles.recherche} 
-                      icon={<Search className="w-14 h-14" />} 
-                      description={t.home.menuDescRecherche}
-                      onClick={() => onStartRecherche(rechercheCost)}
-                      color="hover:bg-blue-900/90 hover:border-blue-600"
-                      disabled={!canMove || !canAffordRecherche}
-                      cost={rechercheCost}
-                  />
-              </div>
+              <GameMenu 
+                t={t}
+                onViewChange={onViewChange}
+                onStartRecherche={onStartRecherche}
+                canMove={canMove}
+                canCombat={canCombat}
+                canAffordRecherche={canAffordRecherche}
+                activeEncounter={!!activeEncounter}
+                rechercheCost={rechercheCost}
+              />
           </div>
         </div>
       </div>
@@ -611,47 +545,4 @@ const Home: React.FC<HomeProps> = ({
   );
 };
 
-interface MenuCardProps {
-  title: string;
-  icon: React.ReactNode;
-  description: string;
-  onClick: () => void;
-  color: string;
-  disabled?: boolean;
-  cost?: number;
-}
-
-const MenuCard: React.FC<MenuCardProps> = ({ title, icon, description, onClick, color, disabled, cost }) => (
-  <button 
-    onClick={onClick}
-    disabled={disabled}
-    className={`
-      flex flex-col items-center justify-center p-8 rounded-xl border-4 transition-all duration-300 group relative overflow-hidden h-full
-      ${disabled 
-        ? 'bg-gray-800/80 border-gray-700 opacity-70 cursor-not-allowed grayscale' 
-        : `bg-parchment-900/85 border-parchment-600 ${color} hover:scale-105 hover:shadow-2xl`
-      }
-    `}
-  >
-    {cost !== undefined && !disabled && (
-      <div className="absolute top-0 right-0 bg-amber-600 text-white px-4 py-1 text-base font-bold rounded-bl-lg flex items-center shadow-md z-10">
-        <Coins className="w-4 h-4 mr-1" />
-        {cost}
-      </div>
-    )}
-    {cost !== undefined && disabled && cost > 0 && (
-       <div className="absolute top-0 right-0 bg-red-800/90 text-white px-4 py-1 text-base font-bold rounded-bl-lg flex items-center shadow-md z-10">
-        <Coins className="w-4 h-4 mr-1" />
-        {cost}
-      </div>
-    )}
-    <div className={`mb-4 transition-transform duration-300 ${disabled ? '' : 'group-hover:scale-110 group-hover:rotate-3'} text-parchment-200`}>
-      {icon}
-    </div>
-    <h2 className="text-3xl font-serif font-bold text-parchment-100 mb-2">{title}</h2>
-    <p className="text-center text-parchment-300 text-base font-serif">{description}</p>
-  </button>
-);
-
 export default AppWrapper;
-    

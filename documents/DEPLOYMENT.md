@@ -24,9 +24,9 @@ Because this project uses TypeScript (`.tsx`) and React, it cannot be hosted as 
     cd math-et-matik
     ```
 4.  **Install dependencies**:
-    You need to install the libraries used in the code (Lucide for icons, Google GenAI for the AI features).
+    You need to install the libraries used in the code (Lucide for icons).
     ```bash
-    npm install lucide-react @google/genai
+    npm install lucide-react
     ```
 
 ---
@@ -38,7 +38,7 @@ You need to copy the files from this environment into your new local folder.
 1.  **Clean up**: Delete the default `src/App.tsx` and `src/App.css` created by Vite.
 2.  **Copy Files**:
     *   Move `App.tsx`, `types.ts`, and `constants.ts` into the `src/` folder.
-    *   Copy the `components/`, `views/`, `services/`, `tomes/`, and `localization/` folders into `src/`.
+    *   Copy the `components/`, `views/`, `services/`, `tomes/`, `data/`, and `localization/` folders into `src/`.
     *   *Note*: Ensure all imports in the code point to the correct relative paths (e.g., `./types` instead of `../types` depending on where you put them).
 
 3.  **Update `index.css`**:
@@ -59,7 +59,7 @@ You need to copy the files from this environment into your new local folder.
            // Copy the theme/colors from the original index.html script tag here
            colors: {
               parchment: {
-                100: '#fdf6e3',
+                100: '#EBEBEB',
                 // ... copy the rest
               },
               // ... copy other colors
@@ -82,29 +82,7 @@ You need to copy the files from this environment into your new local folder.
 
 ---
 
-## Phase 3: Handling the API Key
-
-The code uses `process.env.API_KEY`. Vite uses `import.meta.env` by default. To make the existing code work without rewriting it, update your `vite.config.ts`:
-
-```typescript
-import { defineConfig, loadEnv } from 'vite'
-import react from '@vitejs/plugin-react'
-
-// https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
-  return {
-    plugins: [react()],
-    define: {
-      'process.env.API_KEY': JSON.stringify(env.API_KEY)
-    }
-  }
-})
-```
-
----
-
-## Phase 4: Push to GitHub
+## Phase 3: Push to GitHub
 
 1.  Initialize Git in your folder:
     ```bash
@@ -121,16 +99,12 @@ export default defineConfig(({ mode }) => {
 
 ---
 
-## Phase 5: Deploy to Vercel
+## Phase 4: Deploy to Vercel
 
 1.  Go to **Vercel.com** and log in.
 2.  Click **"Add New..."** -> **"Project"**.
 3.  Select your `math-et-matik` repository from GitHub.
-4.  **Configure Environment Variables**:
-    *   Find the **"Environment Variables"** section.
-    *   Key: `API_KEY`
-    *   Value: *[Your Google Gemini API Key]*
-5.  Click **Deploy**.
+4.  Click **Deploy**.
 
 Vercel will build your project. Once finished, you will get a live URL (e.g., `https://math-et-matik.vercel.app`) that you can share with the world!
 
@@ -141,11 +115,9 @@ Vercel will build your project. Once finished, you will get a live URL (e.g., `h
 If the "Save to GitHub" button in the IDE only opens your profile or does nothing:
 
 1.  **Manual Download**:
-    *   There is no easy "Download Zip" button in some AI previews.
     *   You must manually copy the file contents from the editor into the files created in **Phase 2**.
     *   Copy `App.tsx` content -> Paste into local `src/App.tsx`.
     *   Repeat for `types.ts`, `constants.ts`, and all files in subfolders.
 
 2.  **Verify Git Auth**:
     *   If you are trying to use the button, ensure you have authorized the AI Studio/IDX application in your GitHub settings (Settings -> Applications -> Authorized OAuth Apps).
-    *   Revoking and re-granting access sometimes fixes the "redirect to profile" loop.
