@@ -26,7 +26,8 @@ export const DEFAULT_PLAYER: PlayerStats = {
   maxHp: 20,
   defense: 0,
   gold: 5, // Start with a little gold to try mechanics
-  itemBonuses: ["+2 Calculation Speed"],
+  inventory: [],
+  itemBonuses: [], // Deprecated
   companions: [
     { name: "Pythagoras the Owl", role: "Advisor", level: 1 },
     { name: "Pascal the Frog", role: "Scout", level: 1 }

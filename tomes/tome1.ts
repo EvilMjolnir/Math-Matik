@@ -17,10 +17,10 @@ export const tome1: Tome = {
     movement: {
       minVal: 1,
       maxVal: 30,
-      targetSegments: 3,
+      targetSegments: 5,
     },
     combat: {
-      multiplicationMax: 5,
+      multiplicationMax: 10,
       questionsCount: 5,
     },
     recherche: {
@@ -37,10 +37,10 @@ export const tome1: Tome = {
       name_fr: 'Loup des Bois',
       description: 'A growling wolf blocks the path!',
       description_fr: 'Un loup grondant bloque le chemin !',
-      threshold: 8,
+      threshold: 10,
       hpLoss: 5,
-      goldReward: 10,
-      xpReward: 30
+      goldReward: 2,
+      xpReward: 8
     },
     {
       id: 't1_goblin',
@@ -48,10 +48,10 @@ export const tome1: Tome = {
       name_fr: 'Gobelin des Maths',
       description: 'He demands the correct answers or your gold!',
       description_fr: 'Il exige les bonnes réponses ou votre or !',
-      threshold: 10,
-      hpLoss: 3,
-      goldReward: 15,
-      xpReward: 40
+      threshold: 14,
+      hpLoss: 8,
+      goldReward: 3,
+      xpReward: 10
     }
   ]
 };

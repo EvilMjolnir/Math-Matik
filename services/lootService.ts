@@ -13,7 +13,10 @@ export const generateLootItem = async (rarity: Rarity): Promise<Item> => {
 
   return {
     name: randomItem.name,
+    name_fr: randomItem.name_fr,
     description: randomItem.description,
+    description_fr: randomItem.description_fr,
+    tags: randomItem.tags,
     rarity: rarity
   };
 };

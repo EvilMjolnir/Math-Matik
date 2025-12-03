@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight } from './types';
+import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item } from './types';
 import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS } from './constants';
 import { ALL_TOMES } from './tomes';
 import Movement from './views/Movement';
@@ -17,6 +18,7 @@ import AuthScreen from './components/AuthScreen';
 import { Settings, BookOpen, ShieldCheck, Footprints } from 'lucide-react';
 import { LocalizationProvider, useLocalization } from './localization';
 import { saveUserProfile, createAdminProfile } from './services/storageService';
+import { getAggregatedStats } from './services/statusService';
 
 // Wrap the main app logic to provide context
 const AppWrapper: React.FC = () => {
@@ -74,7 +76,12 @@ const App: React.FC = () => {
 
   const addExperience = (amount: number) => {
     setPlayer(prev => {
-      const newXp = prev.currentXp + amount;
+      // Calculate Bonus from Inventory
+      const stats = getAggregatedStats(prev);
+      const bonusMultiplier = stats.xpMultiplier;
+      const finalAmount = Math.floor(amount * bonusMultiplier);
+
+      const newXp = prev.currentXp + finalAmount;
       let newLevel = 1;
       for (let i = 0; i < XP_TABLE.length; i++) {
         if (newXp >= XP_TABLE[i]) {
@@ -102,10 +109,15 @@ const App: React.FC = () => {
   };
 
   const addGold = (amount: number) => {
-    setPlayer(prev => ({
-      ...prev,
-      gold: prev.gold + amount
-    }));
+    setPlayer(prev => {
+       const stats = getAggregatedStats(prev);
+       const bonusMultiplier = stats.goldMultiplier;
+       const finalAmount = Math.floor(amount * bonusMultiplier);
+       return {
+        ...prev,
+        gold: prev.gold + finalAmount
+      };
+    });
   };
 
   const spendGold = (amount: number) => {
@@ -114,6 +126,13 @@ const App: React.FC = () => {
       gold: Math.max(0, prev.gold - amount),
       researchPlayCount: prev.researchPlayCount + 1
     }));
+  };
+  
+  const handleAddItem = (item: Item) => {
+      setPlayer(prev => ({
+          ...prev,
+          inventory: [...(prev.inventory || []), item]
+      }));
   };
 
   const checkPendingLevelUp = () => {
@@ -136,8 +155,12 @@ const App: React.FC = () => {
     }));
   };
 
-  const handleTomeProgress = (steps: number) => {
+  const handleTomeProgress = (baseSteps: number) => {
     if (player.activeTomeId === 'infinite') return;
+
+    // Apply Movement Bonuses
+    const stats = getAggregatedStats(player);
+    const steps = baseSteps + stats.movementBonus;
 
     const activeTomeIndex = tomes.findIndex(t => t.id === player.activeTomeId);
     if (activeTomeIndex === -1) return;
@@ -331,6 +354,7 @@ const App: React.FC = () => {
             playerGold={player.gold}
             playCount={player.researchPlayCount}
             lootWeights={lootWeights}
+            onAddItem={handleAddItem}
             {...commonProps} 
           />
         );
@@ -441,8 +465,8 @@ const Home: React.FC<HomeProps> = ({
 
   return (
     <div className="h-full flex flex-col justify-center">
-      {/* Centered layout container */}
-      <div className="flex flex-col md:flex-row h-full max-w-7xl mx-auto w-full">
+      {/* Centered layout container - FULL WIDTH */}
+      <div className="flex flex-col md:flex-row h-full w-full">
         
         {/* Player Stats - Sidebar on Desktop */}
         <div className="hidden md:block h-full z-20 flex-shrink-0">
@@ -512,25 +536,26 @@ const Home: React.FC<HomeProps> = ({
           </div>
 
           {/* Center Content: Quest & Buttons */}
-          <div className="flex-1 flex flex-col justify-center items-center w-full max-w-6xl z-10 py-12 px-6">
-              
-              <ActiveQuestPanel 
-                activeEncounter={activeEncounter}
-                activeTome={activeTome}
-                t={t}
-                lang={lang}
-              />
+          <div className="flex-1 flex flex-col justify-center items-center w-full z-10 py-12 px-6">
+              <div className="w-full max-w-6xl flex flex-col">
+                <ActiveQuestPanel 
+                  activeEncounter={activeEncounter}
+                  activeTome={activeTome}
+                  t={t}
+                  lang={lang}
+                />
 
-              <GameMenu 
-                t={t}
-                onViewChange={onViewChange}
-                onStartRecherche={onStartRecherche}
-                canMove={canMove}
-                canCombat={canCombat}
-                canAffordRecherche={canAffordRecherche}
-                activeEncounter={!!activeEncounter}
-                rechercheCost={rechercheCost}
-              />
+                <GameMenu 
+                  t={t}
+                  onViewChange={onViewChange}
+                  onStartRecherche={onStartRecherche}
+                  canMove={canMove}
+                  canCombat={canCombat}
+                  canAffordRecherche={canAffordRecherche}
+                  activeEncounter={!!activeEncounter}
+                  rechercheCost={rechercheCost}
+                />
+              </div>
           </div>
         </div>
       </div>

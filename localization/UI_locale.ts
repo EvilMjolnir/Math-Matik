@@ -77,6 +77,13 @@ export const UI_SOURCE = {
       hero: { en: "Hero Name", fr: "Nom du Personnage" },
       code: { en: "Secret Code", fr: "Code Secret" }
     }
+  },
+  bonuses: {
+    xp: { en: "+{value}% XP Gain", fr: "+{value}% Gain d'XP" },
+    gold: { en: "+{value}% Gold Gain", fr: "+{value}% Gain d'Or" },
+    movement: { en: "+{value} Steps / Set", fr: "+{value} Pas / Série" },
+    combat: { en: "+{value} Combat Score", fr: "+{value} Score de Combat" },
+    none: { en: "No active magical effects.", fr: "Aucun effet magique actif." },
   }
 };
 
@@ -157,6 +164,13 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
         hero: UI_SOURCE.auth.placeholders.hero[lang],
         code: UI_SOURCE.auth.placeholders.code[lang],
       }
+    },
+    bonuses: {
+      xp: UI_SOURCE.bonuses.xp[lang],
+      gold: UI_SOURCE.bonuses.gold[lang],
+      movement: UI_SOURCE.bonuses.movement[lang],
+      combat: UI_SOURCE.bonuses.combat[lang],
+      none: UI_SOURCE.bonuses.none[lang],
     }
   };
 };

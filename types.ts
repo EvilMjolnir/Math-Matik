@@ -16,6 +16,23 @@ export enum Rarity {
   MYTHIC = 'Mythic',
 }
 
+export enum EffectType {
+  XP_MULTIPLIER = 'XP_MULTIPLIER',     // e.g. 1.1 for +10%
+  GOLD_MULTIPLIER = 'GOLD_MULTIPLIER', // e.g. 1.1 for +10%
+  MOVEMENT_BONUS = 'MOVEMENT_BONUS',   // Flat add to steps
+  COMBAT_SCORE_BONUS = 'COMBAT_SCORE_BONUS', // Flat add to combat score
+}
+
+export interface StatusEffect {
+  id: string;
+  name: string;
+  name_fr?: string;
+  type: EffectType;
+  value: number;
+  description: string;
+  description_fr?: string;
+}
+
 export interface GameConfig {
   movement: {
     minVal: number;
@@ -40,8 +57,12 @@ export interface MathProblem {
 
 export interface Item {
   name: string;
+  name_fr?: string;
   description: string;
+  description_fr?: string;
   rarity: Rarity;
+  image?: string; // URL to specific item image
+  tags?: string[]; // IDs mapping to statusEffects
 }
 
 export interface Card {
@@ -98,7 +119,8 @@ export interface PlayerStats {
   maxHp: number;
   defense: number;
   gold: number;
-  itemBonuses: string[];
+  inventory: Item[]; // New system
+  itemBonuses: string[]; // Deprecated, kept for backward compatibility if needed, or used for display text
   companions: Companion[];
   activeTomeId: string;
   researchPlayCount: number;

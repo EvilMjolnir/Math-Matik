@@ -76,4 +76,11 @@ export interface Translation {
       code: string;
     }
   };
+  bonuses: {
+    xp: string;
+    gold: string;
+    movement: string;
+    combat: string;
+    none: string;
+  };
 }
