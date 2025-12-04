@@ -52,6 +52,29 @@ export const tome1: Tome = {
       hpLoss: 8,
       goldReward: 3,
       xpReward: 10
+    },
+    {
+      id: 't1_vector_viper',
+      name: 'Vector Viper',
+      name_fr: 'Vipère Vecteur',
+      description: 'It slithers with a calculated trajectory. Solve its directional query!',
+      description_fr: 'Elle se faufile avec une trajectoire calculée. Résolvez son énigme directionnelle !',
+      threshold: 18,
+      hpLoss: 10,
+      goldReward: 5,
+      xpReward: 15
+    },
+    {
+      id: 't1_boss',
+      name: 'The Root Keeper',
+      name_fr: 'Le Gardien des Racines',
+      description: 'An ancient ent guarding the secrets of the forest.',
+      description_fr: 'Un ent ancien gardant les secrets de la forêt.',
+      threshold: 20,
+      hpLoss: 10,
+      goldReward: 10,
+      xpReward: 50,
+      type: 'boss'
     }
   ]
 };

@@ -119,7 +119,8 @@ export interface PlayerStats {
   maxHp: number;
   defense: number;
   gold: number;
-  inventory: Item[]; // New system
+  inventory: Item[]; 
+  equipped: Item[]; // Items currently in active slots
   itemBonuses: string[]; // Deprecated, kept for backward compatibility if needed, or used for display text
   companions: Companion[];
   activeTomeId: string;

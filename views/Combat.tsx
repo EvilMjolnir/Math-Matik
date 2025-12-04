@@ -4,8 +4,9 @@ import { GameConfig, MathProblem, MinigameProps } from '../types';
 import { generateMultiplication } from '../services/mathService';
 import Keypad from '../components/Keypad';
 import Modal from '../components/Modal';
+import ScratchpadModal from '../components/ScratchpadModal';
 import { useLocalization } from '../localization';
-import { ChevronLeft, Timer, ShieldAlert, Skull, Trophy, Coins } from 'lucide-react';
+import { ChevronLeft, Timer, ShieldAlert, Skull, Trophy, PencilLine } from 'lucide-react';
 
 interface CombatProps extends MinigameProps {
   config: GameConfig['combat'];
@@ -32,8 +33,11 @@ const Combat: React.FC<CombatProps> = ({
   const [gameState, setGameState] = useState<'intro' | 'playing' | 'finished'>('intro');
   const [feedback, setFeedback] = useState<'none' | 'correct' | 'wrong'>('none');
   const [isVictory, setIsVictory] = useState(false);
+  const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
   
   const timerRef = useRef<number | null>(null);
+  // Ref to track score synchronously for logic checks (avoids stale closures in timeouts)
+  const scoreRef = useRef(0);
 
   // Initialize
   useEffect(() => {
@@ -80,14 +84,15 @@ const Combat: React.FC<CombatProps> = ({
 
   const finishGame = () => {
     setGameState('finished');
+    const finalScore = scoreRef.current; // Use ref for logic to ensure latest value
     
     // Encounter Logic
     if (encounter) {
-      if (score >= encounter.threshold) {
+      if (finalScore >= encounter.threshold) {
         setIsVictory(true);
         // Note: We do NOT call onEncounterComplete here. We wait for user to click button in modal.
         // Use defined XP reward or fallback to score calculation
-        const xpEarned = encounter.xpReward || (score * 3);
+        const xpEarned = encounter.xpReward || (finalScore * 3);
         onAddXp(xpEarned);
         if (onAddGold && encounter.goldReward) {
           onAddGold(encounter.goldReward);
@@ -99,10 +104,10 @@ const Combat: React.FC<CombatProps> = ({
     } else {
       // Normal Mode Logic
       setIsVictory(true); // Always "win" in practice, just score matters
-      const xpEarned = score * 2;
+      const xpEarned = finalScore * 2;
       if (xpEarned > 0) {
         onAddXp(xpEarned);
-        onProgressTome(Math.floor(score / 5)); 
+        onProgressTome(Math.floor(finalScore / 5)); 
       }
     }
   };
@@ -138,6 +143,7 @@ const Combat: React.FC<CombatProps> = ({
       else if (timeLeft > 0) points = 1;
       
       setScore(prev => prev + points);
+      scoreRef.current += points; // Synchronous update for logic
       setTimeout(nextQuestion, 500);
     } else {
       setFeedback('wrong');
@@ -223,23 +229,42 @@ const Combat: React.FC<CombatProps> = ({
          </div>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center">
+      <div className="flex-1 flex flex-col items-center justify-center relative">
         {problems[currentIdx] && (
-          <div className={`p-8 rounded-xl mb-8 border-4 transition-all duration-200 bg-parchment-200 w-full max-w-sm
-             ${feedback === 'correct' ? 'border-green-500 scale-105' : ''}
-             ${feedback === 'wrong' ? 'border-red-500 rotate-2' : 'border-parchment-800'}
-          `}>
-            <div className="text-5xl font-serif font-bold text-parchment-900 mb-4 text-center">
-              {problems[currentIdx].question}
+          <div className="relative">
+            <div className={`p-8 rounded-xl mb-8 border-4 transition-all duration-200 bg-parchment-200 w-full max-w-sm
+              ${feedback === 'correct' ? 'border-green-500 scale-105' : ''}
+              ${feedback === 'wrong' ? 'border-red-500 rotate-2' : 'border-parchment-800'}
+            `}>
+              <div className="text-5xl font-serif font-bold text-parchment-900 mb-4 text-center">
+                {problems[currentIdx].question}
+              </div>
+              <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
+                {userInput}
+              </div>
             </div>
-             <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
-              {userInput}
-            </div>
+
+            {/* Scratchpad Button */}
+             <button 
+              onClick={() => setIsScratchpadOpen(true)}
+              className="absolute -right-16 top-1/2 transform -translate-y-1/2 p-3 bg-amber-600 text-white rounded-full shadow-lg border-2 border-amber-800 hover:bg-amber-700 hover:scale-110 transition-all z-10 hidden md:flex"
+              title={t.titles.scratchpad}
+            >
+              <PencilLine className="w-6 h-6" />
+            </button>
+             {/* Mobile Position */}
+             <button 
+              onClick={() => setIsScratchpadOpen(true)}
+              className="md:hidden absolute -right-2 -bottom-2 p-3 bg-amber-600 text-white rounded-full shadow-lg border-2 border-amber-800 z-10"
+              title={t.titles.scratchpad}
+            >
+              <PencilLine className="w-5 h-5" />
+            </button>
           </div>
         )}
       </div>
 
-      <div className="mt-auto">
+      <div className="mt-auto mb-12">
         <Keypad 
           onInput={handleInput} 
           onDelete={handleDelete} 
@@ -301,6 +326,11 @@ const Combat: React.FC<CombatProps> = ({
           )}
         </div>
       </Modal>
+
+      <ScratchpadModal 
+        isOpen={isScratchpadOpen} 
+        onClose={() => setIsScratchpadOpen(false)} 
+      />
     </div>
   );
 };

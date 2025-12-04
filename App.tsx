@@ -58,7 +58,13 @@ const App: React.FC = () => {
   }, [player, isAuthenticated]);
 
   const handleLogin = (loadedPlayer: PlayerStats) => {
-    setPlayer(loadedPlayer);
+    // Ensure new fields exist on loaded data for backward compatibility
+    const modernizedPlayer = {
+      ...DEFAULT_PLAYER,
+      ...loadedPlayer,
+      equipped: loadedPlayer.equipped || [],
+    };
+    setPlayer(modernizedPlayer);
     setIsAuthenticated(true);
   };
 
@@ -74,9 +80,17 @@ const App: React.FC = () => {
     setPlayer(prev => ({ ...prev, username: name }));
   };
 
+  const updateInventoryLoadout = (newInventory: Item[], newEquipped: Item[]) => {
+      setPlayer(prev => ({
+          ...prev,
+          inventory: newInventory,
+          equipped: newEquipped
+      }));
+  };
+
   const addExperience = (amount: number) => {
     setPlayer(prev => {
-      // Calculate Bonus from Inventory
+      // Calculate Bonus from Equipped Items
       const stats = getAggregatedStats(prev);
       const bonusMultiplier = stats.xpMultiplier;
       const finalAmount = Math.floor(amount * bonusMultiplier);
@@ -237,11 +251,6 @@ const App: React.FC = () => {
         if (stopDist > tome.totalDistance) stopDist = tome.totalDistance;
     }
 
-    // Logic: Tome is "Complete" if we reach the end AND we are not currently starting a fight (unless it's the boss fight, handled after)
-    // Actually, completion happens AFTER the boss is defeated.
-    // If we trigger a boss, we stop at totalDistance, start fight. completion check is in handleEncounterComplete.
-    // If we reach totalDistance with NO boss, we mark complete immediately.
-    
     const isFinished = stopDist >= tome.totalDistance && !encounterToTrigger && !tome.possibleEncounters.some(e => e.type === 'boss');
 
     // Update State
@@ -386,6 +395,7 @@ const App: React.FC = () => {
                 onStartRecherche={handleStartRecherche}
                 isAdmin={isAdmin}
                 onLogout={handleLogout}
+                onUpdateInventory={updateInventoryLoadout}
             />
         );
     }
@@ -446,10 +456,11 @@ interface HomeProps {
   onStartRecherche: (cost: number) => void;
   isAdmin: boolean;
   onLogout: () => void;
+  onUpdateInventory: (inventory: Item[], equipped: Item[]) => void;
 }
 
 const Home: React.FC<HomeProps> = ({ 
-  onViewChange, player, onUpdatePlayerName, onOpenTomes, activeTome, activeEncounter, isInfinite, lang, onToggleLang, activeConfig, onStartRecherche, isAdmin, onLogout
+  onViewChange, player, onUpdatePlayerName, onOpenTomes, activeTome, activeEncounter, isInfinite, lang, onToggleLang, activeConfig, onStartRecherche, isAdmin, onLogout, onUpdateInventory
 }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { t } = useLocalization();
@@ -565,6 +576,7 @@ const Home: React.FC<HomeProps> = ({
         isOpen={isProfileOpen} 
         onClose={() => setIsProfileOpen(false)}
         onUpdateName={onUpdatePlayerName}
+        onUpdateInventory={onUpdateInventory}
       />
     </div>
   );

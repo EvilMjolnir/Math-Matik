@@ -17,10 +17,11 @@ export const getAggregatedStats = (player: PlayerStats): AggregatedStats => {
     combatScoreBonus: 0
   };
 
-  if (!player.inventory) return stats;
+  // Only calculate bonuses from EQUIPPED items
+  if (!player.equipped) return stats;
 
-  player.inventory.forEach(item => {
-    if (item.tags) {
+  player.equipped.forEach(item => {
+    if (item && item.tags) {
       item.tags.forEach(tagId => {
         const effect = STATUS_EFFECTS[tagId];
         if (effect) {

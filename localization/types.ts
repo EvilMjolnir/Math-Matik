@@ -7,6 +7,7 @@ export interface Translation {
     options: string;
     home: string;
     profile: string;
+    scratchpad: string;
   };
   buttons: {
     back: string;
@@ -17,6 +18,7 @@ export interface Translation {
     playFor: string;
     confirmLeave: string;
     stay: string;
+    clear: string;
   };
   combat: {
     target: string;
@@ -59,6 +61,7 @@ export interface Translation {
   recherche: {
     exitWarning: string;
     entryFee: string;
+    entryFeeTitle: string;
   };
   auth: {
     username: string;
@@ -82,5 +85,20 @@ export interface Translation {
     movement: string;
     combat: string;
     none: string;
+  };
+  equipment: {
+    title: string;
+    backpack: string;
+    dragHint: string;
+    locked: string;
+    reqLevel: string;
+  };
+  stats: {
+    vitalStats: string;
+    totalXp: string;
+    nextLevel: string;
+    defense: string;
+    activeEffects: string;
+    travelAlone: string;
   };
 }

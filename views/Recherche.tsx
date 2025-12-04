@@ -5,8 +5,9 @@ import { generateDivision } from '../services/mathService';
 import { generateLootItem } from '../services/lootService';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 import Keypad from '../components/Keypad';
+import ScratchpadModal from '../components/ScratchpadModal';
 import { RARITY_COLORS, RARITY_TEXT_COLORS } from '../constants';
-import { ChevronLeft, Gift, Search, Loader2, Coins, AlertTriangle, Sparkles, Footprints, Sword, Star } from 'lucide-react';
+import { ChevronLeft, Gift, Search, Loader2, Coins, AlertTriangle, Sparkles, Footprints, Sword, Star, PencilLine } from 'lucide-react';
 import { useLocalization } from '../localization';
 import Modal from '../components/Modal';
 
@@ -28,6 +29,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
   const [isLoadingItem, setIsLoadingItem] = useState(false);
   const [solvedCorrectly, setSolvedCorrectly] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(false);
+  const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
 
   useEffect(() => {
     const newCards = Array.from({ length: 3 }).map((_, i) => ({
@@ -189,26 +191,50 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
   if (phase === 'solve') {
     return (
       <div className="flex flex-col h-full max-w-2xl mx-auto p-4">
-        <div className="flex-1 flex flex-col items-center justify-center">
+        <div className="flex-1 flex flex-col items-center justify-center relative">
            {problem && (
-            <div className={`p-8 rounded-xl mb-8 border-4 border-parchment-300 bg-parchment-200 shadow-xl`}>
-              <div className="text-5xl font-serif font-bold text-parchment-900 mb-4 text-center">
-                {problem.question}
+            <div className="relative">
+              <div className={`p-8 rounded-xl mb-8 border-4 border-parchment-300 bg-parchment-200 shadow-xl`}>
+                <div className="text-5xl font-serif font-bold text-parchment-900 mb-4 text-center">
+                  {problem.question}
+                </div>
+                <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
+                  {userInput}
+                </div>
               </div>
-              <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
-                {userInput}
-              </div>
+
+               {/* Scratchpad Button */}
+               <button 
+                onClick={() => setIsScratchpadOpen(true)}
+                className="absolute -right-16 top-1/2 transform -translate-y-1/2 p-3 bg-amber-600 text-white rounded-full shadow-lg border-2 border-amber-800 hover:bg-amber-700 hover:scale-110 transition-all z-10 hidden md:flex"
+                title={t.titles.scratchpad}
+              >
+                <PencilLine className="w-6 h-6" />
+              </button>
+               {/* Mobile Position */}
+               <button 
+                onClick={() => setIsScratchpadOpen(true)}
+                className="md:hidden absolute -right-2 -bottom-2 p-3 bg-amber-600 text-white rounded-full shadow-lg border-2 border-amber-800 z-10"
+                title={t.titles.scratchpad}
+              >
+                <PencilLine className="w-5 h-5" />
+              </button>
             </div>
            )}
         </div>
         
-        <div className="mt-auto">
+        <div className="mt-auto mb-12">
           <Keypad 
             onInput={handleInput} 
             onDelete={handleDelete} 
             onValidate={handleValidate} 
           />
         </div>
+
+        <ScratchpadModal 
+          isOpen={isScratchpadOpen} 
+          onClose={() => setIsScratchpadOpen(false)} 
+        />
       </div>
     );
   }

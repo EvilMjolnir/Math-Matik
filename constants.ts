@@ -27,6 +27,7 @@ export const DEFAULT_PLAYER: PlayerStats = {
   defense: 0,
   gold: 5, // Start with a little gold to try mechanics
   inventory: [],
+  equipped: [], // New equipment slots
   itemBonuses: [], // Deprecated
   companions: [
     { name: "Pythagoras the Owl", role: "Advisor", level: 1 },

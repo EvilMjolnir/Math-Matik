@@ -9,6 +9,7 @@ export const UI_SOURCE = {
     options: { en: "Grimoire of Settings", fr: "Grimoire des Paramètres" },
     home: { en: "Math et Matik", fr: "Math et Matik" },
     profile: { en: "Hero Profile", fr: "Profil du Héros" },
+    scratchpad: { en: "Scratchpad", fr: "Brouillon" },
   },
   buttons: {
     back: { en: "Back", fr: "Retour" },
@@ -19,6 +20,7 @@ export const UI_SOURCE = {
     playFor: { en: "Unlock for", fr: "Débloquer pour" },
     confirmLeave: { en: "Leave & Lose Gold", fr: "Quitter et Perdre l'Or" },
     stay: { en: "Stay", fr: "Rester" },
+    clear: { en: "Clear Page", fr: "Effacer la Page" },
   },
   combat: {
     target: { en: "Target", fr: "Cible" },
@@ -61,6 +63,7 @@ export const UI_SOURCE = {
   recherche: {
     exitWarning: { en: "You have paid the entry fee. If you leave now, your gold will be lost. Are you sure?", fr: "Vous avez payé les frais d'entrée. Si vous partez maintenant, votre or sera perdu. Êtes-vous sûr ?" },
     entryFee: { en: "Entry Fee", fr: "Frais d'entrée" },
+    entryFeeTitle: { en: "Entry Fee Paid", fr: "Frais d'entrée Payés" },
   },
   auth: {
     username: { en: "Username", fr: "Nom" },
@@ -84,6 +87,21 @@ export const UI_SOURCE = {
     movement: { en: "+{value} Steps / Set", fr: "+{value} Pas / Série" },
     combat: { en: "+{value} Combat Score", fr: "+{value} Score de Combat" },
     none: { en: "No active magical effects.", fr: "Aucun effet magique actif." },
+  },
+  equipment: {
+    title: { en: "Active Equipment", fr: "Équipement Actif" },
+    backpack: { en: "Backpack", fr: "Sac à Dos" },
+    dragHint: { en: "Drag items to slots to activate bonuses", fr: "Glissez les objets dans les emplacements pour activer les bonus" },
+    locked: { en: "Locked", fr: "Verrouillé" },
+    reqLevel: { en: "Requires Level", fr: "Niveau Requis" },
+  },
+  stats: {
+    vitalStats: { en: "Vital Statistics", fr: "Statistiques Vitales" },
+    totalXp: { en: "Total XP:", fr: "XP Total :" },
+    nextLevel: { en: "to next level", fr: "au prochain niveau" },
+    defense: { en: "Defense", fr: "Défense" },
+    activeEffects: { en: "Active Effects", fr: "Effets Actifs" },
+    travelAlone: { en: "You travel alone...", fr: "Vous voyagez seul..." },
   }
 };
 
@@ -96,6 +114,7 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       options: UI_SOURCE.titles.options[lang],
       home: UI_SOURCE.titles.home[lang],
       profile: UI_SOURCE.titles.profile[lang],
+      scratchpad: UI_SOURCE.titles.scratchpad[lang],
     },
     buttons: {
       back: UI_SOURCE.buttons.back[lang],
@@ -106,6 +125,7 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       playFor: UI_SOURCE.buttons.playFor[lang],
       confirmLeave: UI_SOURCE.buttons.confirmLeave[lang],
       stay: UI_SOURCE.buttons.stay[lang],
+      clear: UI_SOURCE.buttons.clear[lang],
     },
     combat: {
       target: UI_SOURCE.combat.target[lang],
@@ -148,6 +168,7 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
     recherche: {
       exitWarning: UI_SOURCE.recherche.exitWarning[lang],
       entryFee: UI_SOURCE.recherche.entryFee[lang],
+      entryFeeTitle: UI_SOURCE.recherche.entryFeeTitle[lang],
     },
     auth: {
       username: UI_SOURCE.auth.username[lang],
@@ -171,6 +192,21 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       movement: UI_SOURCE.bonuses.movement[lang],
       combat: UI_SOURCE.bonuses.combat[lang],
       none: UI_SOURCE.bonuses.none[lang],
+    },
+    equipment: {
+      title: UI_SOURCE.equipment.title[lang],
+      backpack: UI_SOURCE.equipment.backpack[lang],
+      dragHint: UI_SOURCE.equipment.dragHint[lang],
+      locked: UI_SOURCE.equipment.locked[lang],
+      reqLevel: UI_SOURCE.equipment.reqLevel[lang],
+    },
+    stats: {
+      vitalStats: UI_SOURCE.stats.vitalStats[lang],
+      totalXp: UI_SOURCE.stats.totalXp[lang],
+      nextLevel: UI_SOURCE.stats.nextLevel[lang],
+      defense: UI_SOURCE.stats.defense[lang],
+      activeEffects: UI_SOURCE.stats.activeEffects[lang],
+      travelAlone: UI_SOURCE.stats.travelAlone[lang],
     }
   };
 };

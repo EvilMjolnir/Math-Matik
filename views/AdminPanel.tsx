@@ -1,8 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType } from '../types';
-import { ChevronLeft, Edit3, Trash2, Sliders, Users, Key, Crown, Coins, Download, Copy, Plus, Activity } from 'lucide-react';
+import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType, Item } from '../types';
+import { ChevronLeft, Edit3, Trash2, Sliders, Users, Key, Crown, Coins, Download, Copy, Plus, Activity, Box } from 'lucide-react';
 import { getAllUsers, deleteUser } from '../services/storageService';
+import { lootData } from '../data/loot';
+import { RARITY_TEXT_COLORS, RARITY_COLORS } from '../constants';
+import ItemDetailOverlay from '../components/ItemDetailOverlay';
 
 interface AdminPanelProps {
   tomes: Tome[];
@@ -13,9 +16,10 @@ interface AdminPanelProps {
 }
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, setLootWeights, onBack }) => {
-  const [activeTab, setActiveTab] = useState<'tomes' | 'loot' | 'users'>('tomes');
+  const [activeTab, setActiveTab] = useState<'tomes' | 'loot' | 'users' | 'items'>('tomes');
   const [editingTomeId, setEditingTomeId] = useState<string | null>(null);
   const [users, setUsers] = useState<PlayerStats[]>([]);
+  const [previewItem, setPreviewItem] = useState<Item | null>(null);
 
   useEffect(() => {
     if (activeTab === 'users') {
@@ -146,6 +150,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
             >
                 <Edit3 className="w-4 h-4 mr-2" />
                 Tomes
+            </button>
+            <button 
+                onClick={() => setActiveTab('items')}
+                className={`px-4 py-2 rounded font-bold flex items-center ${activeTab === 'items' ? 'bg-purple-600 text-white' : 'bg-parchment-800 text-gray-400'}`}
+            >
+                <Box className="w-4 h-4 mr-2" />
+                Items
             </button>
             <button 
                 onClick={() => setActiveTab('loot')}
@@ -405,6 +416,37 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
           </div>
         )}
 
+        {/* --- ITEM VIEWER --- */}
+        {activeTab === 'items' && (
+           <div className="space-y-6">
+             {Object.entries(lootData).map(([rarity, items]) => (
+                <div key={rarity} className="bg-parchment-200 rounded-lg shadow-lg border-2 border-parchment-400 overflow-hidden">
+                   <div className={`p-3 font-bold text-lg uppercase tracking-widest border-b border-parchment-400 ${RARITY_TEXT_COLORS[rarity as Rarity]}`}>
+                      {rarity} Items
+                   </div>
+                   <div className="p-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                      {items.map((item, idx) => (
+                         <button 
+                            key={idx}
+                            onClick={() => setPreviewItem({...item, rarity: rarity as Rarity})}
+                            className="flex flex-col items-center p-3 bg-white rounded border border-parchment-300 hover:shadow-lg hover:scale-105 transition-all"
+                         >
+                            <div className="w-12 h-12 mb-2">
+                               {item.image ? (
+                                   <img src={item.image} className="w-full h-full object-contain" alt={item.name}/>
+                               ) : (
+                                   <Box className={`w-full h-full ${RARITY_TEXT_COLORS[rarity as Rarity]}`} />
+                               )}
+                            </div>
+                            <span className="text-xs font-bold text-center leading-tight line-clamp-2">{item.name}</span>
+                         </button>
+                      ))}
+                   </div>
+                </div>
+             ))}
+           </div>
+        )}
+
         {/* --- LOOT EDITOR --- */}
         {activeTab === 'loot' && (
           <div className="bg-parchment-200 p-6 rounded-lg shadow-lg border-2 border-parchment-400 text-parchment-900">
@@ -492,6 +534,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
         )}
 
       </div>
+
+      <ItemDetailOverlay item={previewItem} onClose={() => setPreviewItem(null)} />
     </div>
   );
 };

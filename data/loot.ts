@@ -8,91 +8,116 @@ export const lootData = {
       "name_fr": "Boussole Rouillée",
       "description": "It points north... occasionally.",
       "description_fr": "Elle indique le nord... de temps en temps.",
-      "tags": ["navigator_1"]
+      "tags": ["navigator_1"],
+      "image": "https://iili.io/fICo6mv.md.png"
     },
     {
       "name": "Wooden Abacus",
       "name_fr": "Boulier en Bois",
       "description": "A simple tool for basic calculations.",
       "description_fr": "Un outil simple pour les calculs de base.",
-      "tags": ["scholar_1"]
+      "tags": ["scholar_1"],
+      "image": "https://iili.io/fICo6mv.md.png"
+
     },
     {
       "name": "Torn Scroll",
       "name_fr": "Parchemin Déchiré",
       "description": "Contains illegible ancient notes.",
       "description_fr": "Contient des notes anciennes illisibles.",
-      "tags": []
+      "tags": [],
+      "image": "https://iili.io/fICxGQp.md.png"
+
     },
     {
       "name": "Chalk Stub",
       "name_fr": "Bout de Craie",
       "description": "Covered in dust from a thousand equations.",
       "description_fr": "Couvert de poussière de mille équations.",
-      "tags": ["scholar_1"]
+      "tags": ["scholar_1"],
+      "image": "https://iili.io/fICxEjR.md.png"
+
     },
     {
       "name": "Cracked Ruler",
       "name_fr": "Règle Fissurée",
       "description": "Straight enough, though it skips the number 7.",
       "description_fr": "Assez droite, bien qu'elle saute le chiffre 7.",
-      "tags": ["fighter_1"]
+      "tags": ["fighter_1"],
+      "image": "https://iili.io/fICxzTx.md.png"
+
     },
     {
       "name": "Counting Beans",
       "name_fr": "Haricots de Compte",
       "description": "A small bag of dry beans used for arithmetic.",
       "description_fr": "Un petit sac de haricots secs utilisé pour l'arithmétique.",
-      "tags": ["merchant_1"]
+      "tags": ["merchant_1"],
+      "image": "https://iili.io/fICxREP.md.png"
+
     },
     {
       "name": "Slate Tablet",
       "name_fr": "Tablette d'Ardoise",
       "description": "Heavy, scratching, and easily erased.",
       "description_fr": "Lourde, grinçante et facilement effaçable.",
-      "tags": []
+      "tags": [],
+      "image": "https://iili.io/fIC6SPn.md.png"
+
     },
     {
       "name": "Knotted Rope",
       "name_fr": "Corde à Nœuds",
       "description": "Used by builders to measure rough distances.",
       "description_fr": "Utilisée par les bâtisseurs pour mesurer des distances approximatives.",
-      "tags": ["navigator_1"]
+      "tags": ["navigator_1"],
+      "image": "https://iili.io/fICxlyJ.md.png"
+
     },
     {
       "name": "Graph Paper Scrap",
       "name_fr": "Bout de Papier Millimétré",
       "description": "Crumpled paper with a faintly drawn grid.",
       "description_fr": "Papier froissé avec une grille faiblement dessinée.",
-      "tags": []
+      "tags": [],
+      "image": "https://iili.io/fIC6OwN.md.png"
+
     },
     {
       "name": "Basic Dice",
       "name_fr": "Dés Basiques",
       "description": "A wooden cube with pips from one to six.",
       "description_fr": "Un cube en bois avec des points de un à six.",
-      "tags": ["merchant_1"]
+      "tags": ["merchant_1"],
+      "image": "https://iili.io/fICx541.md.png"
+
     },
     {
       "name": "Protractor Fragment",
       "name_fr": "Fragment de Rapporteur",
       "description": "A broken piece of plastic measuring 45 degrees.",
       "description_fr": "Un morceau de plastique cassé mesurant 45 degrés.",
-      "tags": ["fighter_1"]
+      "tags": ["fighter_1"],
+      "image": "https://iili.io/fICxaYg.md.png"
+
     },
     {
       "name": "Student's Ledger",
       "name_fr": "Grand Livre d'Étudiant",
       "description": "Full of addition errors and doodles.",
       "description_fr": "Plein d'erreurs d'addition et de gribouillages.",
-      "tags": ["scholar_1"]
+      "tags": ["scholar_1"],
+      "image": "https://iili.io/fICxIhQ.md.png"
+
     },
     {
       "name": "Clay Token",
       "name_fr": "Jeton d'Argile",
       "description": "An ancient currency placeholder.",
       "description_fr": "Un ancien substitut de monnaie.",
-      "tags": ["merchant_1"]
+      "tags": ["merchant_1"],
+      "image": "https://iili.io/fICxACB.md.png"
+
     }
   ],
   [Rarity.RARE]: [

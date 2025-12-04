@@ -4,7 +4,8 @@ import { GameConfig, MathProblem, MinigameProps } from '../types';
 import { generateAdditionSubtraction } from '../services/mathService';
 import Keypad from '../components/Keypad';
 import Modal from '../components/Modal';
-import { ChevronLeft, Footprints } from 'lucide-react';
+import ScratchpadModal from '../components/ScratchpadModal';
+import { ChevronLeft, Footprints, PencilLine } from 'lucide-react';
 import { useLocalization } from '../localization';
 
 interface MovementProps extends MinigameProps {
@@ -24,6 +25,7 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
   const [showSuccess, setShowSuccess] = useState(false);
   const [feedback, setFeedback] = useState<'none' | 'correct' | 'wrong'>('none');
   const [stepsTaken, setStepsTaken] = useState(0);
+  const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
 
   useEffect(() => {
     setSegmentResults(Array(config.targetSegments).fill('empty'));
@@ -111,23 +113,42 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
          })}
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center">
+      <div className="flex-1 flex flex-col items-center justify-center relative">
         {problem && (
-          <div className={`p-8 rounded-xl mb-8 border-4 transition-colors duration-300 bg-parchment-200
-            ${feedback === 'correct' ? 'border-green-500 bg-green-100' : ''}
-            ${feedback === 'wrong' ? 'border-red-500 bg-red-100' : 'border-parchment-300'}
-          `}>
-            <div className="text-5xl font-serif font-bold text-parchment-900 mb-4 text-center">
-              {problem.question}
+          <div className="relative">
+            <div className={`p-8 rounded-xl mb-8 border-4 transition-colors duration-300 bg-parchment-200
+              ${feedback === 'correct' ? 'border-green-500 bg-green-100' : ''}
+              ${feedback === 'wrong' ? 'border-red-500 bg-red-100' : 'border-parchment-300'}
+            `}>
+              <div className="text-5xl font-serif font-bold text-parchment-900 mb-4 text-center">
+                {problem.question}
+              </div>
+              <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
+                {userInput}
+              </div>
             </div>
-            <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
-              {userInput}
-            </div>
+
+            {/* Scratchpad Button */}
+            <button 
+              onClick={() => setIsScratchpadOpen(true)}
+              className="absolute -right-16 top-1/2 transform -translate-y-1/2 p-3 bg-amber-600 text-white rounded-full shadow-lg border-2 border-amber-800 hover:bg-amber-700 hover:scale-110 transition-all z-10 hidden md:flex"
+              title={t.titles.scratchpad}
+            >
+              <PencilLine className="w-6 h-6" />
+            </button>
+             {/* Mobile Position for Scratchpad Button */}
+             <button 
+              onClick={() => setIsScratchpadOpen(true)}
+              className="md:hidden absolute -right-2 -bottom-2 p-3 bg-amber-600 text-white rounded-full shadow-lg border-2 border-amber-800 z-10"
+              title={t.titles.scratchpad}
+            >
+              <PencilLine className="w-5 h-5" />
+            </button>
           </div>
         )}
       </div>
 
-      <div className="mt-auto">
+      <div className="mt-auto mb-12">
         <Keypad 
           onInput={handleInput} 
           onDelete={handleDelete} 
@@ -156,6 +177,11 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
           </div>
         </div>
       </Modal>
+
+      <ScratchpadModal 
+        isOpen={isScratchpadOpen} 
+        onClose={() => setIsScratchpadOpen(false)} 
+      />
     </div>
   );
 };

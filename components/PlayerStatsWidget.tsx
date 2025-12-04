@@ -1,7 +1,9 @@
+
 import React from 'react';
-import { PlayerStats } from '../types';
+import { PlayerStats, EffectType } from '../types';
 import { XP_TABLE } from '../constants';
-import { User, Heart, Coins, Shield, Crown, Maximize2, Star, LogOut } from 'lucide-react';
+import { getAggregatedStats } from '../services/statusService';
+import { User, Heart, Coins, Shield, Crown, Maximize2, Star, LogOut, Footprints, Sword, Sparkles } from 'lucide-react';
 import { useLocalization } from '../localization';
 
 interface PlayerStatsWidgetProps {
@@ -18,6 +20,9 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
   const xpInLevel = player.currentXp - currentLevelBaseXp;
   const xpNeededForLevel = nextLevelXp - currentLevelBaseXp;
   const xpPercentage = Math.min(100, Math.max(0, (xpInLevel / xpNeededForLevel) * 100));
+
+  const stats = getAggregatedStats(player);
+  const hasBonuses = stats.xpMultiplier > 1 || stats.goldMultiplier > 1 || stats.movementBonus > 0 || stats.combatScoreBonus > 0;
 
   return (
     <div className="bg-parchment-800/95 border-4 border-double border-parchment-400 p-4 h-full w-full max-w-[300px] flex flex-col items-center shadow-2xl relative">
@@ -47,7 +52,7 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
       </div>
 
       {/* Stats Compact */}
-      <div className="w-full space-y-5 mb-8">
+      <div className="w-full space-y-5 mb-4">
         {/* HP */}
         <div>
           <div className="flex justify-between text-sm text-parchment-200 mb-1 font-bold">
@@ -89,7 +94,43 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
         </div>
       </div>
 
-      <div className="mt-auto w-full">
+      {/* Active Effects Section */}
+      {hasBonuses && (
+        <div className="w-full mt-4 bg-black/20 rounded p-3 border border-parchment-600/30">
+          <div className="flex items-center mb-2 text-purple-300 font-bold text-xs uppercase tracking-wider">
+            <Sparkles className="w-3 h-3 mr-1" />
+            Active Bonuses
+          </div>
+          <div className="space-y-1 text-sm font-mono text-parchment-200">
+             {stats.xpMultiplier > 1 && (
+                <div className="flex justify-between">
+                  <span>XP</span>
+                  <span className="text-yellow-400">x{stats.xpMultiplier.toFixed(2)}</span>
+                </div>
+             )}
+             {stats.goldMultiplier > 1 && (
+                <div className="flex justify-between">
+                  <span>Gold</span>
+                  <span className="text-amber-400">x{stats.goldMultiplier.toFixed(2)}</span>
+                </div>
+             )}
+             {stats.movementBonus > 0 && (
+                <div className="flex justify-between">
+                  <span className="flex items-center"><Footprints className="w-3 h-3 mr-1"/> Step</span>
+                  <span className="text-green-400">+{stats.movementBonus}</span>
+                </div>
+             )}
+             {stats.combatScoreBonus > 0 && (
+                <div className="flex justify-between">
+                  <span className="flex items-center"><Sword className="w-3 h-3 mr-1"/> Atk</span>
+                  <span className="text-red-400">+{stats.combatScoreBonus}</span>
+                </div>
+             )}
+          </div>
+        </div>
+      )}
+
+      <div className="mt-auto w-full pt-4">
         <button 
           onClick={onExpand}
           className="w-full py-3 bg-parchment-700 hover:bg-parchment-600 text-parchment-100 rounded flex items-center justify-center transition-colors border-2 border-parchment-500 text-lg font-bold"
