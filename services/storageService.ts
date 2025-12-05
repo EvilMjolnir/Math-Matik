@@ -17,33 +17,34 @@ const saveDB = (db: UserDatabase) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
 };
 
-export const saveUserProfile = (player: PlayerStats) => {
+export const saveUserProfile = async (player: PlayerStats): Promise<void> => {
   const db = getDB();
   db[player.username] = player;
   saveDB(db);
+  return Promise.resolve();
 };
 
-export const loadUserProfile = (username: string, passwordAttempt: string): { success: boolean; data?: PlayerStats; message?: string } => {
+export const loadUserProfile = async (username: string, passwordAttempt: string): Promise<{ success: boolean; data?: PlayerStats; message?: string }> => {
   const db = getDB();
   const user = db[username];
 
   if (!user) {
-    return { success: false, message: "User not found." };
+    return Promise.resolve({ success: false, message: "User not found." });
   }
 
   // Simple string comparison for this demo
   if (user.password !== passwordAttempt) {
-    return { success: false, message: "Incorrect password." };
+    return Promise.resolve({ success: false, message: "Incorrect password." });
   }
 
-  return { success: true, data: user };
+  return Promise.resolve({ success: true, data: user });
 };
 
-export const createUserProfile = (username: string, password: string): { success: boolean; data?: PlayerStats; message?: string } => {
+export const createUserProfile = async (username: string, password: string): Promise<{ success: boolean; data?: PlayerStats; message?: string }> => {
   const db = getDB();
   
   if (db[username]) {
-    return { success: false, message: "Username already exists." };
+    return Promise.resolve({ success: false, message: "Username already exists." });
   }
 
   const newUser: PlayerStats = {
@@ -55,10 +56,10 @@ export const createUserProfile = (username: string, password: string): { success
   db[username] = newUser;
   saveDB(db);
 
-  return { success: true, data: newUser };
+  return Promise.resolve({ success: true, data: newUser });
 };
 
-export const createAdminProfile = () => {
+export const createAdminProfile = async (): Promise<void> => {
     const db = getDB();
     if (!db["Gandalf"]) {
         const adminUser: PlayerStats = {
@@ -74,17 +75,25 @@ export const createAdminProfile = () => {
         saveDB(db);
         console.log("Admin profile created.");
     }
+    return Promise.resolve();
 };
 
-export const getAllUsers = (): PlayerStats[] => {
+export const getAllUsers = async (): Promise<PlayerStats[]> => {
   const db = getDB();
-  return Object.values(db);
+  return Promise.resolve(Object.values(db));
 };
 
-export const deleteUser = (username: string) => {
+export const getGlobalLeaderboard = async (limitCount = 10): Promise<PlayerStats[]> => {
   const db = getDB();
-  // Unconditionally delete the key and save. 
-  // If the key doesn't exist, delete is a no-op, but saving ensures consistency.
+  const users = Object.values(db);
+  // Sort by XP descending
+  users.sort((a, b) => b.currentXp - a.currentXp);
+  return Promise.resolve(users.slice(0, limitCount));
+}
+
+export const deleteUser = async (username: string): Promise<void> => {
+  const db = getDB();
   delete db[username];
   saveDB(db);
+  return Promise.resolve();
 };

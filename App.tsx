@@ -1,6 +1,7 @@
 
+
 import React, { useState, useEffect } from 'react';
-import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item } from './types';
+import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item, StorageMode } from './types';
 import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS } from './constants';
 import { ALL_TOMES } from './tomes';
 import Movement from './views/Movement';
@@ -17,7 +18,8 @@ import Modal from './components/Modal';
 import AuthScreen from './components/AuthScreen';
 import { Settings, BookOpen, ShieldCheck, Footprints } from 'lucide-react';
 import { LocalizationProvider, useLocalization } from './localization';
-import { saveUserProfile, createAdminProfile } from './services/storageService';
+import * as localStore from './services/storageService';
+import * as cloudStore from './services/storageService_Live';
 import { getAggregatedStats } from './services/statusService';
 
 // Wrap the main app logic to provide context
@@ -34,15 +36,12 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentView, setCurrentView] = useState<GameView>(GameView.HOME);
   const [config, setConfig] = useState<GameConfig>(DEFAULT_CONFIG);
+  const [storageMode, setStorageMode] = useState<StorageMode>(StorageMode.LOCAL);
   
   // Initialize with a deep copy to avoid mutating the constant
   const [player, setPlayer] = useState<PlayerStats>(JSON.parse(JSON.stringify(DEFAULT_PLAYER)));
   
-  // CRITICAL FIX: Initialize tomes with a deep copy of ALL_TOMES. 
-  // Previously, we were using the reference directly, meaning gameplay progress mutated the global constant.
-  // This prevented "reset" from working because the "source of truth" (ALL_TOMES) had become dirty.
   const [tomes, setTomes] = useState<Tome[]>(() => JSON.parse(JSON.stringify(ALL_TOMES)));
-  
   const [lootWeights, setLootWeights] = useState<LootWeight[]>(RARITY_WEIGHTS);
   
   const [showLevelUp, setShowLevelUp] = useState(false);
@@ -52,25 +51,41 @@ const App: React.FC = () => {
   const [showTomeModal, setShowTomeModal] = useState(false);
   const [activeEncounter, setActiveEncounter] = useState<Encounter | null>(null);
 
-  // Initialize Admin
+  // Initialize Admin - Check both storages or just current?
   useEffect(() => {
-    createAdminProfile();
-  }, []);
+    const initAdmin = async () => {
+      // In cloud mode, admin logic is slightly different (created on demand), but we trigger it here
+      if (storageMode === StorageMode.CLOUD) {
+        await cloudStore.createAdminProfile();
+      } else {
+        await localStore.createAdminProfile();
+      }
+    };
+    initAdmin();
+  }, [storageMode]);
 
   // Save on every player change
   useEffect(() => {
-    if (isAuthenticated && player.username) {
-        saveUserProfile(player);
+    if (isAuthenticated && (player.username || player.uid)) {
+        const save = async () => {
+            if (storageMode === StorageMode.CLOUD) {
+                await cloudStore.saveUserProfile(player);
+            } else {
+                await localStore.saveUserProfile(player);
+            }
+        };
+        save();
     }
-  }, [player, isAuthenticated]);
+  }, [player, isAuthenticated, storageMode]);
 
-  const handleLogin = (loadedPlayer: PlayerStats) => {
+  const handleLogin = (loadedPlayer: PlayerStats, mode: StorageMode) => {
     // Ensure new fields exist on loaded data for backward compatibility
     const modernizedPlayer = {
       ...JSON.parse(JSON.stringify(DEFAULT_PLAYER)), // Deep copy default base
       ...loadedPlayer,
       equipped: loadedPlayer.equipped || [],
     };
+    setStorageMode(mode);
     setPlayer(modernizedPlayer);
     setIsAuthenticated(true);
   };
@@ -81,10 +96,30 @@ const App: React.FC = () => {
     setCurrentView(GameView.HOME);
   };
 
+  const handleStorageSwitch = (mode: StorageMode) => {
+    if (isAuthenticated) {
+        // If logged in, switching storage should log out as data context changes
+        handleLogout();
+    }
+    setStorageMode(mode);
+  };
+
+  const handleDeleteAccount = async () => {
+    if (storageMode === StorageMode.CLOUD) {
+        if(player.uid) {
+            await cloudStore.deleteUser(player.uid);
+            handleLogout();
+        }
+    } else {
+        await localStore.deleteUser(player.username);
+        handleLogout();
+    }
+  };
+
   const isAdmin = player.username === 'Gandalf' && player.password === 'YouShallNotPass';
 
-  const updatePlayerName = (name: string) => {
-    setPlayer(prev => ({ ...prev, username: name }));
+  const updatePlayerProfile = (updates: Partial<PlayerStats>) => {
+    setPlayer(prev => ({ ...prev, ...updates }));
   };
 
   const updateInventoryLoadout = (newInventory: Item[], newEquipped: Item[]) => {
@@ -214,9 +249,6 @@ const App: React.FC = () => {
     // 2. Check for Boss (End of Tome)
     const isReachingEnd = targetDist >= tome.totalDistance;
     if (isReachingEnd) {
-        // Boss stops us exactly at totalDistance
-        // It takes precedence if it happens before or at the same time as other events (since it's the end)
-        // But if a mini-boss is BEFORE the end, mini-boss comes first.
         if (tome.totalDistance < eventDist) {
             eventDist = tome.totalDistance;
             // Look for boss encounter
@@ -233,7 +265,6 @@ const App: React.FC = () => {
     }
 
     // 3. Check for Random Encounters
-    // Only if we haven't already found a closer fixed event
     const rate = tome.encounterRate;
     const nextRandomEncounterDist = (Math.floor(currentDist / rate) + 1) * rate;
     
@@ -307,10 +338,9 @@ const App: React.FC = () => {
     setPlayer(prev => ({ 
       ...prev, 
       activeTomeId: id,
-      // Reset research cost counter when switching tomes (optional game design choice, kept persistent per tome for now)
       researchPlayCount: 0 
     }));
-    setActiveEncounter(null); // Reset encounter if switching tomes
+    setActiveEncounter(null); 
   };
 
   const getActiveGameConfig = (): GameConfig => {
@@ -337,7 +367,11 @@ const App: React.FC = () => {
   if (!isAuthenticated) {
     return (
         <div className="min-h-screen bg-parchment-900 font-sans">
-            <AuthScreen onLogin={handleLogin} />
+            <AuthScreen 
+                onLogin={handleLogin} 
+                currentStorageMode={storageMode}
+                onSetStorageMode={setStorageMode}
+            />
         </div>
     );
   }
@@ -381,6 +415,9 @@ const App: React.FC = () => {
             setConfig={setConfig} 
             onBack={handleBackToHome} 
             isAdmin={isAdmin}
+            storageMode={storageMode}
+            onStorageModeChange={handleStorageSwitch}
+            onDeleteAccount={handleDeleteAccount}
           />
         );
       case GameView.ADMIN:
@@ -391,6 +428,7 @@ const App: React.FC = () => {
                 lootWeights={lootWeights}
                 setLootWeights={setLootWeights}
                 onBack={handleBackToHome} 
+                storageMode={storageMode}
             />
         );
       default:
@@ -398,7 +436,7 @@ const App: React.FC = () => {
             <Home 
                 onViewChange={setCurrentView} 
                 player={player} 
-                onUpdatePlayerName={updatePlayerName} 
+                onUpdatePlayerProfile={updatePlayerProfile} 
                 onOpenTomes={() => setShowTomeModal(true)}
                 activeTome={activeTome}
                 activeEncounter={activeEncounter}
@@ -417,10 +455,9 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-parchment-900 text-parchment-100 font-sans selection:bg-purple-900 selection:text-white">
-      {/* Base Texture (Dark Leather) */}
+      {/* Base Texture */}
       <div className="fixed inset-0 pointer-events-none opacity-10 bg-[url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi_nYUJA4pgj1i7RScDCiPZRZxfhYRaoFfI6TJxCzOy38fE-maNimckcWQnZDjPnbpyNF6UWzTHkk4gieQkPWsz82PQlAf8qJciEF_AWxfyGj3e3SblpFKISPMrRUzU8VwZK_wMa_BvCQ/s1600/Tileable+seamless+human+skin+texture+june+2013.jpg')]"></div>
       
-      {/* Home Specific Texture (Crumpled Paper) */}
       {currentView === GameView.HOME && (
         <div className="fixed inset-0 pointer-events-none opacity-20 bg-[url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEguZxCB_ZgeWOwZbDYUIYGWD-jzW-y4X1V_0RXy6fKJdbOOSbAGu7DsGaE2nPXN3aEbD1oVPJsZbjZZE7aIAE7eJ0rzQGoA2ssK8UHkFhqg4y-Pc_PUaBTGnajfBqLNVBX43xORYIh4vQ/s1600/Seamless+white+crease+paper+texture.jpg')] mix-blend-overlay"></div>
       )}
@@ -437,7 +474,6 @@ const App: React.FC = () => {
         colorClass="bg-purple-900 border-yellow-500 text-white"
       >
         <div className="flex flex-col items-center">
-          {/* Use imported lucide icon if needed or keep existing SVG */}
           <div className="w-16 h-16 text-yellow-400 mb-4 animate-spin-slow">⭐</div>
           <p className="text-xl">You have reached Level {leveledUpTo}!</p>
           <p className="mt-2 text-yellow-200">+5 Max HP</p>
@@ -459,7 +495,7 @@ const App: React.FC = () => {
 interface HomeProps {
   onViewChange: (view: GameView) => void;
   player: PlayerStats;
-  onUpdatePlayerName: (name: string) => void;
+  onUpdatePlayerProfile: (updates: Partial<PlayerStats>) => void;
   onOpenTomes: () => void;
   activeTome?: Tome;
   activeEncounter: Encounter | null;
@@ -474,26 +510,21 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ 
-  onViewChange, player, onUpdatePlayerName, onOpenTomes, activeTome, activeEncounter, isInfinite, lang, onToggleLang, activeConfig, onStartRecherche, isAdmin, onLogout, onUpdateInventory
+  onViewChange, player, onUpdatePlayerProfile, onOpenTomes, activeTome, activeEncounter, isInfinite, lang, onToggleLang, activeConfig, onStartRecherche, isAdmin, onLogout, onUpdateInventory
 }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { t } = useLocalization();
 
-  // Button State Logic
   const canMove = isInfinite || !activeEncounter;
-  // Combat is open if Infinite mode OR if there IS an active encounter
   const canCombat = isInfinite || !!activeEncounter; 
 
-  // Recherche Cost logic
   const rechercheCost = activeConfig.recherche.baseCost + (player.researchPlayCount * activeConfig.recherche.costIncrement);
   const canAffordRecherche = player.gold >= rechercheCost;
 
   return (
     <div className="h-full flex flex-col justify-center">
-      {/* Centered layout container - FULL WIDTH */}
       <div className="flex flex-col md:flex-row h-full w-full">
         
-        {/* Player Stats - Sidebar on Desktop */}
         <div className="hidden md:block h-full z-20 flex-shrink-0">
            <PlayerStatsWidget 
               player={player} 
@@ -502,10 +533,8 @@ const Home: React.FC<HomeProps> = ({
            />
         </div>
 
-        {/* Main Content Area */}
         <div className="flex-1 flex flex-col items-center relative overflow-y-auto custom-scrollbar">
           
-          {/* Mobile Profile Toggle */}
           <button 
             onClick={() => setIsProfileOpen(true)}
             className="md:hidden absolute top-6 left-6 p-3 bg-parchment-800 rounded-full border-2 border-parchment-600 shadow-lg z-30"
@@ -513,7 +542,6 @@ const Home: React.FC<HomeProps> = ({
             <Footprints className="w-6 h-6 text-parchment-200" />
           </button>
 
-          {/* Top Right Controls */}
           <div className="absolute top-6 right-6 flex flex-col items-end space-y-4 z-30">
              <div className="flex space-x-4">
                   <button 
@@ -552,7 +580,6 @@ const Home: React.FC<HomeProps> = ({
             </button>
           </div>
          
-          {/* Game Title - Anchored Top */}
           <div className="text-center mt-4 pt-16 flex-shrink-0 z-10 w-full">
             <h1 className="text-5xl md:text-7xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-parchment-200 to-amber-500 mb-4 drop-shadow-md">
               {t.titles.home}
@@ -560,7 +587,6 @@ const Home: React.FC<HomeProps> = ({
             <p className="text-2xl text-parchment-400 tracking-widest font-serif uppercase">{t.home.subtitle}</p>
           </div>
 
-          {/* Center Content: Quest & Buttons */}
           <div className="flex-1 flex flex-col justify-center items-center w-full z-10 py-12 px-6">
               <div className="w-full max-w-6xl flex flex-col">
                 <ActiveQuestPanel 
@@ -589,7 +615,7 @@ const Home: React.FC<HomeProps> = ({
         player={player} 
         isOpen={isProfileOpen} 
         onClose={() => setIsProfileOpen(false)}
-        onUpdateName={onUpdatePlayerName}
+        onUpdateProfile={onUpdatePlayerProfile}
         onUpdateInventory={onUpdateInventory}
       />
     </div>

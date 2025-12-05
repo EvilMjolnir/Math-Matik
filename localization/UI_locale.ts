@@ -1,4 +1,5 @@
 
+
 import { Translation } from './types';
 
 export const UI_SOURCE = {
@@ -10,6 +11,7 @@ export const UI_SOURCE = {
     home: { en: "Math et Matik", fr: "Math et Matik" },
     profile: { en: "Hero Profile", fr: "Profil du Héros" },
     scratchpad: { en: "Scratchpad", fr: "Brouillon" },
+    dangerZone: { en: "Danger Zone", fr: "Zone de Danger" },
   },
   buttons: {
     back: { en: "Back", fr: "Retour" },
@@ -21,6 +23,7 @@ export const UI_SOURCE = {
     confirmLeave: { en: "Leave & Lose Gold", fr: "Quitter et Perdre l'Or" },
     stay: { en: "Stay", fr: "Rester" },
     clear: { en: "Clear Page", fr: "Effacer la Page" },
+    deleteAccount: { en: "Delete Account & Data", fr: "Supprimer Compte & Données" },
   },
   combat: {
     target: { en: "Target", fr: "Cible" },
@@ -76,6 +79,9 @@ export const UI_SOURCE = {
     backLogin: { en: "Back to Login", fr: "Retour Connexion" },
     secure: { en: "Secure Local Storage System", fr: "Système de Stockage Local Sécurisé" },
     welcome: { en: "Enter the realm of numbers", fr: "Entrez dans le royaume des nombres" },
+    storageMode: { en: "Storage Mode", fr: "Mode de Stockage" },
+    cloud: { en: "Cloud (Global)", fr: "Cloud (Global)" },
+    local: { en: "Local (Device)", fr: "Local (Appareil)" },
     placeholders: {
       hero: { en: "Hero Name", fr: "Nom du Personnage" },
       code: { en: "Secret Code", fr: "Code Secret" }
@@ -102,6 +108,10 @@ export const UI_SOURCE = {
     defense: { en: "Defense", fr: "Défense" },
     activeEffects: { en: "Active Effects", fr: "Effets Actifs" },
     travelAlone: { en: "You travel alone...", fr: "Vous voyagez seul..." },
+  },
+  options: {
+    gameplayTab: { en: "Gameplay & Difficulty", fr: "Jeu & Difficulté" },
+    dataTab: { en: "Storage & Data", fr: "Stockage & Données" },
   }
 };
 
@@ -115,6 +125,7 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       home: UI_SOURCE.titles.home[lang],
       profile: UI_SOURCE.titles.profile[lang],
       scratchpad: UI_SOURCE.titles.scratchpad[lang],
+      dangerZone: UI_SOURCE.titles.dangerZone[lang],
     },
     buttons: {
       back: UI_SOURCE.buttons.back[lang],
@@ -126,6 +137,7 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       confirmLeave: UI_SOURCE.buttons.confirmLeave[lang],
       stay: UI_SOURCE.buttons.stay[lang],
       clear: UI_SOURCE.buttons.clear[lang],
+      deleteAccount: UI_SOURCE.buttons.deleteAccount[lang],
     },
     combat: {
       target: UI_SOURCE.combat.target[lang],
@@ -181,6 +193,9 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       backLogin: UI_SOURCE.auth.backLogin[lang],
       secure: UI_SOURCE.auth.secure[lang],
       welcome: UI_SOURCE.auth.welcome[lang],
+      storageMode: UI_SOURCE.auth.storageMode[lang],
+      cloud: UI_SOURCE.auth.cloud[lang],
+      local: UI_SOURCE.auth.local[lang],
       placeholders: {
         hero: UI_SOURCE.auth.placeholders.hero[lang],
         code: UI_SOURCE.auth.placeholders.code[lang],
@@ -207,6 +222,10 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       defense: UI_SOURCE.stats.defense[lang],
       activeEffects: UI_SOURCE.stats.activeEffects[lang],
       travelAlone: UI_SOURCE.stats.travelAlone[lang],
+    },
+    options: {
+      gameplayTab: UI_SOURCE.options.gameplayTab[lang],
+      dataTab: UI_SOURCE.options.dataTab[lang],
     }
   };
 };

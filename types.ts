@@ -1,4 +1,5 @@
 
+
 export enum GameView {
   HOME = 'HOME',
   MOVEMENT = 'MOVEMENT',
@@ -6,6 +7,11 @@ export enum GameView {
   RECHERCHE = 'RECHERCHE',
   OPTIONS = 'OPTIONS',
   ADMIN = 'ADMIN',
+}
+
+export enum StorageMode {
+  LOCAL = 'LOCAL',
+  CLOUD = 'CLOUD'
 }
 
 export enum Rarity {
@@ -111,8 +117,11 @@ export interface Tome {
 }
 
 export interface PlayerStats {
+  uid?: string; // Firebase Auth UID
   username: string;
-  password?: string; // Added for auth
+  email?: string; // Added for Firebase
+  password?: string; // Legacy local storage
+  photoURL?: string; // Added for Firebase
   level: number;
   currentXp: number;
   currentHp: number;

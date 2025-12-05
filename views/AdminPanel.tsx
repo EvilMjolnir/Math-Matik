@@ -1,8 +1,10 @@
 
+
 import React, { useState, useEffect } from 'react';
-import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType, Item } from '../types';
-import { ChevronLeft, Edit3, Trash2, Sliders, Users, Key, Crown, Coins, Download, Copy, Plus, Activity, Box } from 'lucide-react';
-import { getAllUsers, deleteUser } from '../services/storageService';
+import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType, Item, StorageMode } from '../types';
+import { ChevronLeft, Edit3, Trash2, Sliders, Users, Key, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud } from 'lucide-react';
+import * as localStore from '../services/storageService';
+import * as cloudStore from '../services/storageService_Live';
 import { lootData } from '../data/loot';
 import { RARITY_TEXT_COLORS, RARITY_COLORS } from '../constants';
 import ItemDetailOverlay from '../components/ItemDetailOverlay';
@@ -13,9 +15,10 @@ interface AdminPanelProps {
   lootWeights: LootWeight[];
   setLootWeights: (weights: LootWeight[]) => void;
   onBack: () => void;
+  storageMode: StorageMode;
 }
 
-const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, setLootWeights, onBack }) => {
+const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, setLootWeights, onBack, storageMode }) => {
   const [activeTab, setActiveTab] = useState<'tomes' | 'loot' | 'users' | 'items'>('tomes');
   const [editingTomeId, setEditingTomeId] = useState<string | null>(null);
   const [users, setUsers] = useState<PlayerStats[]>([]);
@@ -25,15 +28,28 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
     if (activeTab === 'users') {
       refreshUsers();
     }
-  }, [activeTab]);
+  }, [activeTab, storageMode]);
 
-  const refreshUsers = () => {
-    setUsers(getAllUsers());
+  const refreshUsers = async () => {
+    let u: PlayerStats[] = [];
+    if (storageMode === StorageMode.CLOUD) {
+      u = await cloudStore.getAllUsers();
+    } else {
+      u = await localStore.getAllUsers();
+    }
+    setUsers(u);
   };
 
-  const handleDeleteUser = (username: string) => {
-    if (window.confirm(`Are you sure you want to banish ${username} from the realm?`)) {
-      deleteUser(username);
+  const handleDeleteUser = async (user: PlayerStats) => {
+    const id = storageMode === StorageMode.CLOUD ? user.uid : user.username;
+    if (!id) return;
+
+    if (window.confirm(`Are you sure you want to banish ${user.username} from the realm?`)) {
+      if (storageMode === StorageMode.CLOUD) {
+        await cloudStore.deleteUser(id);
+      } else {
+        await localStore.deleteUser(id);
+      }
       refreshUsers();
     }
   };
@@ -141,7 +157,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
           <button onClick={onBack} className="p-2 mr-4 bg-parchment-800 text-parchment-100 rounded hover:bg-parchment-700">
             <ChevronLeft />
           </button>
-          <h1 className="text-3xl font-serif font-bold text-purple-300">Gandalf's Administration</h1>
+          <div className="flex flex-col">
+             <h1 className="text-3xl font-serif font-bold text-purple-300">Gandalf's Administration</h1>
+             <span className="flex items-center text-xs text-parchment-400">
+                 {storageMode === StorageMode.CLOUD ? <Cloud className="w-3 h-3 mr-1" /> : <Database className="w-3 h-3 mr-1" />}
+                 Connected to {storageMode} Database
+             </span>
+          </div>
         </div>
         <div className="flex space-x-2">
             <button 
@@ -494,7 +516,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                  <thead>
                    <tr className="bg-parchment-400 text-parchment-900">
                      <th className="p-3 font-serif font-bold border border-parchment-500">Username</th>
-                     <th className="p-3 font-serif font-bold border border-parchment-500">Password</th>
                      <th className="p-3 font-serif font-bold border border-parchment-500">Level</th>
                      <th className="p-3 font-serif font-bold border border-parchment-500">Gold</th>
                      <th className="p-3 font-serif font-bold border border-parchment-500">Action</th>
@@ -502,12 +523,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                  </thead>
                  <tbody>
                    {users.map((user) => (
-                     <tr key={user.username} className="bg-parchment-100 border border-parchment-300 hover:bg-white transition-colors">
+                     <tr key={user.uid || user.username} className="bg-parchment-100 border border-parchment-300 hover:bg-white transition-colors">
                        <td className="p-3 border border-parchment-300 font-bold">{user.username}</td>
-                       <td className="p-3 border border-parchment-300 font-mono text-sm text-gray-600 flex items-center">
-                          <Key className="w-3 h-3 mr-1 opacity-50"/> 
-                          {user.password || <span className="italic opacity-50">Guest</span>}
-                       </td>
                        <td className="p-3 border border-parchment-300">
                           <span className="flex items-center"><Crown className="w-3 h-3 mr-1 text-amber-600"/> {user.level}</span>
                        </td>
@@ -517,7 +534,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                        <td className="p-3 border border-parchment-300 text-center">
                          {user.username !== 'Gandalf' && (
                            <button 
-                             onClick={() => handleDeleteUser(user.username)}
+                             onClick={() => handleDeleteUser(user)}
                              className="p-2 bg-red-100 text-red-700 rounded hover:bg-red-600 hover:text-white transition-colors"
                              title="Banish User"
                            >

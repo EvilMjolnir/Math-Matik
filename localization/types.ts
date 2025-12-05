@@ -1,4 +1,5 @@
 
+
 export interface Translation {
   titles: {
     movement: string;
@@ -8,6 +9,7 @@ export interface Translation {
     home: string;
     profile: string;
     scratchpad: string;
+    dangerZone: string;
   };
   buttons: {
     back: string;
@@ -19,6 +21,7 @@ export interface Translation {
     confirmLeave: string;
     stay: string;
     clear: string;
+    deleteAccount: string;
   };
   combat: {
     target: string;
@@ -35,6 +38,7 @@ export interface Translation {
   movement: {
     steps: string;
     pathCompleted: string;
+    title?: string;
   };
   common: {
     xp: string;
@@ -74,6 +78,9 @@ export interface Translation {
     backLogin: string;
     secure: string;
     welcome: string;
+    storageMode: string;
+    cloud: string;
+    local: string;
     placeholders: {
       hero: string;
       code: string;
@@ -100,5 +107,9 @@ export interface Translation {
     defense: string;
     activeEffects: string;
     travelAlone: string;
+  };
+  options: {
+    gameplayTab: string;
+    dataTab: string;
   };
 }

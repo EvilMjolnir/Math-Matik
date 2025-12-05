@@ -1,34 +1,45 @@
 
+
 import React, { useState } from 'react';
 import { PlayerStats, Item, EffectType } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS } from '../constants';
 import { getAggregatedStats } from '../services/statusService';
 import { STATUS_EFFECTS } from '../data/statusEffects';
-import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Scroll, Users, Star, Backpack, Sparkles, Lock, Footprints, Sword } from 'lucide-react';
+import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Scroll, Users, Star, Backpack, Sparkles, Lock, Footprints, Sword, Mail, Link } from 'lucide-react';
 import { useLocalization } from '../localization';
 
 interface PlayerProfileModalProps {
   player: PlayerStats;
   isOpen: boolean;
   onClose: () => void;
-  onUpdateName: (name: string) => void;
+  onUpdateProfile: (updates: Partial<PlayerStats>) => void;
   onUpdateInventory: (inventory: Item[], equipped: Item[]) => void;
 }
 
-const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ player, isOpen, onClose, onUpdateName, onUpdateInventory }) => {
+const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ player, isOpen, onClose, onUpdateProfile, onUpdateInventory }) => {
   const { t, lang } = useLocalization();
   const [isEditing, setIsEditing] = useState(false);
   const [tempName, setTempName] = useState(player.username);
-  const [activeTab, setActiveTab] = useState<'stats' | 'inventory' | 'companions'>('stats');
+  const [tempPhoto, setTempPhoto] = useState(player.photoURL || '');
+  const [activeTab, setActiveTab] = useState<'stats' | 'inventory' | 'companions' | 'settings'>('stats');
   const [viewItem, setViewItem] = useState<Item | null>(null);
 
   if (!isOpen) return null;
 
-  const handleSaveName = () => {
+  const handleSave = () => {
     if (tempName.trim()) {
-      onUpdateName(tempName);
+      onUpdateProfile({
+        username: tempName,
+        photoURL: tempPhoto
+      });
       setIsEditing(false);
     }
+  };
+
+  const handleEditClick = () => {
+      setTempName(player.username);
+      setTempPhoto(player.photoURL || '');
+      setIsEditing(true);
   };
 
   // Drag and Drop Logic
@@ -222,39 +233,66 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ player, isOpen,
         
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b-2 border-parchment-400 bg-parchment-300/50 rounded-t-lg">
-          <div className="flex items-center">
-             <div className="w-16 h-16 bg-parchment-100 rounded-full border-2 border-amber-600 flex items-center justify-center mr-4">
-                <User className="w-10 h-10 text-parchment-800" />
+          <div className="flex items-center w-full">
+             <div className="w-16 h-16 bg-parchment-100 rounded-full border-2 border-amber-600 flex items-center justify-center mr-4 overflow-hidden shrink-0">
+                {player.photoURL ? (
+                    <img src={player.photoURL} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                    <User className="w-10 h-10 text-parchment-800" />
+                )}
              </div>
-             <div>
+             <div className="flex-1">
                {isEditing ? (
-                 <div className="flex items-center">
-                   <input 
-                    type="text" 
-                    value={tempName}
-                    onChange={(e) => setTempName(e.target.value)}
-                    className="bg-parchment-100 border border-parchment-500 px-2 py-1 text-lg font-serif font-bold rounded mr-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    maxLength={20}
-                   />
-                   <button onClick={handleSaveName} className="p-1 bg-green-600 text-white rounded hover:bg-green-700">
-                     <Check className="w-5 h-5" />
+                 <div className="flex flex-col space-y-2 max-w-sm">
+                   <div className="flex items-center">
+                     <User className="w-4 h-4 mr-2 text-parchment-600" />
+                     <input 
+                      type="text" 
+                      value={tempName}
+                      onChange={(e) => setTempName(e.target.value)}
+                      className="flex-1 bg-parchment-100 border border-parchment-500 px-2 py-1 text-base font-serif font-bold rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      maxLength={20}
+                      placeholder="Hero Name"
+                     />
+                   </div>
+                   <div className="flex items-center">
+                      <Link className="w-4 h-4 mr-2 text-parchment-600" />
+                      <input 
+                        type="text" 
+                        value={tempPhoto}
+                        onChange={(e) => setTempPhoto(e.target.value)}
+                        className="flex-1 bg-parchment-100 border border-parchment-500 px-2 py-1 text-sm font-sans rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        placeholder="Photo URL (e.g. https://...)"
+                      />
+                   </div>
+                   <button onClick={handleSave} className="self-end px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700 font-bold text-sm flex items-center">
+                     <Check className="w-4 h-4 mr-1" />
+                     Save
                    </button>
                  </div>
                ) : (
-                 <div className="flex items-center group">
-                   <h2 className="text-3xl font-serif font-bold text-parchment-900 mr-3">{player.username}</h2>
-                   <button onClick={() => { setIsEditing(true); setTempName(player.username); }} className="opacity-0 group-hover:opacity-100 text-parchment-600 hover:text-amber-700 transition-opacity">
-                     <Edit2 className="w-5 h-5" />
-                   </button>
-                 </div>
+                 <>
+                   <div className="flex items-center group">
+                     <h2 className="text-3xl font-serif font-bold text-parchment-900 mr-3">{player.username}</h2>
+                     <button onClick={handleEditClick} className="opacity-0 group-hover:opacity-100 text-parchment-600 hover:text-amber-700 transition-opacity">
+                       <Edit2 className="w-5 h-5" />
+                     </button>
+                   </div>
+                   <div className="text-parchment-700 font-serif flex items-center mt-1">
+                     <Crown className="w-4 h-4 mr-1 text-amber-600" />
+                     {t.common.level} {player.level} Mathematician
+                   </div>
+                   {player.email && (
+                     <div className="text-parchment-500 text-sm flex items-center mt-1">
+                       <Mail className="w-3 h-3 mr-1" />
+                       {player.email}
+                     </div>
+                   )}
+                 </>
                )}
-               <div className="text-parchment-700 font-serif flex items-center mt-1">
-                 <Crown className="w-4 h-4 mr-1 text-amber-600" />
-                 {t.common.level} {player.level} Mathematician
-               </div>
              </div>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-parchment-400/50 rounded-full transition-colors">
+          <button onClick={onClose} className="p-2 hover:bg-parchment-400/50 rounded-full transition-colors shrink-0 ml-4">
             <X className="w-8 h-8 text-parchment-800" />
           </button>
         </div>
@@ -472,14 +510,14 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ player, isOpen,
                                     const effectName = (lang === 'fr' && effect.name_fr) ? effect.name_fr : effect.name;
                                     const effectDesc = (lang === 'fr' && effect.description_fr) ? effect.description_fr : effect.description;
                                     return (
-                                        <div key={tag} className="flex items-center text-sm">
-                                            <div className="mr-3 p-1 bg-parchment-200 rounded-full border border-parchment-300">
-                                                {getEffectIcon(effect.type)}
-                                            </div>
-                                            <div>
-                                                <div className="font-bold text-parchment-800">{effectName}</div>
-                                                <div className="text-xs text-parchment-600">{effectDesc}</div>
-                                            </div>
+                                        <div key={tag} className="flex items-start text-left bg-white/5 p-2 rounded hover:bg-white/10 transition-colors">
+                                           <div className="mt-1 mr-2 p-1 bg-black/50 rounded-full">
+                                               {getEffectIcon(effect.type)}
+                                           </div>
+                                           <div>
+                                               <div className="font-bold text-parchment-100 text-sm">{effectName}</div>
+                                               <div className="text-xs text-parchment-400">{effectDesc}</div>
+                                           </div>
                                         </div>
                                     )
                                 })}
