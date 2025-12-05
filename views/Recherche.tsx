@@ -7,7 +7,7 @@ import { STATUS_EFFECTS } from '../data/statusEffects';
 import Keypad from '../components/Keypad';
 import ScratchpadModal from '../components/ScratchpadModal';
 import { RARITY_COLORS, RARITY_TEXT_COLORS } from '../constants';
-import { ChevronLeft, Gift, Search, Loader2, Coins, AlertTriangle, Sparkles, Footprints, Sword, Star, PencilLine } from 'lucide-react';
+import { ChevronLeft, Gift, Search, Loader2, Coins, AlertTriangle, Sparkles, Footprints, Sword, Star, PencilLine, CheckCircle, XCircle, Lock } from 'lucide-react';
 import { useLocalization } from '../localization';
 import Modal from '../components/Modal';
 
@@ -18,13 +18,32 @@ interface RechercheProps extends MinigameProps {
 
 const XP_REWARD = 10;
 
+const DIFFICULTY_CONFIG: Record<Rarity, { steps: number; wins: number }> = {
+  [Rarity.COMMON]: { steps: 1, wins: 1 },
+  [Rarity.RARE]: { steps: 3, wins: 2 },
+  [Rarity.MAGIC]: { steps: 3, wins: 2 },
+  [Rarity.LEGENDARY]: { steps: 5, wins: 3 },
+  [Rarity.MYTHIC]: { steps: 5, wins: 3 },
+};
+
 const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgressTome, onAddItem, playerGold = 0, lootWeights = [] }) => {
   const { t, lang } = useLocalization();
   const [phase, setPhase] = useState<'select' | 'solve' | 'result'>('select');
   const [cards, setCards] = useState<Card[]>([]);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+  
+  // Gameplay State
   const [problem, setProblem] = useState<MathProblem | null>(null);
   const [userInput, setUserInput] = useState('');
+  const [feedback, setFeedback] = useState<'none' | 'correct' | 'wrong'>('none');
+  
+  // Multi-step Logic
+  const [totalSteps, setTotalSteps] = useState(1);
+  const [winsNeeded, setWinsNeeded] = useState(1);
+  const [currentWins, setCurrentWins] = useState(0);
+  const [currentLosses, setCurrentLosses] = useState(0);
+
+  // Result State
   const [item, setItem] = useState<Item | null>(null);
   const [isLoadingItem, setIsLoadingItem] = useState(false);
   const [solvedCorrectly, setSolvedCorrectly] = useState(false);
@@ -44,7 +63,6 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
   }, [lootWeights]);
 
   const getRandomRarity = (): Rarity => {
-    // Use passed props or empty array fallback
     const weights = lootWeights.length > 0 ? lootWeights : [{rarity: Rarity.COMMON, weight: 100}];
     const totalWeight = weights.reduce((sum, item) => sum + item.weight, 0);
     let random = Math.random() * totalWeight;
@@ -58,9 +76,18 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
 
   const handleCardSelect = (card: Card) => {
     setSelectedCard(card);
+    
+    // Initialize Difficulty
+    const diff = DIFFICULTY_CONFIG[card.rarity] || { steps: 1, wins: 1 };
+    setTotalSteps(diff.steps);
+    setWinsNeeded(diff.wins);
+    setCurrentWins(0);
+    setCurrentLosses(0);
+    
     setProblem(generateDivision(config.divisionMaxDividend));
     setPhase('solve');
     setUserInput('');
+    setFeedback('none');
   };
 
   const handleInput = (num: number) => {
@@ -72,20 +99,55 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
   };
 
   const handleValidate = async () => {
-    if (!problem || !selectedCard) return;
+    if (!problem || !selectedCard || feedback !== 'none') return;
     const answer = parseInt(userInput);
     
     const isCorrect = answer === problem.answer;
-    setSolvedCorrectly(isCorrect);
     
-    if (isCorrect) {
+    // Visual Feedback Phase
+    setFeedback(isCorrect ? 'correct' : 'wrong');
+
+    // Logic Delay
+    setTimeout(async () => {
+      const newWins = isCorrect ? currentWins + 1 : currentWins;
+      const newLosses = isCorrect ? currentLosses : currentLosses + 1;
+      
+      setCurrentWins(newWins);
+      setCurrentLosses(newLosses);
+
+      // 1. WIN CONDITION: Met required wins
+      if (newWins >= winsNeeded) {
+        finishGame(true);
+        return;
+      }
+
+      // 2. LOSS CONDITION: Cannot possibly catch up
+      // Example: 3 steps, 2 wins needed. If 2 losses, max wins is 1. 1 < 2. Fail.
+      // (Total - Needed) is the buffer. If Losses > Buffer, fail.
+      if (newLosses > (totalSteps - winsNeeded)) {
+        finishGame(false);
+        return;
+      }
+
+      // 3. CONTINUE: Generate next problem
+      setProblem(generateDivision(config.divisionMaxDividend));
+      setUserInput('');
+      setFeedback('none');
+
+    }, 1000);
+  };
+
+  const finishGame = async (isSuccess: boolean) => {
+    setSolvedCorrectly(isSuccess);
+    
+    if (isSuccess && selectedCard) {
       setIsLoadingItem(true);
       setPhase('result');
       onAddXp(XP_REWARD);
       onProgressTome(1);
       const loot = await generateLootItem(selectedCard.rarity);
       setItem(loot);
-      onAddItem(loot); // Persist item
+      onAddItem(loot); 
       setIsLoadingItem(false);
     } else {
       setPhase('result');
@@ -129,6 +191,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
       }
   };
 
+  // --- Render Select Phase ---
   if (phase === 'select') {
     return (
       <div className="flex flex-col h-full max-w-4xl mx-auto p-4">
@@ -147,23 +210,30 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 items-center">
-          {cards.map((card) => (
-            <button
-              key={card.id}
-              onClick={() => handleCardSelect(card)}
-              className={`
-                h-64 rounded-xl border-4 shadow-lg transform transition-all relative overflow-hidden flex flex-col items-center justify-center p-4
-                ${card.color}
-                hover:scale-105
-              `}
-            >
-              <div className="absolute inset-0 bg-black/20" />
-              <Search className="w-16 h-16 text-white/80 z-10 mb-4" />
-              <span className="z-10 text-white font-serif font-bold text-xl uppercase tracking-wider shadow-black drop-shadow-md">
-                {card.rarity}
-              </span>
-            </button>
-          ))}
+          {cards.map((card) => {
+            const diff = DIFFICULTY_CONFIG[card.rarity];
+            return (
+              <button
+                key={card.id}
+                onClick={() => handleCardSelect(card)}
+                className={`
+                  h-64 rounded-xl border-4 shadow-lg transform transition-all relative overflow-hidden flex flex-col items-center justify-center p-4
+                  ${card.color}
+                  hover:scale-105
+                `}
+              >
+                <div className="absolute inset-0 bg-black/20" />
+                <Search className="w-16 h-16 text-white/80 z-10 mb-4" />
+                <span className="z-10 text-white font-serif font-bold text-xl uppercase tracking-wider shadow-black drop-shadow-md">
+                  {card.rarity}
+                </span>
+                <div className="z-10 mt-2 text-white/70 text-xs font-bold flex items-center bg-black/40 px-3 py-1 rounded-full">
+                   <Lock className="w-3 h-3 mr-1" />
+                   {diff.wins} {diff.wins > 1 ? 'Locks' : 'Lock'}
+                </div>
+              </button>
+            );
+          })}
         </div>
 
         <Modal
@@ -188,13 +258,50 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
     );
   }
 
+  // --- Render Solve Phase ---
   if (phase === 'solve') {
     return (
       <div className="flex flex-col h-full max-w-2xl mx-auto p-4">
+        
+        {/* Progress Header */}
+        <div className="mb-6 flex flex-col items-center">
+           <div className={`px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-2 ${selectedCard ? RARITY_TEXT_COLORS[selectedCard.rarity] : 'text-white'} bg-black/40 border border-white/20`}>
+             Deciphering {selectedCard?.rarity} Cache
+           </div>
+           
+           <div className="flex items-center space-x-2">
+              {Array.from({ length: totalSteps }).map((_, idx) => {
+                 let icon = <div className="w-4 h-4 rounded-full bg-parchment-800/50 border border-parchment-600" />; // Default: Pending
+                 
+                 // If this step is a Win
+                 if (idx < currentWins) {
+                    icon = <CheckCircle className="w-6 h-6 text-green-500" />;
+                 } 
+                 // If we have losses, show them at the end (simplification for visualization)
+                 else if (idx >= totalSteps - currentLosses) {
+                    icon = <XCircle className="w-6 h-6 text-red-500" />;
+                 }
+                 // If this is the current active step (and no result yet)
+                 else if (idx === (currentWins + currentLosses)) {
+                    icon = <div className="w-5 h-5 rounded-full border-2 border-amber-500 animate-pulse bg-amber-500/20" />;
+                 }
+
+                 return <div key={idx}>{icon}</div>;
+              })}
+           </div>
+           <div className="text-xs text-parchment-400 mt-1">
+             {currentWins} / {winsNeeded} to unlock
+           </div>
+        </div>
+
         <div className="flex-1 flex flex-col items-center justify-center relative">
            {problem && (
             <div className="relative">
-              <div className={`p-8 rounded-xl mb-8 border-4 border-parchment-300 bg-parchment-200 shadow-xl`}>
+              <div className={`
+                 p-8 rounded-xl mb-8 border-4 shadow-xl transition-all duration-300
+                 ${feedback === 'correct' ? 'border-green-500 bg-green-100' : ''}
+                 ${feedback === 'wrong' ? 'border-red-500 bg-red-100' : 'border-parchment-300 bg-parchment-200'}
+              `}>
                 <div className="text-5xl font-serif font-bold text-parchment-900 mb-4 text-center">
                   {problem.question}
                 </div>
@@ -227,7 +334,8 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
           <Keypad 
             onInput={handleInput} 
             onDelete={handleDelete} 
-            onValidate={handleValidate} 
+            onValidate={handleValidate}
+            disabled={feedback !== 'none'} 
           />
         </div>
 
@@ -239,7 +347,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
     );
   }
 
-  // Result Phase
+  // --- Render Result Phase ---
   return (
     <div className="flex flex-col h-full items-center justify-center p-4 max-w-lg mx-auto animate-fadeIn">
       {isLoadingItem ? (
@@ -321,7 +429,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
                  <AlertTriangle className="w-24 h-24 text-red-500 mb-4" />
                </div>
                <h2 className="text-3xl font-serif font-bold mb-4">{t.combat.defeat}</h2>
-               <p className="text-red-200 mb-6">The ancient lock remains sealed. Your calculation was incorrect.</p>
+               <p className="text-red-200 mb-6 text-center">The ancient lock remains sealed. Too many incorrect calculations.</p>
             </div>
           )}
 

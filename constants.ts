@@ -39,26 +39,26 @@ export const DEFAULT_PLAYER: PlayerStats = {
 
 // Cumulative XP required to reach each level (Index 0 = Level 1, Index 1 = Level 2, etc.)
 export const XP_TABLE = [
-  0,      // Level 1
-  10,     // Level 2
-  30,     // Level 3
-  60,     // Level 4
-  100,    // Level 5
-  150,    // Level 6
-  210,    // Level 7
-  280,    // Level 8
-  360,    // Level 9
-  450,    // Level 10
-  550,    // Level 11
-  660,    // Level 12
-  780,    // Level 13
-  910,    // Level 14
-  1050,   // Level 15
-  1200,   // Level 16
-  1360,   // Level 17
-  1530,   // Level 18
-  1710,   // Level 19
-  1900    // Level 20
+  0,    // Level 1
+  15,   // Level 2
+  45,   // Level 3
+  90,   // Level 4
+  150,  // Level 5
+  225,  // Level 6
+  315,  // Level 7
+  420,  // Level 8
+  540,  // Level 9
+  675,  // Level 10
+  825,  // Level 11
+  990,  // Level 12
+  1170, // Level 13
+  1365, // Level 14
+  1575, // Level 15
+  1800, // Level 16
+  2040, // Level 17
+  2295, // Level 18
+  2565, // Level 19
+  2850  // Level 20
 ];
 
 export const RARITY_COLORS: Record<Rarity, string> = {
