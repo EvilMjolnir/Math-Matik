@@ -1,12 +1,11 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType, Item, StorageMode } from '../types';
-import { ChevronLeft, Edit3, Trash2, Sliders, Users, Key, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud } from 'lucide-react';
+import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud } from 'lucide-react';
 import * as localStore from '../services/storageService';
 import * as cloudStore from '../services/storageService_Live';
 import { lootData } from '../data/loot';
-import { RARITY_TEXT_COLORS, RARITY_COLORS } from '../constants';
+import { RARITY_TEXT_COLORS } from '../constants';
 import ItemDetailOverlay from '../components/ItemDetailOverlay';
 
 interface AdminPanelProps {
@@ -454,8 +453,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                             className="flex flex-col items-center p-3 bg-white rounded border border-parchment-300 hover:shadow-lg hover:scale-105 transition-all"
                          >
                             <div className="w-12 h-12 mb-2">
-                               {item.image ? (
-                                   <img src={item.image} className="w-full h-full object-contain" alt={item.name}/>
+                               {(item as any).image ? (
+                                   <img src={(item as any).image} className="w-full h-full object-contain" alt={item.name}/>
                                ) : (
                                    <Box className={`w-full h-full ${RARITY_TEXT_COLORS[rarity as Rarity]}`} />
                                )}

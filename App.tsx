@@ -251,7 +251,6 @@ const App: React.FC = () => {
     
     let stopDist = targetDist;
     let encounterToTrigger: Encounter | null = null;
-    let eventType: 'miniboss' | 'boss' | 'random' | 'none' = 'none';
     let eventDist = Infinity;
 
     // 1. Check for Mini-Bosses
@@ -263,7 +262,6 @@ const App: React.FC = () => {
             if (mb.triggerStep! < eventDist) {
                 eventDist = mb.triggerStep!;
                 encounterToTrigger = mb;
-                eventType = 'miniboss';
             }
         }
     }
@@ -277,11 +275,9 @@ const App: React.FC = () => {
             const boss = tome.possibleEncounters.find(e => e.type === 'boss');
             if (boss) {
                 encounterToTrigger = boss;
-                eventType = 'boss';
             } else {
                 // Reaching end with no boss defined
                 encounterToTrigger = null; 
-                eventType = 'none'; // Just finish
             }
         }
     }
@@ -298,7 +294,6 @@ const App: React.FC = () => {
             const randomPool = tome.possibleEncounters.filter(e => e.type !== 'boss' && e.type !== 'miniboss');
             if (randomPool.length > 0) {
                 encounterToTrigger = randomPool[Math.floor(Math.random() * randomPool.length)];
-                eventType = 'random';
             }
         }
     }

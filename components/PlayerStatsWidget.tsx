@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { PlayerStats, EffectType } from '../types';
+import { PlayerStats } from '../types';
 import { XP_TABLE } from '../constants';
 import { getAggregatedStats } from '../services/statusService';
 import { User, Heart, Coins, Shield, Crown, Maximize2, Star, LogOut, Footprints, Sword, Sparkles } from 'lucide-react';

@@ -1,5 +1,5 @@
 
-import { GameConfig, Rarity, PlayerStats, Tome } from './types';
+import { GameConfig, Rarity, PlayerStats } from './types';
 
 export const DEFAULT_CONFIG: GameConfig = {
   movement: {

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { GameConfig, MathProblem, Rarity, Item, Card, MinigameProps, LootWeight, EffectType } from '../types';
+import { GameConfig, MathProblem, Rarity, Item, Card, MinigameProps, EffectType } from '../types';
 import { generateDivision } from '../services/mathService';
 import { generateLootItem } from '../services/lootService';
 import { STATUS_EFFECTS } from '../data/statusEffects';

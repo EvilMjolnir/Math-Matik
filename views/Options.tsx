@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { GameConfig, StorageMode } from '../types';
 import { ChevronLeft, Info, Cloud, Database, Trash2, Gamepad2, Server, RefreshCw } from 'lucide-react';
@@ -16,7 +15,7 @@ interface OptionsProps {
   onResetProfile: () => void;
 }
 
-const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, isAdmin, storageMode, onStorageModeChange, onDeleteAccount, onResetProfile }) => {
+const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, storageMode, onStorageModeChange, onDeleteAccount, onResetProfile }) => {
   const { t } = useLocalization();
   const [activeTab, setActiveTab] = useState<'gameplay' | 'data'>('gameplay');
   
