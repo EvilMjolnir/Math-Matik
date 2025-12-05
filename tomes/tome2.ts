@@ -83,7 +83,7 @@ export const tome2: Tome = {
       threshold: 32,
       hpLoss: 20,
       goldReward: 20,
-      xpReward: 35
+      xpReward: 35,
       type: 'boss'
     }
   ]
