@@ -8,9 +8,10 @@ interface OptionsProps {
   config: GameConfig;
   setConfig: (config: GameConfig) => void;
   onBack: () => void;
+  isAdmin: boolean;
 }
 
-const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack }) => {
+const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, isAdmin }) => {
   const { t } = useLocalization();
   
   const handleChange = (section: keyof GameConfig, field: string, value: number) => {
@@ -39,7 +40,7 @@ const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack }) => {
         </p>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-6 pr-2">
+      <div className="flex-1 overflow-y-auto space-y-6 pr-2 custom-scrollbar">
         {/* Mouvement Settings */}
         <section className="bg-parchment-900/50 p-6 rounded-lg border-2 border-parchment-800">
           <h2 className="text-2xl font-serif text-parchment-300 mb-4">{t.titles.movement}</h2>

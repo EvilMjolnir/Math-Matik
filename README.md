@@ -1,57 +1,20 @@
-# Math et Matik: L'aventure numérique
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-A browser-based RPG-themed mathematics challenge game designed to make learning arithmetic operations engaging through fantasy game mechanics.
+# Run and deploy your AI Studio app
 
-## Core Features
+This contains everything you need to run your app locally.
 
-### 1. Tomes & Quests (Progression)
-The game is divided into distinct "Tomes" (Chapters), each representing a different environment and difficulty level.
-- **Visual Immersion**: Active quests feature atmospheric artwork to set the scene.
-- **Progression**: Solving math problems in *Mouvement* advances your position within the active Tome.
-- **Boss System**: Specific encounters can be tagged as Mini-Bosses (mid-level) or Bosses (end-level) for dramatic pacing.
-- **Unlocking**: Completing a Tome unlocks the next one.
+View your app in AI Studio: https://ai.studio/apps/drive/1OX5lCzhXYIi_dsa-JwGu-XRppDI7bLIi
 
-### 2. Encounters & Combat
-Focuses on **Multiplication**.
-- **Dynamic Threats**: Encounters include Random mobs, Mini-Bosses, and Tome Bosses.
-- **Mechanics**: 
-    - The game locks other activities until the enemy is defeated.
-    - **Thresholds**: You must achieve a specific score to win.
-    - **Rewards**: Victory grants XP and **Gold**.
+## Run Locally
 
-### 3. Recherche (Search) & Economy
-Focuses on **Division**.
-- **Gold System**: Players earn Gold from winning Combat encounters.
-- **Loot**: 
-    - Choose a card based on Rarity (Common to Mythic).
-    - Solve a division problem to open the chest.
-    - **Rewards**: Receive a unique fantasy item from the game's static loot table.
-- **Offline Capable**: No external API calls are required; all loot is generated locally.
+**Prerequisites:**  Node.js
 
-### 4. Mouvement (Movement)
-Focuses on **Addition and Subtraction**.
-- **Objective**: Complete a sequence of equations to fill a progress bar.
-- **Result**: Successfully filling the bar advances your distance in the current Tome.
 
-### 5. Admin Panel (Game Master Tools)
-A powerful dashboard accessible to administrators (User: Gandalf).
-- **Enemy Management**: Add, remove, and configure enemies (HP, XP, Rewards).
-- **Boss Configuration**: Tag specific encounters as Bosses or Mini-Bosses with trigger steps.
-- **Export Tools**: Export Tome configurations to TypeScript for permanent integration.
-- **User Management**: View and banish users from the realm.
-- **Loot Control**: Adjust the probability weights for item rarities.
-
-### 6. Options & Localization
-- **Localization**: Fully translated into **English** and **French**.
-- **Customization**: Adjust number ranges, timer settings, and progress bar lengths in the Options menu.
-
-## Getting Started
-
-This application is built to run in a browser environment that supports ES modules and React.
-
-### Installation
-No build process is required if serving `index.html` with an appropriate Import Map setup (as provided in the source).
-
-## Credits
-- Built with React & TypeScript.
-- Icons by Lucide.
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`

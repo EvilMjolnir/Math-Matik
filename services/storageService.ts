@@ -83,8 +83,8 @@ export const getAllUsers = (): PlayerStats[] => {
 
 export const deleteUser = (username: string) => {
   const db = getDB();
-  if (db[username]) {
-    delete db[username];
-    saveDB(db);
-  }
+  // Unconditionally delete the key and save. 
+  // If the key doesn't exist, delete is a no-op, but saving ensures consistency.
+  delete db[username];
+  saveDB(db);
 };

@@ -289,7 +289,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ player, isOpen,
           
           {/* STATS TAB */}
           {activeTab === 'stats' && (
-            <div className="space-y-6">
+            <div className="space-y-6 flex flex-col h-full">
               <h3 className="text-xl font-bold font-serif text-parchment-900 border-b border-parchment-400 pb-2">{t.stats.vitalStats}</h3>
               
               <div className="bg-parchment-100 p-4 rounded border border-parchment-300 shadow-sm space-y-4">

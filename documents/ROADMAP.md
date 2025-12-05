@@ -17,7 +17,7 @@
 - [ ] **Mobile Optimization**: Further refine touch targets for smaller screens and landscape mode.
 
 ## Medium Term (v2.0)
-- [x] **Inventory UI**: Create a dedicated screen to view collected Items and active bonuses (currently items are just a list).
+- [ ] **Inventory UI**: Create a dedicated screen to view collected Items and active bonuses (currently items are just a list).
 - [ ] **Companion System**: Ability to level up or swap companions for different passive bonuses.
 
 ## Long Term (v3.0)

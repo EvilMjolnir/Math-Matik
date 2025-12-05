@@ -150,9 +150,12 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
         )}
       </div>
       
-      <div className="mt-8 text-parchment-500 text-sm flex items-center opacity-50">
-        <Shield className="w-4 h-4 mr-2" />
-        {t.auth.secure}
+      <div className="mt-8 text-parchment-500 text-sm flex flex-col items-center opacity-50">
+        <div className="flex items-center">
+            <Shield className="w-4 h-4 mr-2" />
+            {t.auth.secure}
+        </div>
+        <div className="text-xs mt-1 font-mono">v1.7</div>
       </div>
     </div>
   );

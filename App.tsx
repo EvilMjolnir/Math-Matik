@@ -34,8 +34,15 @@ const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentView, setCurrentView] = useState<GameView>(GameView.HOME);
   const [config, setConfig] = useState<GameConfig>(DEFAULT_CONFIG);
-  const [player, setPlayer] = useState<PlayerStats>(DEFAULT_PLAYER);
-  const [tomes, setTomes] = useState<Tome[]>(ALL_TOMES);
+  
+  // Initialize with a deep copy to avoid mutating the constant
+  const [player, setPlayer] = useState<PlayerStats>(JSON.parse(JSON.stringify(DEFAULT_PLAYER)));
+  
+  // CRITICAL FIX: Initialize tomes with a deep copy of ALL_TOMES. 
+  // Previously, we were using the reference directly, meaning gameplay progress mutated the global constant.
+  // This prevented "reset" from working because the "source of truth" (ALL_TOMES) had become dirty.
+  const [tomes, setTomes] = useState<Tome[]>(() => JSON.parse(JSON.stringify(ALL_TOMES)));
+  
   const [lootWeights, setLootWeights] = useState<LootWeight[]>(RARITY_WEIGHTS);
   
   const [showLevelUp, setShowLevelUp] = useState(false);
@@ -60,7 +67,7 @@ const App: React.FC = () => {
   const handleLogin = (loadedPlayer: PlayerStats) => {
     // Ensure new fields exist on loaded data for backward compatibility
     const modernizedPlayer = {
-      ...DEFAULT_PLAYER,
+      ...JSON.parse(JSON.stringify(DEFAULT_PLAYER)), // Deep copy default base
       ...loadedPlayer,
       equipped: loadedPlayer.equipped || [],
     };
@@ -70,7 +77,7 @@ const App: React.FC = () => {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setPlayer(DEFAULT_PLAYER);
+    setPlayer(JSON.parse(JSON.stringify(DEFAULT_PLAYER)));
     setCurrentView(GameView.HOME);
   };
 
@@ -368,7 +375,14 @@ const App: React.FC = () => {
           />
         );
       case GameView.OPTIONS:
-        return <Options config={config} setConfig={setConfig} onBack={handleBackToHome} />;
+        return (
+          <Options 
+            config={config} 
+            setConfig={setConfig} 
+            onBack={handleBackToHome} 
+            isAdmin={isAdmin}
+          />
+        );
       case GameView.ADMIN:
         return (
             <AdminPanel 
