@@ -22,6 +22,7 @@ export interface Translation {
     stay: string;
     clear: string;
     deleteAccount: string;
+    resetProfile: string;
   };
   combat: {
     target: string;

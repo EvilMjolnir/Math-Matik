@@ -1,8 +1,23 @@
-
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-
+import { initializeApp } from 'firebase/app';
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  updateProfile,
+  deleteUser as deleteFirebaseUser
+} from 'firebase/auth';
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc, 
+  getDocs, 
+  collection, 
+  query, 
+  orderBy, 
+  limit, 
+  deleteDoc 
+} from 'firebase/firestore';
 import { PlayerStats } from "../types";
 import { DEFAULT_PLAYER } from "../constants";
 
@@ -16,43 +31,42 @@ const firebaseConfig = {
   measurementId: "G-WLE7XNWK6M"
 };
 
-// Step 1: Initialize Firebase
-// Check for existing apps to handle hot-reload scenarios
-const app = firebase.apps.length === 0 ? firebase.initializeApp(firebaseConfig) : firebase.app();
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-// Step 2: Get Service Instances
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-// --- User Profile Management ---
+// --- Service Functions ---
 
 export const saveUserProfile = async (player: PlayerStats): Promise<void> => {
-    if (!player.uid) return;
+    if (!player.uid) {
+        console.warn("Save Aborted: Missing player UID.");
+        return;
+    }
+
     try {
-        await db.collection("users").doc(player.uid).set(player, { merge: true });
+        await setDoc(doc(db, "users", player.uid), player, { merge: true });
     } catch (e) {
-        console.error("Error saving profile:", e);
+        console.error("Error saving profile to Firestore:", e);
     }
 };
 
 export const loadUserProfile = async (email: string, passwordAttempt: string): Promise<{ success: boolean; data?: PlayerStats; message?: string }> => {
     try {
-        // 1. Authenticate with Firebase Auth
-        const userCredential = await auth.signInWithEmailAndPassword(email, passwordAttempt);
+        const userCredential = await signInWithEmailAndPassword(auth, email, passwordAttempt);
         const user = userCredential.user;
 
         if (!user) {
             return { success: false, message: "Authentication failed." };
         }
 
-        // 2. Fetch User Data from Firestore
-        const userDocRef = db.collection("users").doc(user.uid);
-        const userSnap = await userDocRef.get();
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
 
-        if (userSnap.exists) {
-            return { success: true, data: userSnap.data() as PlayerStats };
+        if (userDocSnap.exists()) {
+            return { success: true, data: userDocSnap.data() as PlayerStats };
         } else {
-            // Fallback: If auth exists but no DB record
+            // Fallback: User authenticated but no profile doc exists
             const newPlayer: PlayerStats = {
                 ...DEFAULT_PLAYER,
                 uid: user.uid,
@@ -60,18 +74,18 @@ export const loadUserProfile = async (email: string, passwordAttempt: string): P
                 email: email,
                 photoURL: user.photoURL || ''
             };
-            await userDocRef.set(newPlayer);
+            await setDoc(userDocRef, newPlayer);
             return { success: true, data: newPlayer };
         }
     } catch (error: any) {
+        console.error("Login Error:", error);
         return { success: false, message: error.message || "Login failed" };
     }
 };
 
 export const createUserProfile = async (email: string, password: string): Promise<{ success: boolean; data?: PlayerStats; message?: string }> => {
     try {
-        // 1. Create Auth User
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         
         if (!user) {
@@ -80,7 +94,6 @@ export const createUserProfile = async (email: string, password: string): Promis
 
         const username = email.split('@')[0];
 
-        // 2. Prepare Data Object
         const newPlayer: PlayerStats = {
             ...DEFAULT_PLAYER,
             uid: user.uid,
@@ -89,15 +102,17 @@ export const createUserProfile = async (email: string, password: string): Promis
             photoURL: ''
         };
 
-        // 3. Update Auth Profile (Display Name)
-        await user.updateProfile({ displayName: username });
-
-        // 4. Save to Firestore
-        await db.collection("users").doc(user.uid).set(newPlayer, { merge: true });
+        if (auth.currentUser) {
+            await updateProfile(auth.currentUser, { displayName: username });
+        }
+        
+        const userDocRef = doc(db, "users", user.uid);
+        await setDoc(userDocRef, newPlayer, { merge: true });
 
         return { success: true, data: newPlayer };
 
     } catch (error: any) {
+        console.error("Registration Error:", error);
         return { success: false, message: error.message || "Registration failed" };
     }
 };
@@ -106,10 +121,11 @@ export const createUserProfile = async (email: string, password: string): Promis
 
 export const getAllUsers = async (): Promise<PlayerStats[]> => {
     try {
-        const querySnapshot = await db.collection("users").get();
+        const usersCollection = collection(db, "users");
+        const querySnapshot = await getDocs(usersCollection);
         const users: PlayerStats[] = [];
-        querySnapshot.forEach((doc) => {
-            users.push(doc.data() as PlayerStats);
+        querySnapshot.forEach((docSnap) => {
+            users.push(docSnap.data() as PlayerStats);
         });
         return users;
     } catch (e) {
@@ -120,14 +136,13 @@ export const getAllUsers = async (): Promise<PlayerStats[]> => {
 
 export const getGlobalLeaderboard = async (limitCount = 10): Promise<PlayerStats[]> => {
     try {
-        const querySnapshot = await db.collection("users")
-            .orderBy("currentXp", "desc")
-            .limit(limitCount)
-            .get();
+        const usersCollection = collection(db, "users");
+        const q = query(usersCollection, orderBy("currentXp", "desc"), limit(limitCount));
+        const querySnapshot = await getDocs(q);
         
         const leaderboard: PlayerStats[] = [];
-        querySnapshot.forEach((doc) => {
-            leaderboard.push(doc.data() as PlayerStats);
+        querySnapshot.forEach((docSnap) => {
+            leaderboard.push(docSnap.data() as PlayerStats);
         });
         return leaderboard;
     } catch (e) {
@@ -138,13 +153,14 @@ export const getGlobalLeaderboard = async (limitCount = 10): Promise<PlayerStats
 
 export const deleteUser = async (uid: string): Promise<void> => {
     try {
-        // 1. Delete from Firestore
-        await db.collection("users").doc(uid).delete();
-
-        // 2. Delete from Auth (if currently logged in user matches)
+        const userDocRef = doc(db, "users", uid);
+        await deleteDoc(userDocRef);
+        
         const currentUser = auth.currentUser;
         if (currentUser && currentUser.uid === uid) {
-            await currentUser.delete();
+            await deleteFirebaseUser(currentUser);
+        } else {
+             console.warn("Note: Auth user deletion skipped. Client-side admin can only delete Firestore data for other users.");
         }
     } catch (e) {
         console.error("Error deleting user:", e);
@@ -152,16 +168,5 @@ export const deleteUser = async (uid: string): Promise<void> => {
 };
 
 export const createAdminProfile = async (): Promise<void> => {
-    // No-op for cloud; admins are managed manually or via direct database edits
     return Promise.resolve();
-};
-
-export const testConnection = async (): Promise<{ success: boolean; message: string }> => {
-    try {
-        // Attempt a lightweight fetch
-        await db.collection("users").limit(1).get();
-        return { success: true, message: "Connected to Firebase." };
-    } catch (e: any) {
-        return { success: false, message: e.message || "Connection failed." };
-    }
 };

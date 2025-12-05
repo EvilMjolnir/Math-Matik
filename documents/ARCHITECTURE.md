@@ -1,3 +1,4 @@
+
 # Architecture Documentation
 
 ## Overview
@@ -8,6 +9,7 @@
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS (via CDN)
 - **Icons**: Lucide React
+- **Persistence**: Hybrid Storage (LocalStorage + Firebase Cloud)
 
 ## Directory Structure
 - **root**: Contains entry points (`index.html`, `index.tsx`, `App.tsx`) and configuration (`constants.ts`, `types.ts`).
@@ -18,7 +20,9 @@
     - `Modal.tsx`: Generic overlay for success/failure states.
     - `PlayerStatsWidget.tsx`: HUD for HP, XP, and Gold.
     - `TomeSelectionModal.tsx`: UI for selecting levels/tomes.
+    - `AuthScreen.tsx`: Login/Registration interface handling dual storage modes.
 - **views/**: Main game screens.
+    - `Home.tsx`: Dashboard displaying player stats, menu, and active quest status.
     - `Movement.tsx`: Logic for addition/subtraction and Tome progress.
     - `Combat.tsx`: Logic for multiplication, timer, and Encounters.
     - `Recherche.tsx`: Logic for division, Gold spending, and loot generation.
@@ -27,7 +31,8 @@
 - **services/**: Business logic.
     - `mathService.ts`: Pure functions to generate math problems.
     - `lootService.ts`: Handles loot generation from static data.
-    - `storageService.ts`: LocalStorage wrapper for persisting user data.
+    - `storageService.ts`: LocalStorage wrapper for offline persistence.
+    - `storageService_Live.ts`: Firebase wrapper for cloud persistence.
 - **tomes/**: Game content definitions.
     - Contains configuration files for specific levels (Tomes), including enemy data, difficulty settings, and **visual assets (images)**.
 - **localization/**: Internationalization files.
@@ -47,7 +52,12 @@
    - **Encounters**: Triggered in `App.tsx`, these lock the view to *Combat* mode until resolved. Logic prioritizes Mini-Bosses (step-based) and Bosses (end-of-tome) over random encounters.
    - **Localization**: A `LocalizationProvider` wraps the app, supplying the `t` object for text strings based on the selected language.
 
-3. **Administration**:
+3. **Storage Strategy**:
+   - The user selects `StorageMode` (Local vs Cloud) at login.
+   - `App.tsx` abstracts the calls to `storageService.ts` or `storageService_Live.ts` based on this mode.
+   - This allows users to play offline or sync progress across devices.
+
+4. **Administration**:
    - The `AdminPanel` allows runtime modification of the `tomes` state.
    - **Features**: Edit enemy stats, tag encounters as Bosses, adjust XP rewards, change Tome images, and export configurations to `.ts` files.
 

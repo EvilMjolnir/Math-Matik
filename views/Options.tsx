@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { GameConfig, StorageMode } from '../types';
-import { ChevronLeft, Info, Cloud, Database, Trash2, Gamepad2, Server } from 'lucide-react';
+import { ChevronLeft, Info, Cloud, Database, Trash2, Gamepad2, Server, RefreshCw } from 'lucide-react';
 import { useLocalization } from '../localization';
 
 interface OptionsProps {
@@ -13,9 +13,10 @@ interface OptionsProps {
   storageMode: StorageMode;
   onStorageModeChange: (mode: StorageMode) => void;
   onDeleteAccount: () => void;
+  onResetProfile: () => void;
 }
 
-const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, isAdmin, storageMode, onStorageModeChange, onDeleteAccount }) => {
+const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, isAdmin, storageMode, onStorageModeChange, onDeleteAccount, onResetProfile }) => {
   const { t } = useLocalization();
   const [activeTab, setActiveTab] = useState<'gameplay' | 'data'>('gameplay');
   
@@ -32,6 +33,12 @@ const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, isAdmin, s
   const handleDeleteClick = () => {
     if (window.confirm("Are you sure you want to delete your account? This action cannot be undone and all progress will be lost forever.")) {
         onDeleteAccount();
+    }
+  };
+
+  const handleResetClick = () => {
+    if (window.confirm("Are you sure you want to reset your progress? You will keep your account but lose all gold, experience, and items.")) {
+        onResetProfile();
     }
   };
 
@@ -103,16 +110,34 @@ const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, isAdmin, s
                     <Trash2 className="w-6 h-6 mr-2" />
                     {t.titles.dangerZone}
                 </h2>
-                <p className="text-red-200/70 text-sm mb-4 italic">
-                  Permanently remove your hero profile and all associated progress from the {storageMode} database.
-                </p>
-                <button 
-                    onClick={handleDeleteClick}
-                    className="w-full py-3 bg-red-900/50 hover:bg-red-800 text-red-200 rounded border border-red-700 transition-colors font-bold flex items-center justify-center"
-                >
-                    <Trash2 className="w-5 h-5 mr-2" />
-                    {t.buttons.deleteAccount}
-                </button>
+                
+                {/* Reset Progress */}
+                <div className="mb-8 border-b border-red-900/30 pb-6">
+                     <p className="text-parchment-300 text-sm mb-3 italic">
+                        Reset your level, gold, and items to zero. Your account and login credentials will remain active.
+                     </p>
+                     <button 
+                        onClick={handleResetClick}
+                        className="w-full py-3 bg-amber-900/30 hover:bg-amber-800 text-amber-200 rounded border border-amber-700/50 transition-colors font-bold flex items-center justify-center"
+                    >
+                        <RefreshCw className="w-5 h-5 mr-2" />
+                        {t.buttons.resetProfile}
+                    </button>
+                </div>
+
+                {/* Full Delete */}
+                <div>
+                    <p className="text-red-300/70 text-sm mb-3 italic">
+                      Permanently remove your hero profile, login credentials, and all data from the {storageMode} database.
+                    </p>
+                    <button 
+                        onClick={handleDeleteClick}
+                        className="w-full py-3 bg-red-900/50 hover:bg-red-800 text-red-200 rounded border border-red-700 transition-colors font-bold flex items-center justify-center"
+                    >
+                        <Trash2 className="w-5 h-5 mr-2" />
+                        {t.buttons.deleteAccount}
+                    </button>
+                </div>
             </section>
           </div>
         )}

@@ -24,6 +24,7 @@ export const UI_SOURCE = {
     stay: { en: "Stay", fr: "Rester" },
     clear: { en: "Clear Page", fr: "Effacer la Page" },
     deleteAccount: { en: "Delete Account & Data", fr: "Supprimer Compte & Données" },
+    resetProfile: { en: "Reset Progress (Keep Account)", fr: "Réinitialiser Progression (Garder Compte)" },
   },
   combat: {
     target: { en: "Target", fr: "Cible" },
@@ -138,6 +139,7 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       stay: UI_SOURCE.buttons.stay[lang],
       clear: UI_SOURCE.buttons.clear[lang],
       deleteAccount: UI_SOURCE.buttons.deleteAccount[lang],
+      resetProfile: UI_SOURCE.buttons.resetProfile[lang],
     },
     combat: {
       target: UI_SOURCE.combat.target[lang],
