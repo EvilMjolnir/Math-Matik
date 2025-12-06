@@ -65,7 +65,7 @@ export const createAdminProfile = async (): Promise<void> => {
         const adminUser: PlayerStats = {
             ...DEFAULT_PLAYER,
             username: "Gandalf",
-            password: "YouShallNotPass",
+            password: "//zz",
             level: 100,
             gold: 99999,
             maxHp: 9999,
@@ -73,7 +73,7 @@ export const createAdminProfile = async (): Promise<void> => {
         };
         db["Gandalf"] = adminUser;
         saveDB(db);
-        console.log("Admin profile created.");
+        console.log("Gandalf appears!!!.");
     }
     return Promise.resolve();
 };

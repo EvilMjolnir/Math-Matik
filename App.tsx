@@ -138,7 +138,7 @@ const App: React.FC = () => {
     alert(t.options.dataTab + ": Profile reset successful.");
   };
 
-  const isAdmin = player.username === 'Gandalf' && player.password === 'YouShallNotPass';
+  const isAdmin = player.username === 'Gandalf';
 
   const updatePlayerProfile = (updates: Partial<PlayerStats>) => {
     setPlayer(prev => ({ ...prev, ...updates }));

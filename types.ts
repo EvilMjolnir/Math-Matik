@@ -110,6 +110,7 @@ export interface Encounter {
   triggerStep?: number; // Only for 'miniboss', the step at which it appears
   tags?: string[]; // IDs mapping to statusEffects
   timerDuration?: number; // Specific timer for this encounter (normal mode)
+  image?: string; // URL to monster image
 }
 
 export interface Tome {

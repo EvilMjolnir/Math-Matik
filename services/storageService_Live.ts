@@ -1,3 +1,4 @@
+
 // @ts-nocheck
 // TypeScript errors are expected in Google AI Studio due to import map usage
 // This file works correctly at runtime in both AI Studio and Vercel
@@ -66,6 +67,8 @@ export const loadUserProfile = async (email: string, passwordAttempt: string): P
         const userDocRef = doc(db, "users", user.uid);
         const userDocSnap = await getDoc(userDocRef);
 
+        const safeUsername = user.displayName || (email ? email.split('@')[0] : 'Hero');
+
         if (userDocSnap.exists()) {
             return { success: true, data: userDocSnap.data() as PlayerStats };
         } else {
@@ -73,7 +76,7 @@ export const loadUserProfile = async (email: string, passwordAttempt: string): P
             const newPlayer: PlayerStats = {
                 ...DEFAULT_PLAYER,
                 uid: user.uid,
-                username: user.displayName || email.split('@')[0],
+                username: safeUsername,
                 email: email,
                 photoURL: user.photoURL || ''
             };
@@ -95,7 +98,7 @@ export const createUserProfile = async (email: string, password: string): Promis
             return { success: false, message: "User creation failed." };
         }
 
-        const username = email.split('@')[0];
+        const username = email ? email.split('@')[0] : 'Hero';
 
         const newPlayer: PlayerStats = {
             ...DEFAULT_PLAYER,
