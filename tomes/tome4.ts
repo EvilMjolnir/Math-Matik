@@ -1,5 +1,7 @@
 
+
 import { Tome } from '../types';
+import { ENCOUNTERS } from '../data/encounters';
 
 export const tome4: Tome = {
   id: 'tome_4',
@@ -26,31 +28,15 @@ export const tome4: Tome = {
       divisionMaxDividend: 200,
       baseCost: 30,
       costIncrement: 8,
+    },
+    boss: {
+      timerDuration: 10,
+      actionsPerTurn: 6
     }
   },
   encounterRate: 25,
   possibleEncounters: [
-    {
-      id: 't4_elemental',
-      name: 'Storm Elemental',
-      name_fr: 'Élémentaire de Tempête',
-      description: 'A being composed of pure lightning and thunder.',
-      description_fr: 'Un être composé de pur foudre et tonnerre.',
-      threshold: 45,
-      hpLoss: 30,
-      goldReward: 100,
-      xpReward: 200
-    },
-    {
-      id: 't4_sorcerer',
-      name: 'High Sorcerer',
-      name_fr: 'Grand Sorcier',
-      description: 'He weaves complex equations to trap travelers.',
-      description_fr: 'Il tisse des équations complexes pour piéger les voyageurs.',
-      threshold: 55,
-      hpLoss: 35,
-      goldReward: 125,
-      xpReward: 250
-    }
+    ENCOUNTERS.t4_elemental,
+    ENCOUNTERS.t4_sorcerer
   ]
 };

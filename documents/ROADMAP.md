@@ -1,29 +1,35 @@
 
 # Product Roadmap
 
-## Completed Features (v1.6 - v1.9)
-- [x] **Tome System**: Structured progression with distinct chapters (Tomes).
-- [x] **Economy System**: Gold currency, earning via combat, spending via research.
-- [x] **Random Encounters**: Enemy ambushes that block progress until defeated.
-- [x] **Full Localization**: English and French support.
-- [x] **Leveling System**: XP tracking, Level ups, and HP growth.
-- [x] **Admin Dashboard**: Tools to edit tomes, manage images, tweak loot weights, and moderate users.
-- [x] **Visual Quest Tracking**: Immersive framed images for the active Tome in the Home view.
-- [x] **Boss/Mini-Boss Logic**: Specific tags for encounters to trigger at set steps or end of Tome.
-- [x] **UI Refactoring**: Modularized Home screen with dedicated components (`ActiveQuestPanel`, `GameMenu`).
-- [x] **Static Loot System**: Migrated from AI generation to a robust, predefined loot table.
-- [x] **Cloud Save**: Cross-device progression using Firebase integration (v1.9).
-- [x] **Code Modularization**: Extracted Home view for cleaner architecture.
+## Completed Features (v1.0 - v1.9)
+- [x] **Tome System**: Structured progression with distinct chapters.
+- [x] **Economy**: Gold currency, earning via combat, spending via research.
+- [x] **Localization**: Full English and French support.
+- [x] **Admin Dashboard**: Tools to edit tomes, enemies, and users.
+- [x] **Cloud Save**: Cross-device progression using Firebase.
+- [x] **Static Loot System**: Robust loot table with rarities.
 
-## Short Term (v2.0)
-- [ ] **Sound Effects**: Add audio feedback for correct/incorrect answers, button clicks, and ambient background music.
-- [ ] **Mobile Optimization**: Further refine touch targets for smaller screens and landscape mode.
+## Recent Completions (v2.0 - The Combat & Depth Update)
+- [x] **Centralized Data Architecture**: Decoupled encounter data from Tome definitions for easier balancing.
+- [x] **Entity Tag System**: Added Status Effects/Tags for both Items (Buffs) and Enemies (Affixes like "Armored", "Fierce").
+- [x] **Combat Overhaul**:
+    - **Normal Mode**: Added 3-Action Turn structure with reaction-time bonuses (Gold/Green/Red timer zones).
+    - **Boss Mode**: Added Real-time Timer loops and Action Gauge mechanics.
+    - **UI**: Added 3-column layout (Player Stats, Arena, Enemy Stats).
+- [x] **Recherche Deepening**: Added multi-step deciphering mechanics based on item rarity (Common = 1 step, Mythic = 5 steps).
+- [x] **Inventory 2.0**: Drag-and-Drop equipment management and locked slots based on level.
+- [x] **Scratchpad**: Integrated canvas for manual calculations during minigames.
+- [x] **Testing Tools**: Added "Test Battle" functionality in Admin Panel.
+
+## Short Term (v2.1)
+- [ ] **Sound Effects**: Audio feedback for combat hits, correct answers, and UI interactions.
+- [ ] **Visual Polish**: Animations for damage numbers and loot reveals.
 
 ## Medium Term (v2.5)
-- [ ] **Inventory UI**: Create a dedicated screen to view collected Items and active bonuses (currently items are just a list).
-- [ ] **Companion System**: Ability to level up or swap companions for different passive bonuses.
+- [ ] **Companion System**: Ability to level up companions for passive bonuses (currently visual only).
+- [ ] **Daily Quests**: Rotational challenges for bonus gold.
 
 ## Long Term (v3.0)
-- [ ] **Character Customization**: Choose avatars and classes (Wizard, Warrior, Rogue) that give bonuses to specific math operations.
-- [ ] **Leaderboards**: Global ranking for Infinite Mode scores.
+- [ ] **Character Classes**: Wizard/Warrior/Rogue archetypes affecting starting stats and math bonuses.
+- [ ] **Leaderboards**: Global ranking for Infinite Mode.
 - [ ] **Multiplayer**: Live math duels.

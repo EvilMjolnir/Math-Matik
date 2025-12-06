@@ -34,7 +34,7 @@ export const UI_SOURCE = {
     finalScore: { en: "Final Score", fr: "Score Final" },
     victory: { en: "Victory!", fr: "Victoire !" },
     defeat: { en: "Defeat", fr: "Défaite" },
-    threshold: { en: "Goal", fr: "Objectif" },
+    monsterHP: { en: "Monster HP", fr: "PV Monstre" }, // Renamed from threshold
     hpLost: { en: "HP Lost", fr: "PV Perdus" },
     encounterStart: { en: "Enemy Approaches!", fr: "Un Ennemi Approche !" },
   },
@@ -149,7 +149,7 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       finalScore: UI_SOURCE.combat.finalScore[lang],
       victory: UI_SOURCE.combat.victory[lang],
       defeat: UI_SOURCE.combat.defeat[lang],
-      threshold: UI_SOURCE.combat.threshold[lang],
+      monsterHP: UI_SOURCE.combat.monsterHP[lang],
       hpLost: UI_SOURCE.combat.hpLost[lang],
       encounterStart: UI_SOURCE.combat.encounterStart[lang],
     },

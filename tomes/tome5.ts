@@ -1,5 +1,7 @@
 
+
 import { Tome } from '../types';
+import { ENCOUNTERS } from '../data/encounters';
 
 export const tome5: Tome = {
   id: 'tome_5',
@@ -26,31 +28,15 @@ export const tome5: Tome = {
       divisionMaxDividend: 300,
       baseCost: 50,
       costIncrement: 10,
+    },
+    boss: {
+      timerDuration: 8,
+      actionsPerTurn: 8
     }
   },
   encounterRate: 30,
   possibleEncounters: [
-    {
-      id: 't5_chaos',
-      name: 'Chaos Bringer',
-      name_fr: 'Porteur de Chaos',
-      description: 'An entity that defies the laws of arithmetic.',
-      description_fr: 'Une entité qui défie les lois de l\'arithmétique.',
-      threshold: 70,
-      hpLoss: 40,
-      goldReward: 200,
-      xpReward: 400
-    },
-    {
-      id: 't5_dragon',
-      name: 'Null Dragon',
-      name_fr: 'Dragon du Néant',
-      description: 'The ancient devourer of all values.',
-      description_fr: 'L\'ancien dévoreur de toutes valeurs.',
-      threshold: 90,
-      hpLoss: 50,
-      goldReward: 300,
-      xpReward: 500
-    }
+    ENCOUNTERS.t5_chaos,
+    ENCOUNTERS.t5_dragon
   ]
 };

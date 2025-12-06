@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item, StorageMode } from './types';
 import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS } from './constants';
@@ -359,6 +360,16 @@ const App: React.FC = () => {
     }));
     setActiveEncounter(null); 
   };
+  
+  const handleTestEncounter = (encounter: Encounter, tomeId: string) => {
+    // Switch to the tome of the encounter to ensure configs (boss timer etc) are correct
+    setPlayer(prev => ({
+        ...prev,
+        activeTomeId: tomeId
+    }));
+    setActiveEncounter(encounter);
+    setCurrentView(GameView.COMBAT);
+  };
 
   const getActiveGameConfig = (): GameConfig => {
     if (player.activeTomeId === 'infinite') return config;
@@ -368,6 +379,7 @@ const App: React.FC = () => {
       movement: { ...DEFAULT_CONFIG.movement, ...tome.config.movement },
       combat: { ...DEFAULT_CONFIG.combat, ...tome.config.combat },
       recherche: { ...DEFAULT_CONFIG.recherche, ...tome.config.recherche },
+      boss: { ...DEFAULT_CONFIG.boss, ...tome.config.boss }
     };
   };
 
@@ -409,8 +421,10 @@ const App: React.FC = () => {
         return (
           <Combat 
             config={activeConfig.combat} 
+            bossConfig={activeConfig.boss}
             encounter={activeEncounter || undefined} 
             onEncounterComplete={handleEncounterComplete}
+            playerStats={player}
             {...commonProps} 
           />
         );
@@ -447,6 +461,7 @@ const App: React.FC = () => {
                 setLootWeights={setLootWeights}
                 onBack={handleBackToHome} 
                 storageMode={storageMode}
+                onTestEncounter={handleTestEncounter}
             />
         );
       default:

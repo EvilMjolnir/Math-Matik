@@ -32,7 +32,7 @@ export interface Translation {
     finalScore: string;
     victory: string;
     defeat: string;
-    threshold: string;
+    monsterHP: string; // Renamed from threshold
     hpLost: string;
     encounterStart: string;
   };

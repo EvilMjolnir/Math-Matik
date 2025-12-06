@@ -1,4 +1,5 @@
 
+
 import { GameConfig, Rarity, PlayerStats } from './types';
 
 export const DEFAULT_CONFIG: GameConfig = {
@@ -16,6 +17,10 @@ export const DEFAULT_CONFIG: GameConfig = {
     baseCost: 5,
     costIncrement: 2,
   },
+  boss: {
+    timerDuration: 15,
+    actionsPerTurn: 5
+  }
 };
 
 export const DEFAULT_PLAYER: PlayerStats = {
@@ -25,6 +30,7 @@ export const DEFAULT_PLAYER: PlayerStats = {
   currentHp: 20,
   maxHp: 20,
   defense: 0,
+  attack: 5, 
   gold: 5, // Start with a little gold to try mechanics
   inventory: [],
   equipped: [], // New equipment slots

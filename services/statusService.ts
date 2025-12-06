@@ -1,5 +1,8 @@
 
-import { PlayerStats, EffectType } from '../types';
+
+
+
+import { PlayerStats, EffectType, Encounter } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 
 export interface AggregatedStats {
@@ -7,6 +10,14 @@ export interface AggregatedStats {
   goldMultiplier: number; // Base 1.0
   movementBonus: number; // Base 0
   combatScoreBonus: number; // Base 0
+  totalAttack: number;
+}
+
+export interface EnemyStats {
+  hpBonus: number; // Renamed from thresholdBonus, Base 0
+  damageBonus: number;    // Base 0
+  goldRewardBonus: number; // Base 0
+  xpRewardBonus: number;   // Base 0
 }
 
 export const getAggregatedStats = (player: PlayerStats): AggregatedStats => {
@@ -14,7 +25,8 @@ export const getAggregatedStats = (player: PlayerStats): AggregatedStats => {
     xpMultiplier: 1.0,
     goldMultiplier: 1.0,
     movementBonus: 0,
-    combatScoreBonus: 0
+    combatScoreBonus: 0,
+    totalAttack: player.attack || 1
   };
 
   // Only calculate bonuses from EQUIPPED items
@@ -43,6 +55,42 @@ export const getAggregatedStats = (player: PlayerStats): AggregatedStats => {
       });
     }
   });
+
+  // Total Attack is Base + Combat Bonuses
+  stats.totalAttack += stats.combatScoreBonus;
+
+  return stats;
+};
+
+export const getEnemyStats = (encounter: Encounter): EnemyStats => {
+  const stats: EnemyStats = {
+    hpBonus: 0,
+    damageBonus: 0,
+    goldRewardBonus: 0,
+    xpRewardBonus: 0
+  };
+
+  if (encounter.tags) {
+    encounter.tags.forEach(tagId => {
+      const effect = STATUS_EFFECTS[tagId];
+      if (effect) {
+        switch (effect.type) {
+          case EffectType.ENEMY_HP_BONUS:
+            stats.hpBonus += effect.value;
+            break;
+          case EffectType.ENEMY_DAMAGE_BONUS:
+            stats.damageBonus += effect.value;
+            break;
+          case EffectType.ENEMY_GOLD_REWARD_BONUS:
+            stats.goldRewardBonus += effect.value;
+            break;
+          case EffectType.ENEMY_XP_REWARD_BONUS:
+            stats.xpRewardBonus += effect.value;
+            break;
+        }
+      }
+    });
+  }
 
   return stats;
 };

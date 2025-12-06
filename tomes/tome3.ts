@@ -1,5 +1,7 @@
 
+
 import { Tome } from '../types';
+import { ENCOUNTERS } from '../data/encounters';
 
 export const tome3: Tome = {
   id: 'tome_3',
@@ -26,31 +28,15 @@ export const tome3: Tome = {
       divisionMaxDividend: 144,
       baseCost: 20,
       costIncrement: 5,
+    },
+    boss: {
+      timerDuration: 12,
+      actionsPerTurn: 6
     }
   },
   encounterRate: 20,
   possibleEncounters: [
-    {
-      id: 't3_shade',
-      name: 'Void Shade',
-      name_fr: 'Ombre du Vide',
-      description: 'A shadow that consumes numbers.',
-      description_fr: 'Une ombre qui consume les nombres.',
-      threshold: 25,
-      hpLoss: 20,
-      goldReward: 50,
-      xpReward: 100
-    },
-    {
-      id: 't3_wizard',
-      name: 'Mad Arithmetician',
-      name_fr: 'Arithméticien Fou',
-      description: 'He casts spells of confusion!',
-      description_fr: 'Il lance des sorts de confusion !',
-      threshold: 35,
-      hpLoss: 25,
-      goldReward: 75,
-      xpReward: 150
-    }
+    ENCOUNTERS.t3_shade,
+    ENCOUNTERS.t3_wizard
   ]
 };

@@ -1,7 +1,10 @@
 
+
 import { StatusEffect, EffectType } from '../types';
 
 export const STATUS_EFFECTS: Record<string, StatusEffect> = {
+  // --- PLAYER EFFECTS ---
+
   // Experience Bonuses
   'scholar_1': {
     id: 'scholar_1',
@@ -71,5 +74,53 @@ export const STATUS_EFFECTS: Record<string, StatusEffect> = {
     value: 1,
     description: '+1 Bonus Score in Combat',
     description_fr: '+1 Score bonus en Combat'
+  },
+
+  // --- MONSTER EFFECTS ---
+
+  'mon_fierce': {
+    id: 'mon_fierce',
+    name: 'Fierce',
+    name_fr: 'Féroce',
+    type: EffectType.ENEMY_DAMAGE_BONUS,
+    value: 5,
+    description: 'Deals +5 Damage',
+    description_fr: 'Inflige +5 Dégâts'
+  },
+  'mon_armored': {
+    id: 'mon_armored',
+    name: 'Armored',
+    name_fr: 'Blindé',
+    type: EffectType.ENEMY_HP_BONUS,
+    value: 5,
+    description: 'Requires +5 Score to defeat',
+    description_fr: 'Nécessite +5 Score pour vaincre'
+  },
+  'mon_elite': {
+    id: 'mon_elite',
+    name: 'Elite',
+    name_fr: 'Élite',
+    type: EffectType.ENEMY_XP_REWARD_BONUS,
+    value: 20,
+    description: 'Drops +20 XP',
+    description_fr: 'Donne +20 XP'
+  },
+  'mon_wealthy': {
+    id: 'mon_wealthy',
+    name: 'Wealthy',
+    name_fr: 'Riche',
+    type: EffectType.ENEMY_GOLD_REWARD_BONUS,
+    value: 10,
+    description: 'Drops +10 Gold',
+    description_fr: 'Donne +10 Or'
+  },
+  'mon_deadly': {
+    id: 'mon_deadly',
+    name: 'Deadly',
+    name_fr: 'Mortel',
+    type: EffectType.ENEMY_DAMAGE_BONUS,
+    value: 10,
+    description: 'Deals +10 Damage',
+    description_fr: 'Inflige +10 Dégâts'
   }
 };

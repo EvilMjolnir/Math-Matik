@@ -1,3 +1,4 @@
+
 import { MathProblem } from '../types';
 
 export const generateAdditionSubtraction = (min: number, max: number): MathProblem => {
@@ -11,12 +12,14 @@ export const generateAdditionSubtraction = (min: number, max: number): MathProbl
     return {
       question: `${a} - ${b} = ?`,
       answer: a - b,
+      type: 'number'
     };
   }
   
   return {
     question: `${a} + ${b} = ?`,
     answer: a + b,
+    type: 'number'
   };
 };
 
@@ -26,6 +29,7 @@ export const generateMultiplication = (maxFactor: number): MathProblem => {
   return {
     question: `${a} × ${b} = ?`,
     answer: a * b,
+    type: 'number'
   };
 };
 
@@ -39,5 +43,61 @@ export const generateDivision = (maxDividend: number): MathProblem => {
   return {
     question: `${dividend} ÷ ${divisor} = ?`,
     answer: multiplier,
+    type: 'number'
   };
+};
+
+export const generateBossProblem = (difficulty: number): MathProblem => {
+  const types = ['addition', 'subtraction', 'multiplication', 'division'];
+  const type = types[Math.floor(Math.random() * types.length)];
+  
+  // Decide what to hide: 0 = operand A, 1 = operand B, 2 = operator
+  const hiddenPart = Math.floor(Math.random() * 3); 
+  
+  let a = 0, b = 0, result = 0, opSymbol = '';
+  
+  // Setup numbers based on operation
+  if (type === 'addition') {
+    a = Math.floor(Math.random() * (difficulty * 2)) + 1;
+    b = Math.floor(Math.random() * (difficulty * 2)) + 1;
+    result = a + b;
+    opSymbol = '+';
+  } else if (type === 'subtraction') {
+    b = Math.floor(Math.random() * (difficulty * 2)) + 1;
+    result = Math.floor(Math.random() * (difficulty * 2)) + 1;
+    a = result + b;
+    opSymbol = '-';
+  } else if (type === 'multiplication') {
+    a = Math.floor(Math.random() * difficulty) + 1;
+    b = Math.floor(Math.random() * difficulty) + 1;
+    result = a * b;
+    opSymbol = '×';
+  } else if (type === 'division') {
+    b = Math.floor(Math.random() * 9) + 2;
+    result = Math.floor(Math.random() * difficulty) + 1;
+    a = b * result;
+    opSymbol = '÷';
+  }
+
+  // Construct Question
+  if (hiddenPart === 0) {
+    return {
+      question: `? ${opSymbol} ${b} = ${result}`,
+      answer: a,
+      type: 'number'
+    };
+  } else if (hiddenPart === 1) {
+     return {
+      question: `${a} ${opSymbol} ? = ${result}`,
+      answer: b,
+      type: 'number'
+    };
+  } else {
+    // Hidden Operator
+    return {
+      question: `${a} ? ${b} = ${result}`,
+      answer: opSymbol,
+      type: 'operator'
+    };
+  }
 };

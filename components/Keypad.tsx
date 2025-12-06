@@ -1,15 +1,52 @@
+
 import React from 'react';
-import { Delete, Check } from 'lucide-react';
+import { Delete, Check, Plus, Minus, X, Divide } from 'lucide-react';
 
 interface KeypadProps {
-  onInput: (val: number) => void;
+  onInput: (val: number | string) => void;
   onDelete: () => void;
   onValidate: () => void;
   disabled?: boolean;
+  mode?: 'number' | 'operator';
 }
 
-const Keypad: React.FC<KeypadProps> = ({ onInput, onDelete, onValidate, disabled }) => {
+const Keypad: React.FC<KeypadProps> = ({ onInput, onDelete, onValidate, disabled, mode = 'number' }) => {
   const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+
+  if (mode === 'operator') {
+    return (
+      <div className="grid grid-cols-2 gap-4 w-full max-w-sm mx-auto mt-6">
+        <button
+          onClick={() => { onInput('+'); setTimeout(onValidate, 100); }}
+          disabled={disabled}
+          className="h-24 bg-parchment-300 text-parchment-900 border-2 border-parchment-800 rounded-lg text-4xl flex items-center justify-center hover:bg-parchment-200 shadow-md"
+        >
+          <Plus className="w-10 h-10" />
+        </button>
+        <button
+           onClick={() => { onInput('-'); setTimeout(onValidate, 100); }}
+           disabled={disabled}
+           className="h-24 bg-parchment-300 text-parchment-900 border-2 border-parchment-800 rounded-lg text-4xl flex items-center justify-center hover:bg-parchment-200 shadow-md"
+        >
+          <Minus className="w-10 h-10" />
+        </button>
+        <button
+           onClick={() => { onInput('×'); setTimeout(onValidate, 100); }}
+           disabled={disabled}
+           className="h-24 bg-parchment-300 text-parchment-900 border-2 border-parchment-800 rounded-lg text-4xl flex items-center justify-center hover:bg-parchment-200 shadow-md"
+        >
+          <X className="w-10 h-10" />
+        </button>
+        <button
+           onClick={() => { onInput('÷'); setTimeout(onValidate, 100); }}
+           disabled={disabled}
+           className="h-24 bg-parchment-300 text-parchment-900 border-2 border-parchment-800 rounded-lg text-4xl flex items-center justify-center hover:bg-parchment-200 shadow-md"
+        >
+          <Divide className="w-10 h-10" />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-3 gap-3 w-full max-w-sm mx-auto mt-6">

@@ -1,7 +1,10 @@
 
+
+
+
 import React, { useState, useEffect } from 'react';
 import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType, Item, StorageMode } from '../types';
-import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud } from 'lucide-react';
+import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud, Sword } from 'lucide-react';
 import * as localStore from '../services/storageService';
 import * as cloudStore from '../services/storageService_Live';
 import { lootData } from '../data/loot';
@@ -15,9 +18,10 @@ interface AdminPanelProps {
   setLootWeights: (weights: LootWeight[]) => void;
   onBack: () => void;
   storageMode: StorageMode;
+  onTestEncounter: (encounter: Encounter, tomeId: string) => void;
 }
 
-const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, setLootWeights, onBack, storageMode }) => {
+const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, setLootWeights, onBack, storageMode, onTestEncounter }) => {
   const [activeTab, setActiveTab] = useState<'tomes' | 'loot' | 'users' | 'items'>('tomes');
   const [editingTomeId, setEditingTomeId] = useState<string | null>(null);
   const [users, setUsers] = useState<PlayerStats[]>([]);
@@ -97,8 +101,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
         id: `enc_${Date.now()}`,
         name: 'New Enemy',
         description: 'A new challenger appears.',
-        threshold: 10,
-        hpLoss: 5,
+        monsterHP: 10,
+        attack: 5,
         goldReward: 10,
         xpReward: 20,
         type: 'normal'
@@ -325,15 +329,24 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                                         ${encounter.type === 'boss' || encounter.type === 'miniboss' ? 'border-4 border-yellow-500' : 'border border-parchment-300'}
                                     `}
                                 >
-                                     <button 
-                                        onClick={() => removeEncounter(tome.id, encounter.id)}
-                                        className="absolute top-2 right-2 p-1 text-red-400 hover:text-red-700 hover:bg-red-100 rounded transition-colors"
-                                        title="Remove Enemy"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
+                                    <div className="absolute top-2 right-2 flex space-x-1">
+                                      <button
+                                          onClick={() => onTestEncounter(encounter, tome.id)}
+                                          className="p-1 text-blue-500 hover:text-blue-700 hover:bg-blue-100 rounded transition-colors"
+                                          title="Test Battle"
+                                      >
+                                          <Sword className="w-4 h-4" />
+                                      </button>
+                                      <button 
+                                          onClick={() => removeEncounter(tome.id, encounter.id)}
+                                          className="p-1 text-red-400 hover:text-red-700 hover:bg-red-100 rounded transition-colors"
+                                          title="Remove Enemy"
+                                      >
+                                          <Trash2 className="w-4 h-4" />
+                                      </button>
+                                    </div>
                                     
-                                    <div className="flex justify-between mb-2 mr-6">
+                                    <div className="flex justify-between mb-2 mr-16">
                                         <input 
                                             className="font-bold text-red-900 bg-transparent border-b border-dashed border-gray-300 focus:border-red-500 outline-none w-full"
                                             value={encounter.name}
@@ -342,21 +355,21 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                                     </div>
                                     <div className="grid grid-cols-4 gap-2 mb-2">
                                         <div>
-                                            <label className="text-xs font-bold block text-gray-600">Win Score</label>
+                                            <label className="text-xs font-bold block text-gray-600">Monster HP</label>
                                             <input 
                                                 type="number"
                                                 className="w-full p-1 border rounded bg-white text-gray-900"
-                                                value={encounter.threshold}
-                                                onChange={(e) => updateEncounter(tome.id, encounter.id, 'threshold', parseInt(e.target.value))}
+                                                value={encounter.monsterHP}
+                                                onChange={(e) => updateEncounter(tome.id, encounter.id, 'monsterHP', parseInt(e.target.value))}
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-xs font-bold block text-gray-600">HP Damage</label>
+                                            <label className="text-xs font-bold block text-gray-600">Attack</label>
                                             <input 
                                                 type="number"
                                                 className="w-full p-1 border rounded bg-white text-gray-900"
-                                                value={encounter.hpLoss}
-                                                onChange={(e) => updateEncounter(tome.id, encounter.id, 'hpLoss', parseInt(e.target.value))}
+                                                value={encounter.attack}
+                                                onChange={(e) => updateEncounter(tome.id, encounter.id, 'attack', parseInt(e.target.value))}
                                             />
                                         </div>
                                         <div>
