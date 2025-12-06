@@ -5,7 +5,7 @@ import PlayerStatsWidget from '../components/PlayerStatsWidget';
 import ActiveQuestPanel from '../components/ActiveQuestPanel';
 import GameMenu from '../components/GameMenu';
 import PlayerProfileModal from '../components/PlayerProfileModal';
-import { Settings, BookOpen, ShieldCheck, Footprints } from 'lucide-react';
+import { Settings, BookOpen, ShieldCheck, Footprints, Backpack, Users } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuOpenSound } from '../services/audioService';
 
@@ -42,7 +42,8 @@ const Home: React.FC<HomeProps> = ({
   onLogout, 
   onUpdateInventory
 }) => {
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  // We use this state to track WHICH tab is open. If null, modal is closed.
+  const [activeProfileTab, setActiveProfileTab] = useState<'stats' | 'inventory' | 'companions' | null>(null);
   const { t } = useLocalization();
 
   const canMove = isInfinite || !activeEncounter;
@@ -51,6 +52,11 @@ const Home: React.FC<HomeProps> = ({
   const rechercheCost = activeConfig.recherche.baseCost + (player.researchPlayCount * activeConfig.recherche.costIncrement);
   const canAffordRecherche = player.gold >= rechercheCost;
 
+  const handleOpenProfile = (tab: 'stats' | 'inventory' | 'companions') => {
+    playMenuOpenSound();
+    setActiveProfileTab(tab);
+  };
+
   return (
     <div className="h-full flex flex-col justify-center">
       <div className="flex flex-col md:flex-row h-full w-full">
@@ -58,20 +64,22 @@ const Home: React.FC<HomeProps> = ({
         <div className="hidden md:block h-full z-20 flex-shrink-0">
            <PlayerStatsWidget 
               player={player} 
-              onExpand={() => { playMenuOpenSound(); setIsProfileOpen(true); }} 
+              onExpand={() => handleOpenProfile('stats')} 
               onLogout={onLogout}
            />
         </div>
 
         <div className="flex-1 flex flex-col items-center relative overflow-y-auto custom-scrollbar">
           
+          {/* Mobile Profile Toggle (opens Stats by default) */}
           <button 
-            onClick={() => { playMenuOpenSound(); setIsProfileOpen(true); }}
+            onClick={() => handleOpenProfile('stats')}
             className="md:hidden absolute top-6 left-6 p-3 bg-parchment-800 rounded-full border-2 border-parchment-600 shadow-lg z-30"
           >
             <Footprints className="w-6 h-6 text-parchment-200" />
           </button>
 
+          {/* Top Right Controls */}
           <div className="absolute top-6 right-6 flex flex-col items-end space-y-4 z-30">
              <div className="flex space-x-4">
                   <button 
@@ -98,6 +106,24 @@ const Home: React.FC<HomeProps> = ({
                       <ShieldCheck className="w-8 h-8 text-purple-200" />
                   </button>
               )}
+          </div>
+
+          {/* Bottom Left Controls (Inventory & Companions) */}
+          <div className="absolute bottom-6 left-6 z-30 flex space-x-4">
+            <button 
+              onClick={() => handleOpenProfile('inventory')}
+              className="p-3 bg-parchment-800 rounded-full hover:bg-parchment-700 transition-all shadow-lg border-2 border-parchment-600 group"
+              title={t.equipment.title}
+            >
+              <Backpack className="w-8 h-8 text-parchment-200 group-hover:scale-110 transition-transform" />
+            </button>
+            <button 
+              onClick={() => handleOpenProfile('companions')}
+              className="p-3 bg-parchment-800 rounded-full hover:bg-parchment-700 transition-all shadow-lg border-2 border-parchment-600 group"
+              title="Companions"
+            >
+              <Users className="w-8 h-8 text-parchment-200 group-hover:scale-110 transition-transform" />
+            </button>
           </div>
 
           <div className="absolute bottom-6 right-6 z-30">
@@ -143,8 +169,9 @@ const Home: React.FC<HomeProps> = ({
 
       <PlayerProfileModal 
         player={player} 
-        isOpen={isProfileOpen} 
-        onClose={() => setIsProfileOpen(false)}
+        isOpen={activeProfileTab !== null} 
+        initialTab={activeProfileTab || 'stats'}
+        onClose={() => setActiveProfileTab(null)}
         onUpdateProfile={onUpdatePlayerProfile}
         onUpdateInventory={onUpdateInventory}
       />

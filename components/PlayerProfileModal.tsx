@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PlayerStats, Item, EffectType } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS } from '../constants';
 import { getAggregatedStats } from '../services/statusService';
@@ -14,15 +14,30 @@ interface PlayerProfileModalProps {
   onClose: () => void;
   onUpdateProfile: (updates: Partial<PlayerStats>) => void;
   onUpdateInventory: (inventory: Item[], equipped: Item[]) => void;
+  initialTab?: 'stats' | 'inventory' | 'companions';
 }
 
-const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ player, isOpen, onClose, onUpdateProfile, onUpdateInventory }) => {
+const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ 
+  player, 
+  isOpen, 
+  onClose, 
+  onUpdateProfile, 
+  onUpdateInventory,
+  initialTab = 'stats'
+}) => {
   const { t, lang } = useLocalization();
   const [isEditing, setIsEditing] = useState(false);
   const [tempName, setTempName] = useState(player.username);
   const [tempPhoto, setTempPhoto] = useState(player.photoURL || '');
   const [activeTab, setActiveTab] = useState<'stats' | 'inventory' | 'companions' | 'settings'>('stats');
   const [viewItem, setViewItem] = useState<Item | null>(null);
+
+  // Sync activeTab with initialTab when modal opens
+  useEffect(() => {
+    if (isOpen) {
+        setActiveTab(initialTab);
+    }
+  }, [isOpen, initialTab]);
 
   if (!isOpen) return null;
 
@@ -273,16 +288,20 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ player, isOpen,
                ) : (
                  <>
                    <div className="flex items-center group">
-                     <h2 className="text-3xl font-serif font-bold text-parchment-900 mr-3">{player.username}</h2>
-                     <button onClick={handleEditClick} className="opacity-0 group-hover:opacity-100 text-parchment-600 hover:text-amber-700 transition-opacity">
-                       <Edit2 className="w-5 h-5" />
-                     </button>
+                     <h2 className="text-3xl font-serif font-bold text-parchment-900 mr-3">
+                        {activeTab === 'inventory' ? t.equipment.title : activeTab === 'companions' ? 'Companions' : player.username}
+                     </h2>
+                     {activeTab === 'stats' && (
+                        <button onClick={handleEditClick} className="opacity-0 group-hover:opacity-100 text-parchment-600 hover:text-amber-700 transition-opacity">
+                            <Edit2 className="w-5 h-5" />
+                        </button>
+                     )}
                    </div>
                    <div className="text-parchment-700 font-serif flex items-center mt-1">
                      <Crown className="w-4 h-4 mr-1 text-amber-600" />
                      {t.common.level} {player.level} Mathematician
                    </div>
-                   {player.email && (
+                   {player.email && activeTab === 'stats' && (
                      <div className="text-parchment-500 text-sm flex items-center mt-1">
                        <Mail className="w-3 h-3 mr-1" />
                        {player.email}
@@ -297,37 +316,17 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ player, isOpen,
           </button>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex bg-parchment-800 text-parchment-200">
-           <button 
-             onClick={() => setActiveTab('stats')}
-             className={`flex-1 py-3 font-serif font-bold flex items-center justify-center ${activeTab === 'stats' ? 'bg-parchment-200 text-parchment-900' : 'hover:bg-parchment-700'}`}
-           >
-             <Scroll className="w-5 h-5 mr-2" />
-             Stats
-           </button>
-           <button 
-             onClick={() => setActiveTab('inventory')}
-             className={`flex-1 py-3 font-serif font-bold flex items-center justify-center ${activeTab === 'inventory' ? 'bg-parchment-200 text-parchment-900' : 'hover:bg-parchment-700'}`}
-           >
-             <Backpack className="w-5 h-5 mr-2" />
-             {t.equipment.title}
-           </button>
-           <button 
-             onClick={() => setActiveTab('companions')}
-             className={`flex-1 py-3 font-serif font-bold flex items-center justify-center ${activeTab === 'companions' ? 'bg-parchment-200 text-parchment-900' : 'hover:bg-parchment-700'}`}
-           >
-             <Users className="w-5 h-5 mr-2" />
-             Companions
-           </button>
-        </div>
+        {/* 
+            Navigation Tabs REMOVED per user request. 
+            The view is controlled strictly by initialTab passed by parent buttons.
+        */}
 
         {/* Body */}
         <div className="p-8 overflow-y-auto custom-scrollbar flex-1 bg-parchment-200 relative">
           
           {/* STATS TAB */}
           {activeTab === 'stats' && (
-            <div className="space-y-6 flex flex-col h-full">
+            <div className="space-y-6 flex flex-col h-full animate-fadeIn">
               <h3 className="text-xl font-bold font-serif text-parchment-900 border-b border-parchment-400 pb-2">{t.stats.vitalStats}</h3>
               
               <div className="bg-parchment-100 p-4 rounded border border-parchment-300 shadow-sm space-y-4">
@@ -388,7 +387,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ player, isOpen,
 
           {/* INVENTORY TAB (Drag and Drop System) */}
           {activeTab === 'inventory' && (
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col h-full animate-fadeIn">
                 <div className="text-center text-parchment-600 text-sm mb-4 italic flex items-center justify-center">
                     <Sparkles className="w-4 h-4 mr-2" />
                     {t.equipment.dragHint}
@@ -450,7 +449,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ player, isOpen,
 
           {/* COMPANIONS TAB */}
           {activeTab === 'companions' && (
-            <div>
+            <div className="animate-fadeIn">
               <div className="mt-4 space-y-3">
                 {player.companions.map((comp, idx) => (
                   <div key={idx} className="flex items-center bg-parchment-100 p-3 rounded border border-parchment-300 shadow-sm hover:shadow-md transition-shadow">

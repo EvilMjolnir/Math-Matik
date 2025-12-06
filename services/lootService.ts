@@ -17,6 +17,7 @@ export const generateLootItem = async (rarity: Rarity): Promise<Item> => {
     description: randomItem.description,
     description_fr: randomItem.description_fr,
     tags: randomItem.tags,
-    rarity: rarity
+    rarity: rarity,
+    image: (randomItem as any).image
   };
 };

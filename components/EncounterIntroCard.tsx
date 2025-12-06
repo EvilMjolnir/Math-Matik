@@ -191,17 +191,18 @@ const EncounterIntroCard: React.FC<EncounterIntroCardProps> = ({ encounter, enem
                             const effectDesc = (lang === 'fr' && effect.description_fr) ? effect.description_fr : effect.description;
 
                             return (
-                                <div key={tag} className="flex flex-col text-left bg-black/30 p-2 rounded border border-white/5">
-                                   <div className="flex items-center mb-1">
-                                       <div className="mr-2 opacity-90 p-1 bg-black/40 rounded-full border border-white/10">
-                                           {getEffectIcon(effect.type)}
-                                       </div>
-                                       <div className={`text-xs font-bold uppercase tracking-wide ${isBossMode ? 'text-purple-200' : 'text-red-100'}`}>
-                                           {effectName}
-                                       </div>
+                                <div key={tag} className="flex items-start text-left bg-black/30 p-2 rounded border border-white/5">
+                                   <div className="mr-2 opacity-90 shrink-0 mt-0.5">
+                                       {getEffectIcon(effect.type)}
                                    </div>
-                                   <div className="ml-8 text-[10px] text-parchment-400 italic leading-tight">
-                                       {effectDesc}
+                                   <div className="text-xs leading-relaxed">
+                                       <span className={`font-bold uppercase tracking-wide ${isBossMode ? 'text-purple-200' : 'text-red-100'}`}>
+                                           {effectName}
+                                       </span>
+                                       <span className="mx-1 text-gray-500">:</span>
+                                       <span className="text-parchment-400 italic">
+                                           {effectDesc}
+                                       </span>
                                    </div>
                                 </div>
                             );

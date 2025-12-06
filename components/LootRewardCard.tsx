@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Item, Rarity } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
@@ -11,28 +12,33 @@ interface LootRewardCardProps {
   solvedCorrectly: boolean;
 }
 
-const RARITY_BG_CLASSES: Record<Rarity, string> = {
-  [Rarity.COMMON]: 'bg-slate-900',
-  [Rarity.RARE]: 'bg-green-950',
-  [Rarity.MAGIC]: 'bg-blue-950',
-  [Rarity.LEGENDARY]: 'bg-amber-950',
-  [Rarity.MYTHIC]: 'bg-purple-950',
-};
-
-const RARITY_BORDER_CLASSES: Record<Rarity, string> = {
-  [Rarity.COMMON]: 'border-gray-500',
-  [Rarity.RARE]: 'border-green-600',
-  [Rarity.MAGIC]: 'border-blue-500',
-  [Rarity.LEGENDARY]: 'border-amber-500',
-  [Rarity.MYTHIC]: 'border-purple-500',
-};
-
-const RARITY_TEXT_CLASSES: Record<Rarity, string> = {
-  [Rarity.COMMON]: 'text-gray-300',
-  [Rarity.RARE]: 'text-green-400',
-  [Rarity.MAGIC]: 'text-blue-400',
-  [Rarity.LEGENDARY]: 'text-amber-400',
-  [Rarity.MYTHIC]: 'text-purple-400',
+// Define specific styles for border (standard) and background (darker tint)
+const RARITY_STYLES: Record<Rarity, { border: string; bg: string; text: string }> = {
+  [Rarity.COMMON]: { 
+    border: '#6b7280', // gray-500
+    bg: '#111827',     // gray-900
+    text: 'text-gray-300' 
+  },
+  [Rarity.RARE]: { 
+    border: '#16a34a', // green-600
+    bg: '#064e3b',     // green-950
+    text: 'text-green-400' 
+  },
+  [Rarity.MAGIC]: { 
+    border: '#2563eb', // blue-600
+    bg: '#172554',     // blue-950
+    text: 'text-blue-400' 
+  },
+  [Rarity.LEGENDARY]: { 
+    border: '#d97706', // amber-600
+    bg: '#451a03',     // amber-950
+    text: 'text-amber-400' 
+  },
+  [Rarity.MYTHIC]: { 
+    border: '#9333ea', // purple-600
+    bg: '#3b0764',     // purple-950
+    text: 'text-purple-400' 
+  },
 };
 
 const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCorrectly }) => {
@@ -50,16 +56,23 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
   };
 
   const isHolo = item && (item.rarity === Rarity.LEGENDARY || item.rarity === Rarity.MYTHIC);
+  
+  // Safe access to styles, fallback to Common if rarity matches nothing
+  const safeRarity = (item && RARITY_STYLES[item.rarity]) ? item.rarity : Rarity.COMMON;
+  const activeStyle = RARITY_STYLES[safeRarity];
+  const textColorClass = activeStyle.text;
 
   return (
     <div className="flex flex-col h-full items-center justify-center p-4 animate-fadeIn w-full overflow-y-auto custom-scrollbar">
 
-        <div className={`
-           relative rounded-xl border-[6px] flex flex-col overflow-hidden shadow-2xl transition-all duration-500
-           w-full max-w-[450px] min-h-[650px]
-           ${solvedCorrectly && item ? `${RARITY_BG_CLASSES[item.rarity]} ${RARITY_BORDER_CLASSES[item.rarity]}` : 'bg-red-950 border-red-600 text-white'}
-        `}>
-           {isHolo && (
+        <div 
+          className="relative rounded-xl border-[6px] flex flex-col overflow-hidden shadow-2xl transition-all duration-500 w-full max-w-[450px] min-h-[650px] text-white"
+          style={{
+            borderColor: solvedCorrectly && item ? activeStyle.border : '#dc2626',
+            backgroundColor: solvedCorrectly && item ? activeStyle.bg : '#450a0a',
+          }}
+        >
+           {isHolo && solvedCorrectly && (
             <>
               <div className="holo-shine"></div>
               <div className="absolute inset-0 holo-rainbow opacity-40 pointer-events-none z-40"></div>
@@ -69,15 +82,19 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
           {solvedCorrectly && item ? (
             <>
                {/* 
-                 TOP SECTION: Image Frame (1/2)
+                 TOP SECTION: Image Frame (1/3 of the card height)
+                 We use h-1/3 but ensure the content fits nicely.
                */}
-               <div className="h-1/2 w-full flex items-center justify-center p-6 bg-black/20 relative z-10 border-b border-white/10 shrink-0">
+               <div className="h-[33%] w-full flex items-center justify-center p-6 bg-black/20 relative z-10 border-b border-white/10 shrink-0">
                    {/* The Square Frame */}
-                   <div className={`aspect-square h-full rounded-lg border-4 bg-black/50 flex items-center justify-center overflow-hidden shadow-[inset_0_0_20px_rgba(0,0,0,0.5)] ${RARITY_BORDER_CLASSES[item.rarity]}`}>
+                   <div 
+                      className="aspect-square h-full rounded-lg border-4 bg-black/50 flex items-center justify-center overflow-hidden shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]"
+                      style={{ borderColor: activeStyle.border }}
+                   >
                         {item.image ? (
-                            <img src={item.image} alt={getItemName(item)} className="w-full h-full object-contain p-2 hover:scale-110 transition-transform duration-500" />
+                            <img src={item.image} alt={getItemName(item)} className="w-full h-full object-contain hover:scale-110 transition-transform duration-500" />
                         ) : (
-                            <Gift className={`w-1/2 h-1/2 ${RARITY_TEXT_CLASSES[item.rarity]}`} />
+                            <Gift className={`w-1/2 h-1/2 ${textColorClass}`} />
                         )}
                    </div>
 
@@ -87,10 +104,10 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
                </div>
 
                {/* 
-                 BOTTOM SECTION: Content (1/2)
+                 BOTTOM SECTION: Content (Rest of the space)
                */}
-               <div className="flex-1 flex flex-col p-6 relative z-10 overflow-hidden h-1/2">
-                  <h3 className={`text-3xl font-serif font-bold mb-3 text-center leading-tight ${RARITY_TEXT_CLASSES[item.rarity]} drop-shadow-md`}>
+               <div className="flex-1 flex flex-col p-6 relative z-10 overflow-hidden">
+                  <h3 className={`text-3xl font-serif font-bold mb-3 text-center leading-tight ${textColorClass} drop-shadow-md`}>
                     {getItemName(item)}
                   </h3>
                   
@@ -106,7 +123,7 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
                     </h4>
                     <div className="max-h-[120px] overflow-y-auto custom-scrollbar pr-1">
                         {item.tags && item.tags.length > 0 ? (
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                             {item.tags.map(tag => {
                             const effect = STATUS_EFFECTS[tag];
                             if (!effect) return null;
@@ -114,18 +131,19 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
                             const effectDesc = (lang === 'fr' && effect.description_fr) ? effect.description_fr : effect.description;
 
                             return (
-                                <div key={tag} className="flex flex-col text-left">
-                                <div className="flex items-center mb-1">
-                                    <div className="mr-2 opacity-90">
+                                <div key={tag} className="flex items-center text-left">
+                                    <div className="mr-2 opacity-90 shrink-0">
                                         {getEffectIcon(effect.type)}
                                     </div>
-                                    <div className={`text-xs font-bold uppercase tracking-wide ${RARITY_TEXT_CLASSES[item.rarity]}`}>
-                                        {effectName}
+                                    <div className="text-xs leading-relaxed flex items-center">
+                                        <span className={`font-bold uppercase tracking-wide ${textColorClass} mr-1`}>
+                                            {effectName}
+                                        </span>
+                                        <span className="text-gray-500 mr-1">:</span>
+                                        <span className="text-gray-400 italic">
+                                            {effectDesc}
+                                        </span>
                                     </div>
-                                </div>
-                                <div className="ml-6 text-[11px] text-gray-400 italic leading-tight">
-                                    {effectDesc}
-                                </div>
                                 </div>
                             );
                             })}
