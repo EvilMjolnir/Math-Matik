@@ -69,7 +69,39 @@ const Home: React.FC<HomeProps> = ({
            />
         </div>
 
-        <div className="flex-1 flex flex-col items-center relative overflow-y-auto custom-scrollbar">
+        <div className="flex-1 flex flex-col items-center relative h-full">
+          
+          {/* Scrollable Main Content */}
+          <div className="w-full h-full overflow-y-auto custom-scrollbar flex flex-col items-center py-12 px-6">
+             <div className="w-full max-w-6xl flex flex-col">
+                <div className="text-center mt-4 mb-4 flex-shrink-0 z-10 w-full">
+                    <h1 className="text-5xl md:text-7xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-parchment-200 to-amber-500 mb-4 drop-shadow-md">
+                    {t.titles.home}
+                    </h1>
+                    <p className="text-2xl text-parchment-400 tracking-widest font-serif uppercase">{t.home.subtitle}</p>
+                </div>
+
+                <ActiveQuestPanel 
+                  activeEncounter={activeEncounter}
+                  activeTome={activeTome}
+                  t={t}
+                  lang={lang}
+                />
+
+                <GameMenu 
+                  t={t}
+                  onViewChange={onViewChange}
+                  onStartRecherche={onStartRecherche}
+                  canMove={canMove}
+                  canCombat={canCombat}
+                  canAffordRecherche={canAffordRecherche}
+                  activeEncounter={!!activeEncounter}
+                  rechercheCost={rechercheCost}
+                />
+             </div>
+          </div>
+
+          {/* Floating UI Elements (Fixed relative to the flex-1 container) */}
           
           {/* Mobile Profile Toggle (opens Stats by default) */}
           <button 
@@ -135,35 +167,7 @@ const Home: React.FC<HomeProps> = ({
               {lang.toUpperCase()}
             </button>
           </div>
-         
-          <div className="text-center mt-4 pt-16 flex-shrink-0 z-10 w-full">
-            <h1 className="text-5xl md:text-7xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-parchment-200 to-amber-500 mb-4 drop-shadow-md">
-              {t.titles.home}
-            </h1>
-            <p className="text-2xl text-parchment-400 tracking-widest font-serif uppercase">{t.home.subtitle}</p>
-          </div>
 
-          <div className="flex-1 flex flex-col justify-center items-center w-full z-10 py-12 px-6">
-              <div className="w-full max-w-6xl flex flex-col">
-                <ActiveQuestPanel 
-                  activeEncounter={activeEncounter}
-                  activeTome={activeTome}
-                  t={t}
-                  lang={lang}
-                />
-
-                <GameMenu 
-                  t={t}
-                  onViewChange={onViewChange}
-                  onStartRecherche={onStartRecherche}
-                  canMove={canMove}
-                  canCombat={canCombat}
-                  canAffordRecherche={canAffordRecherche}
-                  activeEncounter={!!activeEncounter}
-                  rechercheCost={rechercheCost}
-                />
-              </div>
-          </div>
         </div>
       </div>
 

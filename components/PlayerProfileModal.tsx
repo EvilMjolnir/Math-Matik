@@ -4,7 +4,7 @@ import { PlayerStats, Item, EffectType } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS } from '../constants';
 import { getAggregatedStats } from '../services/statusService';
 import { STATUS_EFFECTS } from '../data/statusEffects';
-import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Scroll, Users, Star, Backpack, Sparkles, Lock, Footprints, Sword, Mail, Link } from 'lucide-react';
+import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Star, Backpack, Sparkles, Lock, Footprints, Sword, Mail, Link } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound } from '../services/audioService';
 
