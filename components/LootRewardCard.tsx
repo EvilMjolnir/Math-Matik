@@ -82,10 +82,9 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
           {solvedCorrectly && item ? (
             <>
                {/* 
-                 TOP SECTION: Image Frame (1/3 of the card height)
-                 We use h-1/3 but ensure the content fits nicely.
+                 TOP SECTION: Image Frame (increased to 40% of the card height)
                */}
-               <div className="h-[33%] w-full flex items-center justify-center p-6 bg-black/20 relative z-10 border-b border-white/10 shrink-0">
+               <div className="h-[40%] w-full flex items-center justify-center p-6 bg-black/20 relative z-10 border-b border-white/10 shrink-0">
                    {/* The Square Frame */}
                    <div 
                       className="aspect-square h-full rounded-lg border-4 bg-black/50 flex items-center justify-center overflow-hidden shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]"

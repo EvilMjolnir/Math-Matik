@@ -188,9 +188,29 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
   };
 
   const handleTestLoot = (rarity: Rarity) => {
-      // Pick random item from that rarity
       const items = lootData[rarity];
-      const item = items ? items[0] : { name: 'Test Item', description: 'Test Desc', rarity: rarity };
+      let item: Item;
+
+      if (items && items.length > 0) {
+          const randomIndex = Math.floor(Math.random() * items.length);
+          const randomSource = items[randomIndex];
+          
+          item = {
+              name: randomSource.name,
+              name_fr: randomSource.name_fr,
+              description: randomSource.description,
+              description_fr: randomSource.description_fr,
+              tags: randomSource.tags,
+              rarity: rarity,
+              image: (randomSource as any).image
+          };
+      } else {
+          item = { 
+            name: 'Test Item', 
+            description: 'Test Desc', 
+            rarity: rarity 
+          };
+      }
       
       setTestData({ item, xpReward: 50 });
       setTestView('loot');
