@@ -1,0 +1,33 @@
+/* Holographic Card Effects */
+
+.holo-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.05) 45%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0.05) 55%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 50;
+  animation: shimmer 5s infinite ease-in-out;
+}
+
+.holo-rainbow {
+    background: linear-gradient(
+        135deg,
+        rgba(255,0,0,0.1) 0%,
+        rgba(255,255,0,0.1) 20%,
+        rgba(0,255,0,0.1) 40%,
+        rgba(0,255,255,0.1) 60%,
+        rgba(0,0,255,0.1) 80%,
+        rgba(255,0,255,0.1) 100%
+    );
+    mix-blend-mode: overlay;
+}

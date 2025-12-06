@@ -14,7 +14,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 5,
     goldReward: 2,
     xpReward: 8,
-    timerDuration: 12
+    timerDuration: 12,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/timber_wolf.png"
   },
   t1_goblin: {
     id: 't1_goblin',

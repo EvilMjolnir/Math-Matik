@@ -1,10 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType, Item, StorageMode } from '../types';
-import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud, Sword, TestTube, X, Gift } from 'lucide-react';
+import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType, Item, StorageMode, EffectType } from '../types';
+import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud, Sword, TestTube, X, Gift, Sparkles, Star, Footprints, Shield } from 'lucide-react';
 import * as localStore from '../services/storageService';
 import * as cloudStore from '../services/storageService_Live';
 import { lootData } from '../data/loot';
+import { STATUS_EFFECTS } from '../data/statusEffects';
 import { RARITY_TEXT_COLORS } from '../constants';
 import ItemDetailOverlay from '../components/ItemDetailOverlay';
 import EncounterIntroCard from '../components/EncounterIntroCard';
@@ -23,7 +24,7 @@ interface AdminPanelProps {
 }
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, setLootWeights, onBack, storageMode, onTestEncounter }) => {
-  const [activeTab, setActiveTab] = useState<'tomes' | 'loot' | 'users' | 'items' | 'uilab'>('tomes');
+  const [activeTab, setActiveTab] = useState<'tomes' | 'loot' | 'users' | 'items' | 'uilab' | 'effects'>('tomes');
   const [editingTomeId, setEditingTomeId] = useState<string | null>(null);
   const [users, setUsers] = useState<PlayerStats[]>([]);
   const [previewItem, setPreviewItem] = useState<Item | null>(null);
@@ -168,7 +169,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
           goldReward: 5,
           xpReward: 10,
           type: 'normal',
-          image: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/wolf_placeholder.png' // Theoretical placeholder
+          image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/timber_wolf.png" // Theoretical placeholder
       } : {
           id: 'test_boss',
           name: 'The Root Keeper',
@@ -178,7 +179,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
           goldReward: 50,
           xpReward: 200,
           type: 'boss',
-          tags: ['mon_elite', 'mon_fierce']
+          tags: ['mon_elite', 'mon_fierce'],
+          image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/root_keeper.png" // Theoretical placeholder
       };
       
       setTestData({ encounter: dummyEncounter });
@@ -192,6 +194,20 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
       
       setTestData({ item, xpReward: 50 });
       setTestView('loot');
+  };
+
+  const getEffectIcon = (type: EffectType) => {
+    switch (type) {
+        case EffectType.XP_MULTIPLIER: return <Star className="w-5 h-5 text-yellow-500" />;
+        case EffectType.GOLD_MULTIPLIER: return <Coins className="w-5 h-5 text-amber-500" />;
+        case EffectType.MOVEMENT_BONUS: return <Footprints className="w-5 h-5 text-green-500" />;
+        case EffectType.COMBAT_SCORE_BONUS: return <Sword className="w-5 h-5 text-red-500" />;
+        case EffectType.ENEMY_HP_BONUS: return <Shield className="w-5 h-5 text-blue-500" />;
+        case EffectType.ENEMY_DAMAGE_BONUS: return <Sword className="w-5 h-5 text-red-600" />;
+        case EffectType.ENEMY_GOLD_REWARD_BONUS: return <Coins className="w-5 h-5 text-amber-600" />;
+        case EffectType.ENEMY_XP_REWARD_BONUS: return <Star className="w-5 h-5 text-yellow-600" />;
+        default: return <Sparkles className="w-5 h-5 text-purple-500" />;
+    }
   };
 
   const NavButton = ({ tab, icon, label }: { tab: typeof activeTab, icon: React.ReactNode, label: string }) => (
@@ -244,7 +260,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                   </button>
                   <LootRewardCard 
                       item={testData.item}
-                      xpReward={testData.xpReward}
                       onBack={() => setTestView('none')}
                       solvedCorrectly={true}
                   />
@@ -277,6 +292,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
             <NavButton tab="tomes" icon={<Edit3 className="w-5 h-5"/>} label="Tomes" />
             <NavButton tab="items" icon={<Box className="w-5 h-5"/>} label="Items" />
             <NavButton tab="loot" icon={<Sliders className="w-5 h-5"/>} label="Loot" />
+            <NavButton tab="effects" icon={<Sparkles className="w-5 h-5"/>} label="Effects" />
             <NavButton tab="users" icon={<Users className="w-5 h-5"/>} label="Users" />
             <NavButton tab="uilab" icon={<TestTube className="w-5 h-5"/>} label="UI Lab" />
         </nav>
@@ -606,6 +622,53 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                     ))}
                 </div>
             </div>
+            )}
+
+            {/* --- EFFECTS VIEWER --- */}
+            {activeTab === 'effects' && (
+                <div className="bg-parchment-200 p-6 rounded-lg shadow-lg border-2 border-parchment-400 text-parchment-900">
+                    <h3 className="text-2xl font-serif font-bold mb-4 flex items-center">
+                        <Sparkles className="w-6 h-6 mr-2" />
+                        Status Effects Registry
+                    </h3>
+                    <p className="mb-6 italic text-parchment-700">All registered buffs and debuffs available in the realm.</p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {Object.values(STATUS_EFFECTS).map(effect => (
+                           <div key={effect.id} className="bg-white p-4 rounded border border-parchment-300 shadow-sm relative overflow-hidden">
+                               <div className="flex items-center mb-2 border-b border-parchment-200 pb-2">
+                                   <div className="p-2 bg-parchment-100 rounded-full mr-3 border border-parchment-200">
+                                       {getEffectIcon(effect.type)}
+                                   </div>
+                                   <div>
+                                       <div className="font-bold text-lg leading-none">{effect.name}</div>
+                                       <div className="text-xs text-gray-500 italic">{effect.name_fr}</div>
+                                   </div>
+                               </div>
+                               
+                               <div className="space-y-2 text-sm">
+                                   <div className="flex justify-between">
+                                       <span className="font-bold text-gray-600">ID:</span>
+                                       <span className="font-mono text-xs bg-gray-100 px-1 rounded">{effect.id}</span>
+                                   </div>
+                                   <div className="flex justify-between">
+                                       <span className="font-bold text-gray-600">Type:</span>
+                                       <span className="text-xs text-right max-w-[150px]">{effect.type}</span>
+                                   </div>
+                                   <div className="flex justify-between">
+                                       <span className="font-bold text-gray-600">Value:</span>
+                                       <span className="font-bold">{effect.value}</span>
+                                   </div>
+                                   
+                                   <div className="mt-2 pt-2 border-t border-parchment-100">
+                                       <p className="text-gray-800">{effect.description}</p>
+                                       <p className="text-gray-500 text-xs italic">{effect.description_fr}</p>
+                                   </div>
+                               </div>
+                           </div>
+                        ))}
+                    </div>
+                </div>
             )}
 
             {/* --- USERS EDITOR --- */}

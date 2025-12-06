@@ -336,7 +336,6 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
   return (
     <LootRewardCard 
       item={item}
-      xpReward={XP_REWARD}
       onBack={() => { playMenuBackSound(); onBack(); }}
       solvedCorrectly={solvedCorrectly}
     />

@@ -36,7 +36,7 @@ export const UI_SOURCE = {
     defeat: { en: "Defeat", fr: "Défaite" },
     monsterHP: { en: "Monster HP", fr: "PV Monstre" }, // Renamed from threshold
     hpLost: { en: "HP Lost", fr: "PV Perdus" },
-    encounterStart: { en: "Enemy Approaches!", fr: "Un Ennemi Approche !" },
+    encounterStart: { en: "Monster", fr: "Créature" },
   },
   movement: {
     steps: { en: "Steps Taken", fr: "Pas Effectués" },

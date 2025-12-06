@@ -1,0 +1,30 @@
+/* Global Theme Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #10564F; 
+}
+::-webkit-scrollbar-thumb {
+  background: #88A09A; 
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D6D5D6; 
+}
+
+/* Specific Utility Class for Internal Containers */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(136, 160, 154, 0.5); 
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(136, 160, 154, 0.8); 
+}
