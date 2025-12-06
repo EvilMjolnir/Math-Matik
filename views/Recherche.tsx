@@ -1,4 +1,6 @@
 
+
+
 import React, { useState, useEffect } from 'react';
 import { GameConfig, MathProblem, Rarity, Item, Card, MinigameProps, EffectType } from '../types';
 import { generateDivision } from '../services/mathService';
@@ -90,7 +92,8 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
     setFeedback('none');
   };
 
-  const handleInput = (num: number) => {
+  const handleInput = (num: number | string) => {
+    if (typeof num === 'string') return;
     if (userInput.length < 5) setUserInput(prev => prev + num.toString());
   };
 

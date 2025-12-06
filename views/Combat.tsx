@@ -3,6 +3,7 @@
 
 
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { GameConfig, MathProblem, MinigameProps, PlayerStats } from '../types';
 import { generateMultiplication, generateBossProblem } from '../services/mathService';
@@ -11,7 +12,7 @@ import Keypad from '../components/Keypad';
 import Modal from '../components/Modal';
 import ScratchpadModal from '../components/ScratchpadModal';
 import { useLocalization } from '../localization';
-import { ChevronLeft, Timer, ShieldAlert, Skull, Trophy, PencilLine, Zap, Sword, Heart, User, Shield } from 'lucide-react';
+import { ChevronLeft, Timer, Skull, Trophy, PencilLine, Zap, Sword, Heart, User, Shield } from 'lucide-react';
 
 interface CombatProps extends MinigameProps {
   config: GameConfig['combat'];

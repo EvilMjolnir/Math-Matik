@@ -1,4 +1,6 @@
 
+
+
 import React, { useState, useEffect } from 'react';
 import { GameConfig, MathProblem, MinigameProps } from '../types';
 import { generateAdditionSubtraction } from '../services/mathService';
@@ -38,7 +40,8 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
     setFeedback('none');
   };
 
-  const handleInput = (num: number) => {
+  const handleInput = (num: number | string) => {
+    if (typeof num === 'string') return;
     if (userInput.length < 5) setUserInput(prev => prev + num.toString());
   };
 

@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item, StorageMode } from './types';
 import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS } from './constants';
@@ -375,11 +374,16 @@ const App: React.FC = () => {
     if (player.activeTomeId === 'infinite') return config;
     const tome = tomes.find(t => t.id === player.activeTomeId);
     if (!tome || !tome.config) return DEFAULT_CONFIG;
+    
+    // Explicitly handle boss config merging to ensure strictly typed result
+    const defaultBoss = DEFAULT_CONFIG.boss || { timerDuration: 15, actionsPerTurn: 5 };
+    const tomeBoss = tome.config.boss || {};
+    
     return {
       movement: { ...DEFAULT_CONFIG.movement, ...tome.config.movement },
       combat: { ...DEFAULT_CONFIG.combat, ...tome.config.combat },
       recherche: { ...DEFAULT_CONFIG.recherche, ...tome.config.recherche },
-      boss: { ...DEFAULT_CONFIG.boss, ...tome.config.boss }
+      boss: { ...defaultBoss, ...tomeBoss }
     };
   };
 
