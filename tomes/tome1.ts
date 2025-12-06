@@ -23,7 +23,7 @@ export const tome1: Tome = {
     },
     combat: {
       multiplicationMax: 10,
-      questionsCount: 5,
+      questionsCount: 5, // mostly used for training combat
     },
     recherche: {
       divisionMaxDividend: 20,

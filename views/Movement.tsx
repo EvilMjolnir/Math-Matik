@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useEffect } from 'react';
 import { GameConfig, MathProblem, MinigameProps } from '../types';
 import { generateAdditionSubtraction } from '../services/mathService';
@@ -9,6 +7,7 @@ import Modal from '../components/Modal';
 import ScratchpadModal from '../components/ScratchpadModal';
 import { ChevronLeft, Footprints, PencilLine } from 'lucide-react';
 import { useLocalization } from '../localization';
+import { playMenuBackSound } from '../services/audioService';
 
 interface MovementProps extends MinigameProps {
   config: GameConfig['movement'];
@@ -93,7 +92,7 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
   return (
     <div className="flex flex-col h-full max-w-2xl mx-auto p-4 relative">
       <div className="flex items-center justify-between mb-8">
-        <button onClick={onBack} className="p-2 bg-parchment-800 text-parchment-100 rounded hover:bg-parchment-700">
+        <button onClick={() => { playMenuBackSound(); onBack(); }} className="p-2 bg-parchment-800 text-parchment-100 rounded hover:bg-parchment-700">
           <ChevronLeft />
         </button>
         <h2 className="text-3xl font-serif font-bold text-parchment-200">{t.titles.movement}</h2>
@@ -163,7 +162,7 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
       <Modal 
         title={t.movement.pathCompleted}
         actionLabel={t.buttons.back}
-        onAction={onBack} 
+        onAction={() => { playMenuBackSound(); onBack(); }}
         isOpen={showSuccess}
       >
         <div className="flex flex-col items-center">

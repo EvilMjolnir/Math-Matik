@@ -9,7 +9,7 @@ export const lootData = {
       "description": "It points north... occasionally.",
       "description_fr": "Elle indique le nord... de temps en temps.",
       "tags": ["navigator_1"],
-      "image": "https://iili.io/fICo6mv.md.png"
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/brokenCompass.png"
     },
     {
       "name": "Wooden Abacus",
@@ -17,7 +17,7 @@ export const lootData = {
       "description": "A simple tool for basic calculations.",
       "description_fr": "Un outil simple pour les calculs de base.",
       "tags": ["scholar_1"],
-      "image": "https://iili.io/fICo6mv.md.png"
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/woodenAbacus.png"
 
     },
     {
@@ -26,7 +26,7 @@ export const lootData = {
       "description": "Contains illegible ancient notes.",
       "description_fr": "Contient des notes anciennes illisibles.",
       "tags": [],
-      "image": "https://iili.io/fICxGQp.md.png"
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/tornScroll.png"
 
     },
     {
@@ -35,7 +35,7 @@ export const lootData = {
       "description": "Covered in dust from a thousand equations.",
       "description_fr": "Couvert de poussière de mille équations.",
       "tags": ["scholar_1"],
-      "image": "https://iili.io/fICxEjR.md.png"
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/chalkStub.png"
 
     },
     {
@@ -44,7 +44,7 @@ export const lootData = {
       "description": "Straight enough, though it skips the number 7.",
       "description_fr": "Assez droite, bien qu'elle saute le chiffre 7.",
       "tags": ["fighter_1"],
-      "image": "https://iili.io/fICxzTx.md.png"
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/crackedRuler.png"
 
     },
     {
@@ -53,7 +53,7 @@ export const lootData = {
       "description": "A small bag of dry beans used for arithmetic.",
       "description_fr": "Un petit sac de haricots secs utilisé pour l'arithmétique.",
       "tags": ["merchant_1"],
-      "image": "https://iili.io/fICxREP.md.png"
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/countingBeans.png"
 
     },
     {
@@ -62,7 +62,7 @@ export const lootData = {
       "description": "Heavy, scratching, and easily erased.",
       "description_fr": "Lourde, grinçante et facilement effaçable.",
       "tags": [],
-      "image": "https://iili.io/fIC6SPn.md.png"
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/slateTablet.png"
 
     },
     {
@@ -71,7 +71,7 @@ export const lootData = {
       "description": "Used by builders to measure rough distances.",
       "description_fr": "Utilisée par les bâtisseurs pour mesurer des distances approximatives.",
       "tags": ["navigator_1"],
-      "image": "https://iili.io/fICxlyJ.md.png"
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/knottedRope.png"
 
     },
     {
@@ -80,7 +80,7 @@ export const lootData = {
       "description": "Crumpled paper with a faintly drawn grid.",
       "description_fr": "Papier froissé avec une grille faiblement dessinée.",
       "tags": [],
-      "image": "https://iili.io/fIC6OwN.md.png"
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/graphPaper.png"
 
     },
     {
@@ -89,7 +89,7 @@ export const lootData = {
       "description": "A wooden cube with pips from one to six.",
       "description_fr": "Un cube en bois avec des points de un à six.",
       "tags": ["merchant_1"],
-      "image": "https://iili.io/fICx541.md.png"
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/simpleDice.png"
 
     },
     {
@@ -98,7 +98,7 @@ export const lootData = {
       "description": "A broken piece of plastic measuring 45 degrees.",
       "description_fr": "Un morceau de plastique cassé mesurant 45 degrés.",
       "tags": ["fighter_1"],
-      "image": "https://iili.io/fICxaYg.md.png"
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/brokenProtractor.png"
 
     },
     {
@@ -107,7 +107,7 @@ export const lootData = {
       "description": "Full of addition errors and doodles.",
       "description_fr": "Plein d'erreurs d'addition et de gribouillages.",
       "tags": ["scholar_1"],
-      "image": "https://iili.io/fICxIhQ.md.png"
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/studentLedger.png"
 
     },
     {
@@ -116,7 +116,7 @@ export const lootData = {
       "description": "An ancient currency placeholder.",
       "description_fr": "Un ancien substitut de monnaie.",
       "tags": ["merchant_1"],
-      "image": "https://iili.io/fICxACB.md.png"
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/clayToken.png"
 
     }
   ],
@@ -126,84 +126,96 @@ export const lootData = {
       "name_fr": "Rapporteur en Argent",
       "description": "Measures angles with surprising precision.",
       "description_fr": "Mesure les angles avec une précision surprenante.",
-      "tags": ["fighter_1", "scholar_1"]
+      "tags": ["fighter_1", "scholar_1"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/silver_protractor.png"
     },
     {
       "name": "Scholar's Spectacles",
       "name_fr": "Lunettes d'Érudit",
       "description": "Makes equations appear slightly clearer.",
       "description_fr": "Rend les équations légèrement plus claires.",
-      "tags": ["scholar_2"]
+      "tags": ["scholar_2"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/scholar_spectacles.png"
     },
     {
       "name": "Slide Rule",
       "name_fr": "Règle à Calcul",
       "description": "Allows for rapid multiplication without batteries.",
       "description_fr": "Permet une multiplication rapide sans piles.",
-      "tags": ["scholar_2", "merchant_1"]
+      "tags": ["scholar_2", "merchant_1"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/slide_rule.png"
     },
     {
       "name": "Brass Calipers",
       "name_fr": "Pied à Coulisse en Laiton",
       "description": "Measures thickness to the millimeter.",
       "description_fr": "Mesure l'épaisseur au millimètre près.",
-      "tags": ["navigator_1"]
+      "tags": ["navigator_1"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/brass_calipers.png"
     },
     {
       "name": "Book of Tables",
       "name_fr": "Livre de Tables",
       "description": "Contains pre-calculated logarithms.",
       "description_fr": "Contient des logarithmes pré-calculés.",
-      "tags": ["scholar_2"]
+      "tags": ["scholar_2"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/book_of_tables.png"
     },
     {
       "name": "Solid Cube",
       "name_fr": "Cube Solide",
       "description": "A perfectly weighted Platonic solid.",
       "description_fr": "Un solide platonicien parfaitement équilibré.",
-      "tags": []
+      "tags": [],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/solid_cube.png"
     },
     {
       "name": "Drafting Quill",
       "name_fr": "Plume de Dessin",
       "description": "Draws lines that never smudge.",
       "description_fr": "Trace des lignes qui ne bavent jamais.",
-      "tags": ["scholar_1"]
+      "tags": ["scholar_1"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/drafting_quill.png"
     },
     {
       "name": "Geometer's Sash",
       "name_fr": "Écharpe de Géomètre",
       "description": "Embroidered with triangular patterns.",
       "description_fr": "Brodée de motifs triangulaires.",
-      "tags": ["fighter_1"]
+      "tags": ["fighter_1"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/geometerr_sash.png"
     },
     {
       "name": "Star Chart",
       "name_fr": "Carte Stellaire",
       "description": "Maps the coordinates of the night sky.",
       "description_fr": "Cartographie les coordonnées du ciel nocturne.",
-      "tags": ["navigator_2"]
+      "tags": ["navigator_2"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/star_chart.png"
     },
     {
       "name": "Sundial Watch",
       "name_fr": "Montre Cadran Solaire",
       "description": "Tells time accurately, provided there is sun.",
       "description_fr": "Donne l'heure avec précision, tant qu'il y a du soleil.",
-      "tags": ["navigator_1"]
+      "tags": ["navigator_1"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/sundial_watch.png"
     },
     {
       "name": "Tessellated Tile",
       "name_fr": "Tuile Tessellée",
       "description": "Fits perfectly with copies of itself.",
       "description_fr": "S'emboîte parfaitement avec des copies d'elle-même.",
-      "tags": []
+      "tags": [],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/tesselated_tile.png"
     },
     {
       "name": "Weighted Coin",
       "name_fr": "Pièce Truquée",
       "description": "Probability seems to favor heads.",
       "description_fr": "La probabilité semble favoriser face.",
-      "tags": ["merchant_2"]
+      "tags": ["merchant_2"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/weighted_coin.png"
     }
   ],
   [Rarity.MAGIC]: [

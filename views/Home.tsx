@@ -7,6 +7,7 @@ import GameMenu from '../components/GameMenu';
 import PlayerProfileModal from '../components/PlayerProfileModal';
 import { Settings, BookOpen, ShieldCheck, Footprints } from 'lucide-react';
 import { useLocalization } from '../localization';
+import { playMenuOpenSound } from '../services/audioService';
 
 interface HomeProps {
   onViewChange: (view: GameView) => void;
@@ -57,7 +58,7 @@ const Home: React.FC<HomeProps> = ({
         <div className="hidden md:block h-full z-20 flex-shrink-0">
            <PlayerStatsWidget 
               player={player} 
-              onExpand={() => setIsProfileOpen(true)} 
+              onExpand={() => { playMenuOpenSound(); setIsProfileOpen(true); }} 
               onLogout={onLogout}
            />
         </div>
@@ -65,7 +66,7 @@ const Home: React.FC<HomeProps> = ({
         <div className="flex-1 flex flex-col items-center relative overflow-y-auto custom-scrollbar">
           
           <button 
-            onClick={() => setIsProfileOpen(true)}
+            onClick={() => { playMenuOpenSound(); setIsProfileOpen(true); }}
             className="md:hidden absolute top-6 left-6 p-3 bg-parchment-800 rounded-full border-2 border-parchment-600 shadow-lg z-30"
           >
             <Footprints className="w-6 h-6 text-parchment-200" />
@@ -74,14 +75,14 @@ const Home: React.FC<HomeProps> = ({
           <div className="absolute top-6 right-6 flex flex-col items-end space-y-4 z-30">
              <div className="flex space-x-4">
                   <button 
-                      onClick={onOpenTomes}
+                      onClick={() => { playMenuOpenSound(); onOpenTomes(); }}
                       className="p-3 bg-amber-800 rounded-full hover:bg-amber-700 transition-all shadow-lg border-2 border-amber-600 group"
                       title={t.buttons.select}
                       >
                       <BookOpen className="w-8 h-8 text-parchment-200 group-hover:scale-110 transition-transform" />
                   </button>
                   <button 
-                      onClick={() => onViewChange(GameView.OPTIONS)}
+                      onClick={() => { playMenuOpenSound(); onViewChange(GameView.OPTIONS); }}
                       className="p-3 bg-parchment-800 rounded-full hover:bg-parchment-700 hover:rotate-90 transition-all shadow-lg border-2 border-parchment-600"
                       title={t.titles.options}
                       >
@@ -90,7 +91,7 @@ const Home: React.FC<HomeProps> = ({
               </div>
               {isAdmin && (
                   <button 
-                      onClick={() => onViewChange(GameView.ADMIN)}
+                      onClick={() => { playMenuOpenSound(); onViewChange(GameView.ADMIN); }}
                       className="p-3 bg-purple-900 rounded-full hover:bg-purple-700 transition-all shadow-lg border-2 border-purple-500 animate-pulse"
                       title="Admin Panel"
                   >

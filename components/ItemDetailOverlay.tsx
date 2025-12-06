@@ -1,9 +1,11 @@
+
 import React from 'react';
 import { Item, EffectType } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 import { RARITY_TEXT_COLORS } from '../constants';
 import { useLocalization } from '../localization';
 import { X, Backpack, Star, Coins, Footprints, Sword, Sparkles } from 'lucide-react';
+import { playMenuBackSound } from '../services/audioService';
 
 interface ItemDetailOverlayProps {
   item: Item | null;
@@ -31,7 +33,7 @@ const ItemDetailOverlay: React.FC<ItemDetailOverlayProps> = ({ item, onClose }) 
   return (
     <div className="fixed inset-0 bg-parchment-100/95 backdrop-blur-sm z-50 flex flex-col p-6 animate-fadeIn items-center justify-center">
         <button 
-            onClick={onClose}
+            onClick={() => { playMenuBackSound(); onClose(); }}
             className="absolute top-4 right-4 p-2 bg-parchment-300 rounded-full hover:bg-parchment-400 text-parchment-800"
         >
             <X className="w-6 h-6" />

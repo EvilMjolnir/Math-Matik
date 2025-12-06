@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useEffect } from 'react';
 import { GameConfig, MathProblem, Rarity, Item, Card, MinigameProps, EffectType } from '../types';
 import { generateDivision } from '../services/mathService';
@@ -12,6 +10,7 @@ import { RARITY_COLORS, RARITY_TEXT_COLORS } from '../constants';
 import { ChevronLeft, Gift, Search, Loader2, Coins, AlertTriangle, Sparkles, Footprints, Sword, Star, PencilLine, CheckCircle, XCircle, Lock } from 'lucide-react';
 import { useLocalization } from '../localization';
 import Modal from '../components/Modal';
+import { playMenuOpenSound, playMenuBackSound } from '../services/audioService';
 
 interface RechercheProps extends MinigameProps {
   config: GameConfig['recherche'];
@@ -160,8 +159,10 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
 
   const handleBackAttempt = () => {
     if (phase === 'select') {
+      playMenuOpenSound();
       setShowExitWarning(true);
     } else {
+      playMenuBackSound();
       onBack();
     }
   };
@@ -243,7 +244,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
           title={t.recherche.entryFee}
           isOpen={showExitWarning}
           actionLabel={t.buttons.confirmLeave}
-          onAction={onBack}
+          onAction={() => { playMenuBackSound(); onBack(); }}
           colorClass="bg-red-950 text-white border-red-500"
         >
           <div className="flex flex-col items-center text-center">
@@ -439,7 +440,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
           {/* Action Button */}
           <div className="p-4 bg-black/20 mt-4 rounded-b-xl">
              <button 
-                onClick={onBack}
+                onClick={() => { playMenuBackSound(); onBack(); }}
                 className="w-full py-3 bg-parchment-100 text-parchment-900 font-serif font-bold rounded shadow-lg hover:bg-white transition-all transform active:scale-95"
             >
                 {t.buttons.back}

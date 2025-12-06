@@ -1,9 +1,4 @@
 
-
-
-
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { GameConfig, MathProblem, MinigameProps, PlayerStats } from '../types';
 import { generateMultiplication, generateBossProblem } from '../services/mathService';
@@ -13,6 +8,7 @@ import Modal from '../components/Modal';
 import ScratchpadModal from '../components/ScratchpadModal';
 import { useLocalization } from '../localization';
 import { ChevronLeft, Timer, Skull, Trophy, PencilLine, Zap, Sword, Heart, User, Shield } from 'lucide-react';
+import { playMenuBackSound } from '../services/audioService';
 
 interface CombatProps extends MinigameProps {
   config: GameConfig['combat'];
@@ -371,6 +367,7 @@ const Combat: React.FC<CombatProps> = ({
   };
 
   const handleModalAction = () => {
+    playMenuBackSound();
     if (encounter && isVictory && onEncounterComplete) {
       onEncounterComplete();
     } else {
@@ -462,7 +459,7 @@ const Combat: React.FC<CombatProps> = ({
       {/* HEADER */}
       <div className="flex items-center justify-between mb-2">
         {!encounter ? (
-          <button onClick={onBack} className="p-2 bg-parchment-800 text-parchment-100 rounded hover:bg-parchment-700">
+          <button onClick={() => { playMenuBackSound(); onBack(); }} className="p-2 bg-parchment-800 text-parchment-100 rounded hover:bg-parchment-700">
             <ChevronLeft />
           </button>
         ) : <div className="w-10"></div>}

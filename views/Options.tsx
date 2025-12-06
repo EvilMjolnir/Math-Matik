@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { GameConfig, StorageMode } from '../types';
 import { ChevronLeft, Info, Cloud, Database, Trash2, Gamepad2, Server, RefreshCw } from 'lucide-react';
 import { useLocalization } from '../localization';
+import { playMenuBackSound } from '../services/audioService';
 
 interface OptionsProps {
   config: GameConfig;
@@ -44,7 +45,7 @@ const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, storageMod
   return (
     <div className="flex flex-col h-full max-w-2xl mx-auto p-4 animate-fadeIn">
       <div className="flex items-center mb-6">
-        <button onClick={onBack} className="p-2 mr-4 bg-parchment-800 text-parchment-100 rounded hover:bg-parchment-700">
+        <button onClick={() => { playMenuBackSound(); onBack(); }} className="p-2 mr-4 bg-parchment-800 text-parchment-100 rounded hover:bg-parchment-700">
           <ChevronLeft />
         </button>
         <h1 className="text-3xl font-serif font-bold text-parchment-200">{t.titles.options}</h1>

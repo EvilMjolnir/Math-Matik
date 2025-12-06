@@ -3,6 +3,7 @@ import React from 'react';
 import { Tome } from '../types';
 import { Book, Lock, CheckCircle, Infinity } from 'lucide-react';
 import { useLocalization } from '../localization';
+import { playMenuOpenSound, playMenuBackSound } from '../services/audioService';
 
 interface TomeSelectionModalProps {
   tomes: Tome[];
@@ -26,7 +27,7 @@ const TomeSelectionModal: React.FC<TomeSelectionModalProps> = ({ tomes, activeTo
             <Book className="w-8 h-8 mr-3 text-parchment-800" />
             Select Your Quest
           </h2>
-          <button onClick={onClose} className="px-4 py-2 bg-parchment-800 text-parchment-100 rounded hover:bg-parchment-900 font-bold font-serif">
+          <button onClick={() => { playMenuBackSound(); onClose(); }} className="px-4 py-2 bg-parchment-800 text-parchment-100 rounded hover:bg-parchment-900 font-bold font-serif">
             Close
           </button>
         </div>
@@ -36,6 +37,7 @@ const TomeSelectionModal: React.FC<TomeSelectionModalProps> = ({ tomes, activeTo
           <div className="w-1/4 min-w-[200px] border-r-2 border-parchment-400 bg-parchment-200 p-4 flex flex-col">
             <button
                 onClick={() => {
+                   playMenuOpenSound();
                    onSelectTome('infinite');
                    onClose();
                 }}
@@ -99,6 +101,7 @@ const TomeSelectionModal: React.FC<TomeSelectionModalProps> = ({ tomes, activeTo
                     disabled={!tome.isUnlocked}
                     onClick={() => {
                       if (tome.isUnlocked) {
+                        playMenuOpenSound();
                         onSelectTome(tome.id);
                         onClose();
                       }

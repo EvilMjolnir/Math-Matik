@@ -1,7 +1,4 @@
 
-
-
-
 import React, { useState, useEffect } from 'react';
 import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType, Item, StorageMode } from '../types';
 import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud, Sword } from 'lucide-react';
@@ -10,6 +7,7 @@ import * as cloudStore from '../services/storageService_Live';
 import { lootData } from '../data/loot';
 import { RARITY_TEXT_COLORS } from '../constants';
 import ItemDetailOverlay from '../components/ItemDetailOverlay';
+import { playMenuBackSound } from '../services/audioService';
 
 interface AdminPanelProps {
   tomes: Tome[];
@@ -157,7 +155,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
       {/* Header */}
       <div className="flex items-center justify-between mb-6 bg-parchment-900/80 p-4 rounded-lg border border-purple-500">
         <div className="flex items-center">
-          <button onClick={onBack} className="p-2 mr-4 bg-parchment-800 text-parchment-100 rounded hover:bg-parchment-700">
+          <button onClick={() => { playMenuBackSound(); onBack(); }} className="p-2 mr-4 bg-parchment-800 text-parchment-100 rounded hover:bg-parchment-700">
             <ChevronLeft />
           </button>
           <div className="flex flex-col">

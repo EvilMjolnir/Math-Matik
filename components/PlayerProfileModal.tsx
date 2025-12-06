@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { PlayerStats, Item, EffectType } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS } from '../constants';
@@ -7,6 +6,7 @@ import { getAggregatedStats } from '../services/statusService';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Scroll, Users, Star, Backpack, Sparkles, Lock, Footprints, Sword, Mail, Link } from 'lucide-react';
 import { useLocalization } from '../localization';
+import { playMenuBackSound } from '../services/audioService';
 
 interface PlayerProfileModalProps {
   player: PlayerStats;
@@ -292,7 +292,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ player, isOpen,
                )}
              </div>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-parchment-400/50 rounded-full transition-colors shrink-0 ml-4">
+          <button onClick={() => { playMenuBackSound(); onClose(); }} className="p-2 hover:bg-parchment-400/50 rounded-full transition-colors shrink-0 ml-4">
             <X className="w-8 h-8 text-parchment-800" />
           </button>
         </div>

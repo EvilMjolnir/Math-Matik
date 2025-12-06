@@ -1,7 +1,9 @@
+
 import React from 'react';
 import { GameView } from '../types';
 import { Footprints, Sword, Search, Coins } from 'lucide-react';
 import { Translation } from '../localization/types';
+import { playMenuOpenSound } from '../services/audioService';
 
 interface GameMenuProps {
   t: Translation;
@@ -30,7 +32,7 @@ const GameMenu: React.FC<GameMenuProps> = ({
         title={t.titles.movement}
         icon={<Footprints className="w-14 h-14" />} 
         description={t.home.menuDescMovement}
-        onClick={() => onViewChange(GameView.MOVEMENT)}
+        onClick={() => { playMenuOpenSound(); onViewChange(GameView.MOVEMENT); }}
         color="hover:bg-green-900/90 hover:border-green-600"
         disabled={!canMove}
       />
@@ -38,7 +40,7 @@ const GameMenu: React.FC<GameMenuProps> = ({
         title={t.titles.combat} 
         icon={<Sword className="w-14 h-14" />} 
         description={t.home.menuDescCombat}
-        onClick={() => onViewChange(GameView.COMBAT)}
+        onClick={() => { playMenuOpenSound(); onViewChange(GameView.COMBAT); }}
         color={activeEncounter ? "bg-red-900/90 border-red-500 animate-pulse hover:bg-red-900" : "hover:bg-red-900/90 hover:border-red-600"}
         disabled={!canCombat}
       />
@@ -46,7 +48,7 @@ const GameMenu: React.FC<GameMenuProps> = ({
         title={t.titles.recherche} 
         icon={<Search className="w-14 h-14" />} 
         description={t.home.menuDescRecherche}
-        onClick={() => onStartRecherche(rechercheCost)}
+        onClick={() => { playMenuOpenSound(); onStartRecherche(rechercheCost); }}
         color="hover:bg-blue-900/90 hover:border-blue-600"
         disabled={!canMove || !canAffordRecherche}
         cost={rechercheCost}
