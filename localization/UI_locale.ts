@@ -145,6 +145,13 @@ export const UI_SOURCE = {
   options: {
     gameplayTab: { en: "Gameplay & Difficulty", fr: "Jeu & Difficulté" },
     dataTab: { en: "Storage & Data", fr: "Stockage & Données" },
+  },
+  levelUp: {
+    title: { en: "Level Up!", fr: "Niveau Supérieur !" },
+    action: { en: "Awesome!", fr: "Génial !" },
+    message: { en: "You have reached Level {level}!", fr: "Vous avez atteint le niveau {level} !" },
+    statHp: { en: "+10 Max HP", fr: "+10 PV Max" },
+    statAttack: { en: "+1 Attack Power", fr: "+1 Puissance d'Attaque" }
   }
 };
 
@@ -292,6 +299,13 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
     options: {
       gameplayTab: UI_SOURCE.options.gameplayTab[lang],
       dataTab: UI_SOURCE.options.dataTab[lang],
+    },
+    levelUp: {
+      title: UI_SOURCE.levelUp.title[lang],
+      action: UI_SOURCE.levelUp.action[lang],
+      message: UI_SOURCE.levelUp.message[lang],
+      statHp: UI_SOURCE.levelUp.statHp[lang],
+      statAttack: UI_SOURCE.levelUp.statAttack[lang],
     }
   };
 };

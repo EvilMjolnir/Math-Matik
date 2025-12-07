@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { PlayerStats, Item, EffectType } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS } from '../constants';
@@ -37,6 +36,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
   useEffect(() => {
     if (isOpen) {
         setActiveTab(initialTab);
+        setViewItem(null); // Reset item view so it doesn't persist when reopening
     }
   }, [isOpen, initialTab]);
 
@@ -245,7 +245,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-4xl bg-parchment-200 rounded-lg shadow-2xl border-4 border-parchment-800 text-parchment-900 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-6xl bg-parchment-200 rounded-lg shadow-2xl border-4 border-parchment-800 text-parchment-900 flex flex-col max-h-[90vh]">
         
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b-2 border-parchment-400 bg-parchment-300/50 rounded-t-lg">
@@ -349,14 +349,20 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                   </div>
                 </div>
 
-                {/* Gold/Defense */}
-                <div className="flex justify-between items-center pt-2 border-t border-parchment-300 mt-2">
-                  <span className="flex items-center text-lg"><Shield className="w-5 h-5 mr-2 text-blue-600" /> {t.stats.defense}</span>
-                  <span className="font-mono font-bold text-xl">{player.defense}</span>
-                </div>
-                <div className="flex justify-between items-center pt-2">
-                  <span className="flex items-center text-lg"><Coins className="w-5 h-5 mr-2 text-amber-600" /> {t.common.gold}</span>
-                  <span className="font-mono font-bold text-xl text-amber-700">{player.gold}</span>
+                {/* Attack/Defense/Gold */}
+                <div className="pt-2 border-t border-parchment-300 mt-2 space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center text-lg"><Sword className="w-5 h-5 mr-2 text-red-600" /> {t.combat.attack}</span>
+                    <span className="font-mono font-bold text-xl">{activeStats.totalAttack}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center text-lg"><Shield className="w-5 h-5 mr-2 text-blue-600" /> {t.stats.defense}</span>
+                    <span className="font-mono font-bold text-xl">{player.defense}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center text-lg"><Coins className="w-5 h-5 mr-2 text-amber-600" /> {t.common.gold}</span>
+                    <span className="font-mono font-bold text-xl text-amber-700">{player.gold}</span>
+                  </div>
                 </div>
               </div>
 

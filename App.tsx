@@ -1,6 +1,5 @@
 
 
-
 import React, { useState, useEffect } from 'react';
 import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item, StorageMode } from './types';
 import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS } from './constants';
@@ -288,7 +287,7 @@ const App: React.FC = () => {
         }
     }
 
-    // 3. Check for Random Encounters
+    // 3. Check for random encounters
     const rate = tome.encounterRate;
     const nextRandomEncounterDist = (Math.floor(currentDist / rate) + 1) * rate;
     
@@ -512,17 +511,17 @@ const App: React.FC = () => {
       </main>
 
       <Modal 
-        title="Level Up!" 
-        actionLabel="Awesome!" 
+        title={t.levelUp.title}
+        actionLabel={t.levelUp.action} 
         onAction={() => setShowLevelUp(false)} 
         isOpen={showLevelUp}
         colorClass="bg-purple-900 border-yellow-500 text-white"
       >
         <div className="flex flex-col items-center">
           <div className="w-16 h-16 text-yellow-400 mb-4 animate-spin-slow">⭐</div>
-          <p className="text-xl">You have reached Level {leveledUpTo}!</p>
-          <p className="mt-2 text-yellow-200">+10 Max HP</p>
-          <p className="text-yellow-200">+1 Attack Power</p>
+          <p className="text-xl">{t.levelUp.message.replace('{level}', leveledUpTo.toString())}</p>
+          <p className="mt-2 text-yellow-200">{t.levelUp.statHp}</p>
+          <p className="text-yellow-200">{t.levelUp.statAttack}</p>
         </div>
       </Modal>
 

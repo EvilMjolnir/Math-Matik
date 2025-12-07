@@ -145,4 +145,11 @@ export interface Translation {
     gameplayTab: string;
     dataTab: string;
   };
+  levelUp: {
+    title: string;
+    action: string;
+    message: string;
+    statHp: string;
+    statAttack: string;
+  };
 }

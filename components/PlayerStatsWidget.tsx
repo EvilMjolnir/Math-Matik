@@ -81,12 +81,20 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
           </div>
         </div>
         
-        {/* Defense & Gold Row */}
+        {/* Attack & Defense Row */}
         <div className="flex justify-between pt-3 px-2">
+            <div className="flex items-center text-parchment-100 text-lg" title="Attack Power">
+                <Sword className="w-6 h-6 mr-2 text-red-500" />
+                <span className="font-bold">{stats.totalAttack}</span>
+            </div>
             <div className="flex items-center text-parchment-100 text-lg" title="Defense">
                 <Shield className="w-6 h-6 mr-2 text-blue-400" />
                 <span className="font-bold">{player.defense}</span>
             </div>
+        </div>
+
+        {/* Gold Row */}
+        <div className="flex justify-center pt-2 px-2 border-t border-parchment-600/50 mt-2">
              <div className="flex items-center text-parchment-100 text-lg" title="Gold">
                 <Coins className="w-6 h-6 mr-2 text-amber-400" />
                 <span className="font-bold">{player.gold}</span>
