@@ -1,13 +1,10 @@
-
-
-
 import React, { useState } from 'react';
 import { GameView, PlayerStats, Tome, Encounter, GameConfig, Item } from '../types';
 import PlayerStatsWidget from '../components/PlayerStatsWidget';
 import ActiveQuestPanel from '../components/ActiveQuestPanel';
 import GameMenu from '../components/GameMenu';
 import PlayerProfileModal from '../components/PlayerProfileModal';
-import { Settings, BookOpen, ShieldCheck, Footprints, Backpack, Users, FastForward } from 'lucide-react';
+import { Settings, BookOpen, ShieldCheck, Footprints, Backpack, Users } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuOpenSound } from '../services/audioService';
 

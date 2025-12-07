@@ -1,8 +1,3 @@
-
-
-
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { GameConfig, MathProblem, MinigameProps, PlayerStats } from '../types';
 import { generateMultiplication, generateBossProblem } from '../services/mathService';
@@ -12,7 +7,7 @@ import Modal from '../components/Modal';
 import ScratchpadModal from '../components/ScratchpadModal';
 import EncounterIntroCard from '../components/EncounterIntroCard';
 import { useLocalization } from '../localization';
-import { ChevronLeft, Timer, Skull, Trophy, PencilLine, Zap, Sword, Heart, User, Shield, ShieldCheck, HeartCrack, Crosshair, Check, X } from 'lucide-react';
+import { ChevronLeft, Timer, Skull, Trophy, PencilLine, Zap, Sword, Heart, User, Shield, ShieldCheck, Check, X } from 'lucide-react';
 import { playMenuBackSound } from '../services/audioService';
 
 interface CombatProps extends MinigameProps {
