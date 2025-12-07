@@ -2,6 +2,8 @@
 
 
 
+
+
 import { PlayerStats, EffectType, Encounter } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 
@@ -29,37 +31,51 @@ export const getAggregatedStats = (player: PlayerStats): AggregatedStats => {
     totalAttack: player.attack || 1
   };
 
-  // Only calculate bonuses from EQUIPPED items
-  if (!player.equipped) return stats;
-
-  player.equipped.forEach(item => {
-    if (item && item.tags) {
-      item.tags.forEach(tagId => {
-        const effect = STATUS_EFFECTS[tagId];
-        if (effect) {
-          switch (effect.type) {
-            case EffectType.XP_MULTIPLIER:
-              stats.xpMultiplier += effect.value;
-              break;
-            case EffectType.GOLD_MULTIPLIER:
-              stats.goldMultiplier += effect.value;
-              break;
-            case EffectType.MOVEMENT_BONUS:
-              stats.movementBonus += effect.value;
-              break;
-            case EffectType.COMBAT_SCORE_BONUS:
-              stats.combatScoreBonus += effect.value;
-              break;
-          }
+  // 1. Calculate bonuses from EQUIPPED items
+  if (player.equipped) {
+    player.equipped.forEach(item => {
+        if (item && item.tags) {
+        item.tags.forEach(tagId => {
+            applyTagEffect(tagId, stats);
+        });
         }
-      });
-    }
-  });
+    });
+  }
+
+  // 2. Calculate bonuses from ACTIVE COMPANION
+  if (player.activeCompanionId && player.companions) {
+      const activeCompanion = player.companions.find(c => c.id === player.activeCompanionId);
+      if (activeCompanion && activeCompanion.tags) {
+          activeCompanion.tags.forEach(tagId => {
+              applyTagEffect(tagId, stats);
+          });
+      }
+  }
 
   // Total Attack is Base + Combat Bonuses
   stats.totalAttack += stats.combatScoreBonus;
 
   return stats;
+};
+
+const applyTagEffect = (tagId: string, stats: AggregatedStats) => {
+    const effect = STATUS_EFFECTS[tagId];
+    if (effect) {
+        switch (effect.type) {
+        case EffectType.XP_MULTIPLIER:
+            stats.xpMultiplier += effect.value;
+            break;
+        case EffectType.GOLD_MULTIPLIER:
+            stats.goldMultiplier += effect.value;
+            break;
+        case EffectType.MOVEMENT_BONUS:
+            stats.movementBonus += effect.value;
+            break;
+        case EffectType.COMBAT_SCORE_BONUS:
+            stats.combatScoreBonus += effect.value;
+            break;
+        }
+    }
 };
 
 export const getEnemyStats = (encounter: Encounter): EnemyStats => {

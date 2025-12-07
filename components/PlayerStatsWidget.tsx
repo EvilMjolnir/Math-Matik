@@ -1,4 +1,6 @@
 
+
+
 import React from 'react';
 import { PlayerStats } from '../types';
 import { XP_TABLE } from '../constants';
@@ -23,6 +25,8 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
 
   const stats = getAggregatedStats(player);
   const hasBonuses = stats.xpMultiplier > 1 || stats.goldMultiplier > 1 || stats.movementBonus > 0 || stats.combatScoreBonus > 0;
+  
+  const activeCompanion = player.companions?.find(c => c.id === player.activeCompanionId);
 
   return (
     <div className="bg-parchment-800/95 border-4 border-double border-parchment-400 p-4 h-full w-full max-w-[300px] flex flex-col items-center shadow-2xl relative">
@@ -39,8 +43,28 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
       </div>
 
       {/* Header / Avatar */}
-      <div className="w-28 h-28 bg-parchment-200 rounded-full border-4 border-amber-600 flex items-center justify-center mb-4 shadow-inner">
-        <User className="w-16 h-16 text-parchment-800" />
+      <div className="relative mb-4">
+        <div className="w-28 h-28 bg-parchment-200 rounded-full border-4 border-amber-600 flex items-center justify-center shadow-inner overflow-hidden">
+            {player.photoURL ? (
+                <img src={player.photoURL} alt="Hero" className="w-full h-full object-cover" />
+            ) : (
+                <User className="w-16 h-16 text-parchment-800" />
+            )}
+        </div>
+        
+        {/* Active Companion Bubble */}
+        {activeCompanion && (
+            <div 
+                className="absolute -bottom-2 -right-2 w-12 h-12 bg-parchment-300 rounded-full border-2 border-amber-500 flex items-center justify-center shadow-md overflow-hidden z-10"
+                title={activeCompanion.name}
+            >
+                {activeCompanion.image ? (
+                    <img src={activeCompanion.image} alt={activeCompanion.name} className="w-full h-full object-cover" />
+                ) : (
+                    <span className="text-parchment-900 font-serif font-bold">{activeCompanion.name.charAt(0)}</span>
+                )}
+            </div>
+        )}
       </div>
       
       <div className="text-center mb-6 w-full">

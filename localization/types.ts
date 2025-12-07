@@ -1,5 +1,7 @@
 
 
+
+
 export interface Translation {
   titles: {
     movement: string;
@@ -23,6 +25,8 @@ export interface Translation {
     clear: string;
     deleteAccount: string;
     resetProfile: string;
+    summon: string;
+    dismiss: string;
   };
   tomes: {
     selectQuest: string;
@@ -118,6 +122,8 @@ export interface Translation {
     empty: string;
     effects: string;
     noEffects: string;
+    clickDetails: string;
+    activeCompanion: string;
   };
   bonuses: {
     xp: string;

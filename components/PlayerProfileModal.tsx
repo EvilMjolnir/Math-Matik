@@ -1,12 +1,15 @@
 
+
+
 import React, { useState, useEffect } from 'react';
-import { PlayerStats, Item, EffectType } from '../types';
+import { PlayerStats, Item, EffectType, Companion } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS } from '../constants';
 import { getAggregatedStats } from '../services/statusService';
 import { STATUS_EFFECTS } from '../data/statusEffects';
-import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Star, Backpack, Sparkles, Lock, Footprints, Sword, Mail, Link } from 'lucide-react';
+import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Star, Backpack, Sparkles, Lock, Footprints, Sword, Mail, Link, Info } from 'lucide-react';
 import { useLocalization } from '../localization';
-import { playMenuBackSound } from '../services/audioService';
+import { playMenuBackSound, playMenuOpenSound } from '../services/audioService';
+import CompanionDetailOverlay from './CompanionDetailOverlay';
 
 interface PlayerProfileModalProps {
   player: PlayerStats;
@@ -31,12 +34,14 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
   const [tempPhoto, setTempPhoto] = useState(player.photoURL || '');
   const [activeTab, setActiveTab] = useState<'stats' | 'inventory' | 'companions' | 'settings'>('stats');
   const [viewItem, setViewItem] = useState<Item | null>(null);
+  const [viewCompanion, setViewCompanion] = useState<Companion | null>(null);
 
   // Sync activeTab with initialTab when modal opens
   useEffect(() => {
     if (isOpen) {
         setActiveTab(initialTab);
         setViewItem(null); // Reset item view so it doesn't persist when reopening
+        setViewCompanion(null);
     }
   }, [isOpen, initialTab]);
 
@@ -216,7 +221,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
             {isLocked ? (
                 <div className="flex flex-col items-center text-gray-500">
                     <Lock className="w-6 h-6 mb-1" />
-                    <span className="text-[10px] uppercase font-bold">{t.equipment.reqLevel} {unlockLevel}</span>
+                    <span className="text-xs uppercase font-bold">{t.equipment.reqLevel} {unlockLevel}</span>
                 </div>
             ) : item ? (
                 <div 
@@ -241,6 +246,12 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
             )}
         </div>
     );
+  };
+
+  const handleToggleCompanion = (id: string) => {
+    // If selecting the already active one, deselect it (dismiss)
+    const newId = player.activeCompanionId === id ? undefined : id;
+    onUpdateProfile({ activeCompanionId: newId });
   };
 
   return (
@@ -452,18 +463,50 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
           {/* COMPANIONS TAB */}
           {activeTab === 'companions' && (
             <div className="animate-fadeIn">
-              <div className="mt-4 space-y-3">
-                {player.companions.map((comp, idx) => (
-                  <div key={idx} className="flex items-center bg-parchment-100 p-3 rounded border border-parchment-300 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="w-10 h-10 bg-parchment-300 rounded-full flex items-center justify-center mr-3 border border-parchment-400 font-serif font-bold text-parchment-800">
-                      {comp.name.charAt(0)}
-                    </div>
-                    <div>
-                      <div className="font-bold text-parchment-900">{comp.name}</div>
-                      <div className="text-xs text-parchment-600 uppercase tracking-wider">{comp.role} • {t.common.level} {comp.level}</div>
-                    </div>
-                  </div>
-                ))}
+              <div className="mt-2 mb-4 text-center text-sm text-parchment-600 italic">
+                  {t.profile.clickDetails}
+              </div>
+              <div className="space-y-3">
+                {player.companions.map((comp) => {
+                  const isActive = player.activeCompanionId === comp.id;
+                  return (
+                    <button 
+                        key={comp.id} 
+                        onClick={() => { playMenuOpenSound(); setViewCompanion(comp); }}
+                        className={`
+                            w-full flex items-center p-3 rounded border shadow-sm transition-all text-left group
+                            ${isActive ? 'bg-amber-100 border-amber-500 ring-1 ring-amber-400' : 'bg-parchment-100 border-parchment-300 hover:bg-white hover:shadow-md'}
+                        `}
+                    >
+                        <div className={`
+                            w-12 h-12 rounded-full flex items-center justify-center mr-4 border-2 overflow-hidden
+                            ${isActive ? 'border-amber-600 bg-amber-200' : 'border-parchment-400 bg-parchment-300'}
+                        `}>
+                            {comp.image ? (
+                                <img src={comp.image} className="w-full h-full object-cover" alt="comp" />
+                            ) : (
+                                <span className="font-serif font-bold text-lg text-parchment-800">{comp.name.charAt(0)}</span>
+                            )}
+                        </div>
+                        
+                        <div className="flex-1">
+                            <div className="flex items-center">
+                                <span className="font-bold text-parchment-900 text-lg">{comp.name}</span>
+                                {isActive && (
+                                    <span className="ml-2 px-2 py-0.5 bg-amber-600 text-white text-[10px] font-bold uppercase rounded-full">
+                                        {t.tomes.active}
+                                    </span>
+                                )}
+                            </div>
+                            <div className="text-xs text-parchment-600 uppercase tracking-wider">{comp.role} • {t.common.level} {comp.level}</div>
+                        </div>
+
+                        <div className="opacity-0 group-hover:opacity-100 transition-opacity text-parchment-500">
+                             <Info className="w-5 h-5" />
+                        </div>
+                    </button>
+                  );
+                })}
                 {player.companions.length === 0 && (
                    <div className="text-center py-8 text-parchment-500 italic border-2 border-dashed border-parchment-300 rounded">
                      {t.stats.travelAlone}
@@ -528,6 +571,14 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                 </div>
             </div>
           )}
+          
+          {/* Companion Details Overlay */}
+          <CompanionDetailOverlay 
+             companion={viewCompanion}
+             isActive={viewCompanion?.id === player.activeCompanionId}
+             onClose={() => setViewCompanion(null)}
+             onToggleActive={handleToggleCompanion}
+          />
 
         </div>
       </div>

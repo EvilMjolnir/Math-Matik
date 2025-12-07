@@ -1,5 +1,7 @@
 
 
+
+
 import { Translation } from './types';
 
 export const UI_SOURCE = {
@@ -25,6 +27,8 @@ export const UI_SOURCE = {
     clear: { en: "Clear Page", fr: "Effacer la Page" },
     deleteAccount: { en: "Delete Account & Data", fr: "Supprimer Compte & Données" },
     resetProfile: { en: "Reset Progress (Keep Account)", fr: "Réinitialiser Progression (Garder Compte)" },
+    summon: { en: "Summon", fr: "Invoquer" },
+    dismiss: { en: "Dismiss", fr: "Renvoyer" },
   },
   tomes: {
     selectQuest: { en: "Select Your Quest", fr: "Choisissez votre Quête" },
@@ -118,7 +122,9 @@ export const UI_SOURCE = {
     companions: { en: "Companions", fr: "Compagnons" },
     empty: { en: "Empty.", fr: "Vide." },
     effects: { en: "Effects", fr: "Effets" },
-    noEffects: { en: "No Magical Properties", fr: "Aucune Propriété Magique" }
+    noEffects: { en: "No Magical Properties", fr: "Aucune Propriété Magique" },
+    clickDetails: { en: "Click to view details", fr: "Cliquez pour voir les détails" },
+    activeCompanion: { en: "Active Companion", fr: "Compagnon Actif" },
   },
   bonuses: {
     xp: { en: "+{value}% XP Gain", fr: "+{value}% Gain d'XP" },
@@ -179,6 +185,8 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       clear: UI_SOURCE.buttons.clear[lang],
       deleteAccount: UI_SOURCE.buttons.deleteAccount[lang],
       resetProfile: UI_SOURCE.buttons.resetProfile[lang],
+      summon: UI_SOURCE.buttons.summon[lang],
+      dismiss: UI_SOURCE.buttons.dismiss[lang],
     },
     tomes: {
       selectQuest: UI_SOURCE.tomes.selectQuest[lang],
@@ -273,6 +281,8 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       empty: UI_SOURCE.profile.empty[lang],
       effects: UI_SOURCE.profile.effects[lang],
       noEffects: UI_SOURCE.profile.noEffects[lang],
+      clickDetails: UI_SOURCE.profile.clickDetails[lang],
+      activeCompanion: UI_SOURCE.profile.activeCompanion[lang],
     },
     bonuses: {
       xp: UI_SOURCE.bonuses.xp[lang],

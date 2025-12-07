@@ -27,26 +27,23 @@ Focuses on **Division**.
     - Choose a card based on Rarity (Common to Mythic).
     - Solve a division problem to open the chest.
     - **Rewards**: Receive a unique fantasy item from the game's static loot table.
-- **Offline Capable**: No external API calls are required for loot generation.
+- **Offline Capable**: No external API calls are required; all loot is generated locally.
 
 ### 4. Mouvement (Movement)
 Focuses on **Addition and Subtraction**.
 - **Objective**: Complete a sequence of equations to fill a progress bar.
 - **Result**: Successfully filling the bar advances your distance in the current Tome.
 
-### 5. Cross-Platform Storage
-- **Local Mode**: Play offline with data saved to the browser.
-- **Cloud Mode**: Create an account to sync progress across devices (Firebase integration).
-
-### 6. Admin Panel (Game Master Tools)
-A powerful dashboard accessible to administrators (User: Gandalf).
+### 5. Admin Panel & Tools (Game Master)
+A powerful toolset accessible to administrators (User: Gandalf).
+- **In-Game Intervention**: Floating toolbar in all minigames to instantly force success/failure of steps or combat turns for testing or demo purposes.
 - **Enemy Management**: Add, remove, and configure enemies (HP, XP, Rewards).
 - **Boss Configuration**: Tag specific encounters as Bosses or Mini-Bosses with trigger steps.
 - **Export Tools**: Export Tome configurations to TypeScript for permanent integration.
 - **User Management**: View and banish users from the realm.
 - **Loot Control**: Adjust the probability weights for item rarities.
 
-### 7. Options & Localization
+### 6. Options & Localization
 - **Localization**: Fully translated into **English** and **French**.
 - **Customization**: Adjust number ranges, timer settings, and progress bar lengths in the Options menu.
 

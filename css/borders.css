@@ -1,0 +1,23 @@
+/* Roman Border Effect */
+.border-roman {
+  --corner: 12px;
+  border: var(--corner) solid transparent;
+  border-image-source: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="7" height="7" fill="%2310564F"><path d="M3 0h1a.5.5 0 0 1 0 1c0 1.1.9 2 2 2a.5.5 0 0 1 1 0v1a.5.5 0 0 1-1 0 2 2 0 0 0-2 2 .5.5 0 0 1 0 1H3a.5.5 0 0 1 0-1 2 2 0 0 0-2-2 .5.5 0 0 1-1 0V3a.5.5 0 0 1 1 0 2 2 0 0 0 2-2 .5.5 0 0 1 0-1Z" /></svg>');
+  border-image-slice: 3 fill;
+}
+
+/* Bevel Border Effect */
+.border-bevel {
+  --corner: 20px;
+  --bg: rgba(16, 86, 79, 0.8); /* Matches bg-parchment-900/80 */
+  border: var(--corner) solid transparent;
+  border-image-source:
+    linear-gradient(
+      to bottom right,
+      transparent 20%,
+      var(--bg)   20%,
+      var(--bg)   80%,
+      transparent 80%
+    );
+  border-image-slice: 40% fill;
+}

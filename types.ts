@@ -90,9 +90,14 @@ export interface Card {
 }
 
 export interface Companion {
+  id: string;
   name: string;
   role: string;
   level: number;
+  description?: string;
+  description_fr?: string;
+  image?: string;
+  tags?: string[]; // IDs mapping to statusEffects for bonuses
 }
 
 export type EncounterType = 'normal' | 'boss' | 'miniboss';
@@ -148,6 +153,7 @@ export interface PlayerStats {
   equipped: Item[]; // Items currently in active slots
   itemBonuses: string[]; // Deprecated, kept for backward compatibility if needed, or used for display text
   companions: Companion[];
+  activeCompanionId?: string; // The ID of the currently selected companion
   activeTomeId: string;
   researchPlayCount: number;
 }
