@@ -73,6 +73,30 @@
           background: rgba(136, 160, 154, 0.8); 
       }
 
+      /* Roman Border Effect */
+      .border-roman {
+        --corner: 12px;
+        border: var(--corner) solid transparent;
+        border-image-source: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="7" height="7" fill="%2310564F"><path d="M3 0h1a.5.5 0 0 1 0 1c0 1.1.9 2 2 2a.5.5 0 0 1 1 0v1a.5.5 0 0 1-1 0 2 2 0 0 0-2 2 .5.5 0 0 1 0 1H3a.5.5 0 0 1 0-1 2 2 0 0 0-2-2 .5.5 0 0 1-1 0V3a.5.5 0 0 1 1 0 2 2 0 0 0 2-2 .5.5 0 0 1 0-1Z" /></svg>');
+        border-image-slice: 3 fill;
+      }
+
+      /* Bevel Border Effect */
+      .border-bevel {
+        --corner: 20px;
+        --bg: rgba(16, 86, 79, 0.8); /* Matches bg-parchment-900/80 */
+        border: var(--corner) solid transparent;
+        border-image-source:
+          linear-gradient(
+            to bottom right,
+            transparent 20%,
+            var(--bg)   20%,
+            var(--bg)   80%,
+            transparent 80%
+          );
+        border-image-slice: 40% fill;
+      }
+
       /* Animation Definitions */
       @keyframes shimmer {
         0% { transform: translateX(-150%) skewX(-25deg); }
@@ -94,6 +118,92 @@
       @keyframes spin-slow {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
+      }
+
+      /* Slide Out Blurred Top Animation */
+      .slide-out-blurred-top {
+        -webkit-animation: slide-out-blurred-top 0.65s cubic-bezier(0.755, 0.050, 0.855, 0.060) both;
+        animation: slide-out-blurred-top 0.65s cubic-bezier(0.755, 0.050, 0.855, 0.060) both;
+      }
+
+      @-webkit-keyframes slide-out-blurred-top {
+        0% {
+          -webkit-transform: translateY(0) scaleY(1) scaleX(1);
+                  transform: translateY(0) scaleY(1) scaleX(1);
+          -webkit-transform-origin: 50% 0%;
+                  transform-origin: 50% 0%;
+          -webkit-filter: blur(0);
+                  filter: blur(0);
+          opacity: 1;
+        }
+        100% {
+          -webkit-transform: translateY(-1000px) scaleY(2) scaleX(0.2);
+                  transform: translateY(-1000px) scaleY(2) scaleX(0.2);
+          -webkit-transform-origin: 50% 0%;
+                  transform-origin: 50% 0%;
+          -webkit-filter: blur(40px);
+                  filter: blur(40px);
+          opacity: 0;
+        }
+      }
+      @keyframes slide-out-blurred-top {
+        0% {
+          -webkit-transform: translateY(0) scaleY(1) scaleX(1);
+                  transform: translateY(0) scaleY(1) scaleX(1);
+          -webkit-transform-origin: 50% 0%;
+                  transform-origin: 50% 0%;
+          -webkit-filter: blur(0);
+                  filter: blur(0);
+          opacity: 1;
+        }
+        100% {
+          -webkit-transform: translateY(-1000px) scaleY(2) scaleX(0.2);
+                  transform: translateY(-1000px) scaleY(2) scaleX(0.2);
+          -webkit-transform-origin: 50% 0%;
+                  transform-origin: 50% 0%;
+          -webkit-filter: blur(40px);
+                  filter: blur(40px);
+          opacity: 0;
+        }
+      }
+
+      /* Roll In Blurred Top Animation */
+      .roll-in-blurred-top {
+        -webkit-animation: roll-in-blurred-top 0.6s cubic-bezier(0.230, 1.000, 0.320, 1.000) both;
+                animation: roll-in-blurred-top 0.6s cubic-bezier(0.230, 1.000, 0.320, 1.000) both;
+      }
+
+      @-webkit-keyframes roll-in-blurred-top {
+        0% {
+          -webkit-transform: translateY(-800px) rotate(-720deg);
+                  transform: translateY(-800px) rotate(-720deg);
+          -webkit-filter: blur(50px);
+                  filter: blur(50px);
+          opacity: 0;
+        }
+        100% {
+          -webkit-transform: translateY(0) rotate(0deg);
+                  transform: translateY(0) rotate(0deg);
+          -webkit-filter: blur(0);
+                  filter: blur(0);
+          opacity: 1;
+        }
+      }
+      @keyframes roll-in-blurred-top {
+        0% {
+          -webkit-transform: translateY(-800px) rotate(-720deg);
+                  transform: translateY(-800px) rotate(-720deg);
+          -webkit-filter: blur(50px);
+                  filter: blur(50px);
+          opacity: 0;
+        }
+        100% {
+          -webkit-transform: translateY(0) rotate(0deg);
+                  transform: translateY(0) rotate(0deg);
+          -webkit-filter: blur(0);
+                  filter: blur(0);
+          opacity: 1;
+        }
       }
 
       /* Utility Classes */

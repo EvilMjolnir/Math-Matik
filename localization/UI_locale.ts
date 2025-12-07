@@ -26,6 +26,15 @@ export const UI_SOURCE = {
     deleteAccount: { en: "Delete Account & Data", fr: "Supprimer Compte & Données" },
     resetProfile: { en: "Reset Progress (Keep Account)", fr: "Réinitialiser Progression (Garder Compte)" },
   },
+  tomes: {
+    selectQuest: { en: "Select Your Quest", fr: "Choisissez votre Quête" },
+    infiniteMode: { en: "Infinite Mode", fr: "Mode Infini" },
+    infiniteDesc: { en: "Customizable difficulty via Options. No step limit.", fr: "Difficulté personnalisable. Pas de limite de pas." },
+    active: { en: "ACTIVE", fr: "ACTIF" },
+    progress: { en: "Progress", fr: "Progression" },
+    steps: { en: "Steps", fr: "Pas" },
+    locked: { en: "Locked", fr: "Verrouillé" },
+  },
   combat: {
     target: { en: "Target", fr: "Cible" },
     score: { en: "Score", fr: "Score" },
@@ -34,9 +43,18 @@ export const UI_SOURCE = {
     finalScore: { en: "Final Score", fr: "Score Final" },
     victory: { en: "Victory!", fr: "Victoire !" },
     defeat: { en: "Defeat", fr: "Défaite" },
-    monsterHP: { en: "Monster HP", fr: "PV Monstre" }, // Renamed from threshold
+    monsterHP: { en: "Monster HP", fr: "PV Monstre" },
     hpLost: { en: "HP Lost", fr: "PV Perdus" },
     encounterStart: { en: "Monster", fr: "Créature" },
+    trainingMode: { en: "Training Mode", fr: "Mode Entraînement" },
+    question: { en: "Question", fr: "Question" },
+    pendingDamage: { en: "Pending Damage", fr: "Dégâts en Attente" },
+    attackPower: { en: "Attack Power", fr: "Puissance d'Attaque" },
+    attack: { en: "Attack", fr: "Attaque" },
+    damageDealt: { en: "Damage Dealt", fr: "Dégâts Infligés" },
+    tryAgain: { en: "Try Again", fr: "Réessayer" },
+    continue: { en: "Continue Journey", fr: "Continuer l'Aventure" },
+    charge: { en: "Charge", fr: "Charge" },
   },
   movement: {
     steps: { en: "Steps Taken", fr: "Pas Effectués" },
@@ -68,6 +86,11 @@ export const UI_SOURCE = {
     exitWarning: { en: "You have paid the entry fee. If you leave now, your gold will be lost. Are you sure?", fr: "Vous avez payé les frais d'entrée. Si vous partez maintenant, votre or sera perdu. Êtes-vous sûr ?" },
     entryFee: { en: "Entry Fee", fr: "Frais d'entrée" },
     entryFeeTitle: { en: "Entry Fee Paid", fr: "Frais d'entrée Payés" },
+    deciphering: { en: "Deciphering", fr: "Déchiffrage" },
+    toUnlock: { en: "to unlock", fr: "pour ouvrir" },
+    lock: { en: "Lock", fr: "Serrure" },
+    locks: { en: "Locks", fr: "Serrures" },
+    lockSealed: { en: "The ancient lock remains sealed.", fr: "L'ancienne serrure reste scellée." },
   },
   auth: {
     username: { en: "Username", fr: "Nom" },
@@ -87,6 +110,15 @@ export const UI_SOURCE = {
       hero: { en: "Hero Name", fr: "Nom du Personnage" },
       code: { en: "Secret Code", fr: "Code Secret" }
     }
+  },
+  profile: {
+    save: { en: "Save", fr: "Sauvegarder" },
+    heroName: { en: "Hero Name", fr: "Nom du Héros" },
+    photoUrl: { en: "Photo URL", fr: "URL de la Photo" },
+    companions: { en: "Companions", fr: "Compagnons" },
+    empty: { en: "Empty.", fr: "Vide." },
+    effects: { en: "Effects", fr: "Effets" },
+    noEffects: { en: "No Magical Properties", fr: "Aucune Propriété Magique" }
   },
   bonuses: {
     xp: { en: "+{value}% XP Gain", fr: "+{value}% Gain d'XP" },
@@ -141,6 +173,15 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       deleteAccount: UI_SOURCE.buttons.deleteAccount[lang],
       resetProfile: UI_SOURCE.buttons.resetProfile[lang],
     },
+    tomes: {
+      selectQuest: UI_SOURCE.tomes.selectQuest[lang],
+      infiniteMode: UI_SOURCE.tomes.infiniteMode[lang],
+      infiniteDesc: UI_SOURCE.tomes.infiniteDesc[lang],
+      active: UI_SOURCE.tomes.active[lang],
+      progress: UI_SOURCE.tomes.progress[lang],
+      steps: UI_SOURCE.tomes.steps[lang],
+      locked: UI_SOURCE.tomes.locked[lang],
+    },
     combat: {
       target: UI_SOURCE.combat.target[lang],
       score: UI_SOURCE.combat.score[lang],
@@ -152,6 +193,15 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       monsterHP: UI_SOURCE.combat.monsterHP[lang],
       hpLost: UI_SOURCE.combat.hpLost[lang],
       encounterStart: UI_SOURCE.combat.encounterStart[lang],
+      trainingMode: UI_SOURCE.combat.trainingMode[lang],
+      question: UI_SOURCE.combat.question[lang],
+      pendingDamage: UI_SOURCE.combat.pendingDamage[lang],
+      attackPower: UI_SOURCE.combat.attackPower[lang],
+      attack: UI_SOURCE.combat.attack[lang],
+      damageDealt: UI_SOURCE.combat.damageDealt[lang],
+      tryAgain: UI_SOURCE.combat.tryAgain[lang],
+      continue: UI_SOURCE.combat.continue[lang],
+      charge: UI_SOURCE.combat.charge[lang],
     },
     movement: {
       steps: UI_SOURCE.movement.steps[lang],
@@ -183,6 +233,11 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       exitWarning: UI_SOURCE.recherche.exitWarning[lang],
       entryFee: UI_SOURCE.recherche.entryFee[lang],
       entryFeeTitle: UI_SOURCE.recherche.entryFeeTitle[lang],
+      deciphering: UI_SOURCE.recherche.deciphering[lang],
+      toUnlock: UI_SOURCE.recherche.toUnlock[lang],
+      lock: UI_SOURCE.recherche.lock[lang],
+      locks: UI_SOURCE.recherche.locks[lang],
+      lockSealed: UI_SOURCE.recherche.lockSealed[lang],
     },
     auth: {
       username: UI_SOURCE.auth.username[lang],
@@ -202,6 +257,15 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
         hero: UI_SOURCE.auth.placeholders.hero[lang],
         code: UI_SOURCE.auth.placeholders.code[lang],
       }
+    },
+    profile: {
+      save: UI_SOURCE.profile.save[lang],
+      heroName: UI_SOURCE.profile.heroName[lang],
+      photoUrl: UI_SOURCE.profile.photoUrl[lang],
+      companions: UI_SOURCE.profile.companions[lang],
+      empty: UI_SOURCE.profile.empty[lang],
+      effects: UI_SOURCE.profile.effects[lang],
+      noEffects: UI_SOURCE.profile.noEffects[lang],
     },
     bonuses: {
       xp: UI_SOURCE.bonuses.xp[lang],

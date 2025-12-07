@@ -1,11 +1,13 @@
 
+
+
 import React, { useState } from 'react';
 import { GameView, PlayerStats, Tome, Encounter, GameConfig, Item } from '../types';
 import PlayerStatsWidget from '../components/PlayerStatsWidget';
 import ActiveQuestPanel from '../components/ActiveQuestPanel';
 import GameMenu from '../components/GameMenu';
 import PlayerProfileModal from '../components/PlayerProfileModal';
-import { Settings, BookOpen, ShieldCheck, Footprints, Backpack, Users } from 'lucide-react';
+import { Settings, BookOpen, ShieldCheck, Footprints, Backpack, Users, FastForward } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuOpenSound } from '../services/audioService';
 
@@ -24,6 +26,7 @@ interface HomeProps {
   isAdmin: boolean;
   onLogout: () => void;
   onUpdateInventory: (inventory: Item[], equipped: Item[]) => void;
+  onProgressTome: (steps: number) => void;
 }
 
 const Home: React.FC<HomeProps> = ({ 
@@ -40,7 +43,8 @@ const Home: React.FC<HomeProps> = ({
   onStartRecherche, 
   isAdmin, 
   onLogout, 
-  onUpdateInventory
+  onUpdateInventory,
+  onProgressTome
 }) => {
   // We use this state to track WHICH tab is open. If null, modal is closed.
   const [activeProfileTab, setActiveProfileTab] = useState<'stats' | 'inventory' | 'companions' | null>(null);
@@ -55,6 +59,12 @@ const Home: React.FC<HomeProps> = ({
   const handleOpenProfile = (tab: 'stats' | 'inventory' | 'companions') => {
     playMenuOpenSound();
     setActiveProfileTab(tab);
+  };
+
+  const handleAdminAddSteps = () => {
+    if (activeTome && !isInfinite) {
+        onProgressTome(5);
+    }
   };
 
   return (
@@ -81,12 +91,25 @@ const Home: React.FC<HomeProps> = ({
                     <p className="text-2xl text-parchment-400 tracking-widest font-serif uppercase">{t.home.subtitle}</p>
                 </div>
 
-                <ActiveQuestPanel 
-                  activeEncounter={activeEncounter}
-                  activeTome={activeTome}
-                  t={t}
-                  lang={lang}
-                />
+                <div className="relative">
+                  <ActiveQuestPanel 
+                    activeEncounter={activeEncounter}
+                    activeTome={activeTome}
+                    t={t}
+                    lang={lang}
+                  />
+                  
+                  {isAdmin && activeTome && !isInfinite && !activeEncounter && (
+                     <button 
+                        onClick={handleAdminAddSteps}
+                        className="absolute bottom-4 right-4 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg hover:bg-purple-500 flex items-center z-10"
+                        title="Admin: Advance 5 steps"
+                     >
+                        <ShieldCheck className="w-3 h-3 mr-1" />
+                        +5 Steps
+                     </button>
+                  )}
+                </div>
 
                 <GameMenu 
                   t={t}

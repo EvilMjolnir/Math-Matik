@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Tome, Encounter } from '../types';
 import { Skull, Map, Infinity as InfinityIcon } from 'lucide-react';
@@ -15,8 +16,11 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ activeEncounter, ac
   const getTomeDesc = (tome: Tome) => (lang === 'fr' && tome.description_fr) ? tome.description_fr : tome.description;
 
   return (
-    <div className={`w-full p-6 rounded-lg border-2 mb-16 backdrop-blur-sm min-h-[120px] flex flex-col justify-center transition-colors duration-500
-      ${activeEncounter ? 'bg-red-900/80 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.4)]' : 'bg-parchment-900/80 border-parchment-700'}
+    <div className={`w-full p-6 mb-16 backdrop-blur-sm min-h-[120px] flex flex-col justify-center transition-all duration-500
+      ${activeEncounter 
+        ? 'rounded-lg border-2 bg-red-900/80 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.4)]' 
+        : 'border-bevel'
+      }
     `}>
       {activeEncounter ? (
         <div className="flex flex-col items-center animate-pulse">

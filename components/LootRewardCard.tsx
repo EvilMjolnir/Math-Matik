@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Item, Rarity } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
@@ -63,7 +64,7 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
   const textColorClass = activeStyle.text;
 
   return (
-    <div className="flex flex-col h-full items-center justify-center p-4 animate-fadeIn w-full overflow-y-auto custom-scrollbar">
+    <div className="flex flex-col h-full items-center justify-center p-4 roll-in-blurred-top w-full overflow-y-auto custom-scrollbar">
 
         <div 
           className="relative rounded-xl border-[6px] flex flex-col overflow-hidden shadow-2xl transition-all duration-500 w-full max-w-[450px] min-h-[650px] text-white"
@@ -148,7 +149,7 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
                             })}
                         </div>
                         ) : (
-                        <div className="text-center text-xs text-gray-600 uppercase tracking-widest py-2">No Magical Properties</div>
+                        <div className="text-center text-xs text-gray-600 uppercase tracking-widest py-2">{t.profile.noEffects}</div>
                         )}
                     </div>
                   </div>
@@ -158,7 +159,7 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
             <div className="flex flex-col items-center justify-center h-full p-6 text-center">
                <AlertTriangle className="w-20 h-20 text-red-500 mb-6 animate-pulse" />
                <h2 className="text-3xl font-serif font-bold mb-4">{t.combat.defeat}</h2>
-               <p className="text-red-200 text-lg leading-relaxed">The ancient lock remains sealed.</p>
+               <p className="text-red-200 text-lg leading-relaxed">{t.recherche.lockSealed}</p>
             </div>
           )}
         </div>

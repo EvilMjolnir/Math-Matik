@@ -1,4 +1,7 @@
 
+
+
+
 import React, { useState, useEffect } from 'react';
 import { GameConfig, MathProblem, Rarity, Item, Card, MinigameProps } from '../types';
 import { generateDivision } from '../services/mathService';
@@ -7,7 +10,7 @@ import Keypad from '../components/Keypad';
 import ScratchpadModal from '../components/ScratchpadModal';
 import LootRewardCard from '../components/LootRewardCard';
 import { RARITY_COLORS, RARITY_TEXT_COLORS } from '../constants';
-import { ChevronLeft, Search, Loader2, Coins, AlertTriangle, CheckCircle, XCircle, Lock, PencilLine } from 'lucide-react';
+import { ChevronLeft, Search, Loader2, Coins, AlertTriangle, CheckCircle, XCircle, Lock, PencilLine, ShieldCheck, Key } from 'lucide-react';
 import { useLocalization } from '../localization';
 import Modal from '../components/Modal';
 import { playMenuOpenSound, playMenuBackSound } from '../services/audioService';
@@ -30,16 +33,17 @@ const DIFFICULTY_CONFIG: Record<Rarity, { steps: number; wins: number }> = {
 const CHEST_IMAGES: Record<Rarity, string> = {
   [Rarity.COMMON]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/common.png',
   [Rarity.RARE]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/rare.png',
-  [Rarity.MAGIC]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/magic.png',
+  [Rarity.MAGIC]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/magic2.png',
   [Rarity.LEGENDARY]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/legendary.png',
   [Rarity.MYTHIC]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/Mythic.png',
 };
 
-const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgressTome, onAddItem, playerGold = 0, lootWeights = [] }) => {
+const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgressTome, onAddItem, playerGold = 0, lootWeights = [], isAdmin }) => {
   const { t } = useLocalization();
   const [phase, setPhase] = useState<'select' | 'solve' | 'result'>('select');
   const [cards, setCards] = useState<Card[]>([]);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+  const [animatingCardId, setAnimatingCardId] = useState<string | null>(null);
   
   // Gameplay State
   const [problem, setProblem] = useState<MathProblem | null>(null);
@@ -84,19 +88,27 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
   };
 
   const handleCardSelect = (card: Card) => {
-    setSelectedCard(card);
-    
-    // Initialize Difficulty
-    const diff = DIFFICULTY_CONFIG[card.rarity] || { steps: 1, wins: 1 };
-    setTotalSteps(diff.steps);
-    setWinsNeeded(diff.wins);
-    setCurrentWins(0);
-    setCurrentLosses(0);
-    
-    setProblem(generateDivision(config.divisionMaxDividend));
-    setPhase('solve');
-    setUserInput('');
-    setFeedback('none');
+    if (animatingCardId) return; // Prevent double clicks
+    setAnimatingCardId(card.id);
+    playMenuOpenSound();
+
+    // Delay the transition to allow the animation to play
+    setTimeout(() => {
+      setSelectedCard(card);
+      
+      // Initialize Difficulty
+      const diff = DIFFICULTY_CONFIG[card.rarity] || { steps: 1, wins: 1 };
+      setTotalSteps(diff.steps);
+      setWinsNeeded(diff.wins);
+      setCurrentWins(0);
+      setCurrentLosses(0);
+      
+      setProblem(generateDivision(config.divisionMaxDividend));
+      setPhase('solve');
+      setUserInput('');
+      setFeedback('none');
+      setAnimatingCardId(null);
+    }, 600); // 0.6s match animation duration approx
   };
 
   const handleInput = (num: number | string) => {
@@ -145,6 +157,10 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
       setFeedback('none');
 
     }, 1000);
+  };
+
+  const adminWin = () => {
+      finishGame(true);
   };
 
   const finishGame = async (isSuccess: boolean) => {
@@ -200,10 +216,11 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
               <button
                 key={card.id}
                 onClick={() => handleCardSelect(card)}
+                disabled={!!animatingCardId}
                 className={`
                   h-80 rounded-xl border-4 shadow-lg transform transition-all relative overflow-hidden flex flex-col items-center p-0
                   ${card.color}
-                  hover:scale-105
+                  ${animatingCardId === card.id ? 'slide-out-blurred-top' : (!animatingCardId ? 'hover:scale-105' : '')}
                 `}
               >
                 <div className="w-full h-3/5 relative bg-black/20 overflow-hidden flex items-center justify-center border-b border-black/10">
@@ -224,7 +241,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
                     </span>
                     <div className="mt-2 text-white/90 text-xs font-bold flex items-center bg-black/50 px-3 py-1 rounded-full border border-white/10">
                         <Lock className="w-3 h-3 mr-1" />
-                        {diff.wins} {diff.wins > 1 ? 'Locks' : 'Lock'}
+                        {diff.wins} {diff.wins > 1 ? t.recherche.locks : t.recherche.lock}
                     </div>
                 </div>
               </button>
@@ -262,7 +279,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
         {/* Progress Header */}
         <div className="mb-6 flex flex-col items-center">
            <div className={`px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-2 ${selectedCard ? RARITY_TEXT_COLORS[selectedCard.rarity] : 'text-white'} bg-black/40 border border-white/20`}>
-             Deciphering {selectedCard?.rarity} Cache
+             {t.recherche.deciphering} {selectedCard?.rarity} Cache
            </div>
            
            <div className="flex items-center space-x-2">
@@ -286,7 +303,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
               })}
            </div>
            <div className="text-xs text-parchment-400 mt-1">
-             {currentWins} / {winsNeeded} to unlock
+             {currentWins} / {winsNeeded} {t.recherche.toUnlock}
            </div>
         </div>
 
@@ -326,6 +343,22 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
            )}
         </div>
         
+        {isAdmin && (
+         <div className="absolute bottom-4 left-4 flex flex-col space-y-2 z-50">
+             <div className="text-xs text-purple-300 font-bold uppercase tracking-wider mb-1 flex items-center">
+                 <ShieldCheck className="w-3 h-3 mr-1" />
+                 Admin
+             </div>
+             <button 
+                onClick={adminWin}
+                className="bg-green-600 text-white p-2 rounded-full shadow hover:bg-green-500"
+                title="Instant Unlock"
+             >
+                 <Key className="w-4 h-4" />
+             </button>
+         </div>
+        )}
+
         <div className="mt-auto mb-12">
           <Keypad 
             onInput={handleInput} 

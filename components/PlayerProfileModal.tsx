@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { PlayerStats, Item, EffectType } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS } from '../constants';
@@ -267,7 +268,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                       onChange={(e) => setTempName(e.target.value)}
                       className="flex-1 bg-parchment-100 border border-parchment-500 px-2 py-1 text-base font-serif font-bold rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
                       maxLength={20}
-                      placeholder="Hero Name"
+                      placeholder={t.profile.heroName}
                      />
                    </div>
                    <div className="flex items-center">
@@ -277,19 +278,19 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                         value={tempPhoto}
                         onChange={(e) => setTempPhoto(e.target.value)}
                         className="flex-1 bg-parchment-100 border border-parchment-500 px-2 py-1 text-sm font-sans rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
-                        placeholder="Photo URL (e.g. https://...)"
+                        placeholder={t.profile.photoUrl}
                       />
                    </div>
                    <button onClick={handleSave} className="self-end px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700 font-bold text-sm flex items-center">
                      <Check className="w-4 h-4 mr-1" />
-                     Save
+                     {t.profile.save}
                    </button>
                  </div>
                ) : (
                  <>
                    <div className="flex items-center group">
                      <h2 className="text-3xl font-serif font-bold text-parchment-900 mr-3">
-                        {activeTab === 'inventory' ? t.equipment.title : activeTab === 'companions' ? 'Companions' : player.username}
+                        {activeTab === 'inventory' ? t.equipment.title : activeTab === 'companions' ? t.profile.companions : player.username}
                      </h2>
                      {activeTab === 'stats' && (
                         <button onClick={handleEditClick} className="opacity-0 group-hover:opacity-100 text-parchment-600 hover:text-amber-700 transition-opacity">
@@ -315,11 +316,6 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
             <X className="w-8 h-8 text-parchment-800" />
           </button>
         </div>
-
-        {/* 
-            Navigation Tabs REMOVED per user request. 
-            The view is controlled strictly by initialTab passed by parent buttons.
-        */}
 
         {/* Body */}
         <div className="p-8 overflow-y-auto custom-scrollbar flex-1 bg-parchment-200 relative">
@@ -438,7 +434,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                                 ))
                              ) : (
                                 <div className="text-center py-10 text-parchment-500 italic">
-                                    Empty.
+                                    {t.profile.empty}
                                 </div>
                              )}
                          </div>
@@ -501,7 +497,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
 
                     {viewItem.tags && viewItem.tags.length > 0 && (
                          <div className="w-full max-w-sm bg-white/50 p-4 rounded-lg border border-parchment-300">
-                             <h4 className="font-bold text-parchment-900 mb-3 border-b border-parchment-300 pb-1">Effects</h4>
+                             <h4 className="font-bold text-parchment-900 mb-3 border-b border-parchment-300 pb-1">{t.profile.effects}</h4>
                              <div className="space-y-2">
                                 {viewItem.tags.map(tag => {
                                     const effect = STATUS_EFFECTS[tag];

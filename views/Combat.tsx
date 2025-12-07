@@ -1,4 +1,8 @@
 
+
+
+
+
 import React, { useState, useEffect, useRef } from 'react';
 import { GameConfig, MathProblem, MinigameProps, PlayerStats } from '../types';
 import { generateMultiplication, generateBossProblem } from '../services/mathService';
@@ -8,7 +12,7 @@ import Modal from '../components/Modal';
 import ScratchpadModal from '../components/ScratchpadModal';
 import EncounterIntroCard from '../components/EncounterIntroCard';
 import { useLocalization } from '../localization';
-import { ChevronLeft, Timer, Skull, Trophy, PencilLine, Zap, Sword, Heart, User, Shield } from 'lucide-react';
+import { ChevronLeft, Timer, Skull, Trophy, PencilLine, Zap, Sword, Heart, User, Shield, ShieldCheck, HeartCrack, Crosshair, Check, X } from 'lucide-react';
 import { playMenuBackSound } from '../services/audioService';
 
 interface CombatProps extends MinigameProps {
@@ -30,7 +34,8 @@ const Combat: React.FC<CombatProps> = ({
   encounter, 
   onEncounterComplete,
   onTakeDamage,
-  playerStats
+  playerStats,
+  isAdmin
 }) => {
   const { t, lang } = useLocalization();
   
@@ -254,6 +259,96 @@ const Combat: React.FC<CombatProps> = ({
       }
   };
 
+  // --- Unified Answer Handlers (Used by Validation & Admin) ---
+
+  const handleCorrectAnswerBoss = () => {
+      setFeedback('correct');
+      // Add time bonus (capped at max)
+      setBossTimer(prev => Math.min(activeBossConfig.timerDuration, prev + 2));
+      
+      // Fill Gauge
+      const newGauge = actionGauge + 1;
+      
+      setTimeout(() => {
+        if (newGauge >= activeBossConfig.actionsPerTurn) {
+            // Attack!
+            handlePlayerAttackBoss();
+        } else {
+            setActionGauge(newGauge);
+        }
+        
+        // Next Problem
+        setBossProblem(generateBossProblem(config.multiplicationMax));
+        setUserInput('');
+        setFeedback('none');
+      }, 800);
+  };
+
+  const handleWrongAnswerBoss = () => {
+      setFeedback('wrong');
+      // Penalty: Remove time
+      setBossTimer(prev => Math.max(1, prev - 3));
+      
+      setTimeout(() => {
+         setBossProblem(generateBossProblem(config.multiplicationMax));
+         setUserInput('');
+         setFeedback('none');
+      }, 800);
+  };
+
+  const handleCorrectAnswerNormal = () => {
+    setFeedback('correct');
+    // Calculate score / damage
+    
+    if (encounter) {
+        // New Encounter Logic
+        const timeElapsed = normalMaxTime - timeLeft;
+        let atkBonus = 0;
+        
+        // Gold: First 2 seconds
+        if (timeElapsed <= 2) {
+            atkBonus = 2;
+        } 
+        // Green: More than 5 seconds left
+        else if (timeLeft > 5) {
+            atkBonus = 1;
+        }
+        // Red: Last 5 seconds -> Bonus 0
+        
+        const totalDmg = playerAttackPower + atkBonus;
+        setPendingTurnDamage(prev => prev + totalDmg);
+    } else {
+        // Infinite Mode Scoring
+        let points = 0;
+        if (timeLeft > 7.5) points = 3;
+        else if (timeLeft > 5) points = 2;
+        else if (timeLeft > 0) points = 1;
+        
+        setScore(prev => prev + points);
+        scoreRef.current += points; 
+    }
+    
+    setTimeout(nextQuestionNormal, 500);
+  };
+
+  const handleWrongAnswerNormal = () => {
+    setFeedback('wrong');
+    
+    if (encounter) {
+        // Encounter: Immediate Damage to Player
+        if (onTakeDamage) onTakeDamage(effectiveAttack);
+        // Zero damage to monster for this action
+        setTimeout(nextQuestionNormal, 500);
+    } else {
+        // Infinite Mode: Penalty time
+        setTimeLeft(prev => Math.max(0, prev - 1));
+        setUserInput('');
+        setTimeout(() => setFeedback('none'), 500);
+    }
+  };
+
+  // --- Validation ---
+
   const handleValidate = () => {
     if (isBossMode) {
         validateBoss();
@@ -268,38 +363,9 @@ const Combat: React.FC<CombatProps> = ({
       const isCorrect = userInput.toString() === bossProblem.answer.toString();
 
       if (isCorrect) {
-          setFeedback('correct');
-          
-          // Add time bonus (capped at max)
-          setBossTimer(prev => Math.min(activeBossConfig.timerDuration, prev + 2));
-          
-          // Fill Gauge
-          const newGauge = actionGauge + 1;
-          
-          setTimeout(() => {
-            if (newGauge >= activeBossConfig.actionsPerTurn) {
-                // Attack!
-                handlePlayerAttackBoss();
-            } else {
-                setActionGauge(newGauge);
-            }
-            
-            // Next Problem
-            setBossProblem(generateBossProblem(config.multiplicationMax));
-            setUserInput('');
-            setFeedback('none');
-          }, 800);
-
+          handleCorrectAnswerBoss();
       } else {
-          setFeedback('wrong');
-          // Penalty: Remove time
-          setBossTimer(prev => Math.max(1, prev - 3));
-          
-          setTimeout(() => {
-             setBossProblem(generateBossProblem(config.multiplicationMax));
-             setUserInput('');
-             setFeedback('none');
-          }, 800);
+          handleWrongAnswerBoss();
       }
   };
 
@@ -310,52 +376,9 @@ const Combat: React.FC<CombatProps> = ({
     const correctAnswer = problems[currentIdx].answer;
 
     if (answer === correctAnswer) {
-      setFeedback('correct');
-      // Calculate score / damage
-      
-      if (encounter) {
-          // New Encounter Logic
-          const timeElapsed = normalMaxTime - timeLeft;
-          let atkBonus = 0;
-          
-          // Gold: First 2 seconds
-          if (timeElapsed <= 2) {
-              atkBonus = 2;
-          } 
-          // Green: More than 5 seconds left
-          else if (timeLeft > 5) {
-              atkBonus = 1;
-          }
-          // Red: Last 5 seconds -> Bonus 0
-          
-          const totalDmg = playerAttackPower + atkBonus;
-          setPendingTurnDamage(prev => prev + totalDmg);
-      } else {
-          // Infinite Mode Scoring
-          let points = 0;
-          if (timeLeft > 7.5) points = 3;
-          else if (timeLeft > 5) points = 2;
-          else if (timeLeft > 0) points = 1;
-          
-          setScore(prev => prev + points);
-          scoreRef.current += points; 
-      }
-      
-      setTimeout(nextQuestionNormal, 500);
+      handleCorrectAnswerNormal();
     } else {
-      setFeedback('wrong');
-      
-      if (encounter) {
-          // Encounter: Immediate Damage to Player
-          if (onTakeDamage) onTakeDamage(effectiveAttack);
-          // Zero damage to monster for this action
-          setTimeout(nextQuestionNormal, 500);
-      } else {
-          // Infinite Mode: Penalty time
-          setTimeLeft(prev => Math.max(0, prev - 1));
-          setUserInput('');
-          setTimeout(() => setFeedback('none'), 500);
-      }
+      handleWrongAnswerNormal();
     }
   };
 
@@ -374,6 +397,25 @@ const Combat: React.FC<CombatProps> = ({
     } else {
       onBack();
     }
+  };
+
+  // --- Admin Controls ---
+  const adminWin = () => {
+      if (gameState === 'finished') return;
+      if (isBossMode) {
+          handleCorrectAnswerBoss();
+      } else {
+          handleCorrectAnswerNormal();
+      }
+  };
+
+  const adminFail = () => {
+      if (gameState === 'finished') return;
+      if (isBossMode) {
+          handleWrongAnswerBoss();
+      } else {
+          handleWrongAnswerNormal();
+      }
   };
 
   // --- Render Helpers ---
@@ -436,14 +478,14 @@ const Combat: React.FC<CombatProps> = ({
               </div>
               <div className="overflow-hidden">
                  <div className="text-parchment-100 font-bold truncate">{playerStats?.username || "Hero"}</div>
-                 <div className="text-xs text-parchment-400">Lvl {playerStats?.level || 1}</div>
+                 <div className="text-xs text-parchment-400">{t.common.level} {playerStats?.level || 1}</div>
               </div>
            </div>
 
            {/* Player HP */}
            <div className="mb-3">
               <div className="flex justify-between text-xs text-parchment-300 mb-1">
-                 <span className="flex items-center"><Heart className="w-3 h-3 text-red-500 mr-1"/> HP</span>
+                 <span className="flex items-center"><Heart className="w-3 h-3 text-red-500 mr-1"/> {t.common.hp}</span>
                  <span>{playerStats?.currentHp}/{playerStats?.maxHp}</span>
               </div>
               <div className="w-full h-3 bg-gray-900 rounded-full overflow-hidden border border-gray-700">
@@ -458,7 +500,7 @@ const Combat: React.FC<CombatProps> = ({
            {isBossMode ? (
               <div>
                   <div className="flex justify-between text-xs text-amber-400 mb-1 font-bold">
-                      <span className="flex items-center"><Zap className="w-3 h-3 mr-1"/> Charge</span>
+                      <span className="flex items-center"><Zap className="w-3 h-3 mr-1"/> {t.combat.charge}</span>
                       <span>{playerAttackPower} Dmg</span>
                   </div>
                   <div className="w-full h-4 bg-gray-900 border border-amber-900/50 rounded-full overflow-hidden relative">
@@ -476,7 +518,7 @@ const Combat: React.FC<CombatProps> = ({
               </div>
            ) : (
               <div className="flex items-center justify-between text-parchment-300 bg-white/5 p-2 rounded">
-                 <span className="text-xs uppercase">Attack Power</span>
+                 <span className="text-xs uppercase">{t.combat.attackPower}</span>
                  <span className="font-bold flex items-center text-amber-500"><Sword className="w-4 h-4 mr-1"/> {playerAttackPower}</span>
               </div>
            )}
@@ -540,14 +582,14 @@ const Combat: React.FC<CombatProps> = ({
 
            {!encounter && !isBossMode && (
                <div className="absolute top-0 right-0 text-parchment-500 font-bold text-sm">
-                   Question {currentIdx + 1} / {problems.length}
+                   {t.combat.question} {currentIdx + 1} / {problems.length}
                </div>
            )}
 
            {/* Normal Encounter Pending Damage */}
            {encounter && !isBossMode && (
                <div className="mt-4 flex flex-col items-center">
-                   <div className="text-xs text-parchment-400 uppercase tracking-widest mb-1">Pending Damage</div>
+                   <div className="text-xs text-parchment-400 uppercase tracking-widest mb-1">{t.combat.pendingDamage}</div>
                    <div className="text-2xl font-bold text-red-400">-{pendingTurnDamage}</div>
                </div>
            )}
@@ -559,7 +601,7 @@ const Combat: React.FC<CombatProps> = ({
                 <div className="flex items-center justify-end mb-2">
                     <div className="text-right overflow-hidden mr-2">
                         <div className="text-red-200 font-bold truncate">{(lang === 'fr' && encounter.name_fr) ? encounter.name_fr : encounter.name}</div>
-                        <div className="text-xs text-red-400 uppercase tracking-wider">{encounter.type === 'boss' ? 'Boss' : 'Enemy'}</div>
+                        <div className="text-xs text-red-400 uppercase tracking-wider">{encounter.type === 'boss' ? 'Boss' : t.combat.encounterStart}</div>
                     </div>
                     <div className="w-10 h-10 rounded-full bg-red-900 border-2 border-red-500 flex items-center justify-center overflow-hidden">
                         {encounter.image ? (
@@ -573,7 +615,7 @@ const Combat: React.FC<CombatProps> = ({
                 {/* Enemy HP / Progress */}
                 <div className="mb-3">
                     <div className="flex justify-between text-xs text-red-300 mb-1">
-                        <span>{isBossMode ? 'HP' : 'Damage Dealt'}</span>
+                        <span>{isBossMode ? t.common.hp : t.combat.damageDealt}</span>
                         <span>
                             {isBossMode ? bossHp : encounterScore}/{effectiveMaxHp}
                         </span>
@@ -589,7 +631,7 @@ const Combat: React.FC<CombatProps> = ({
                 {/* Stats */}
                 <div className="space-y-2">
                     <div className="flex items-center justify-between text-red-200 bg-white/5 p-2 rounded">
-                        <span className="text-xs uppercase">Attack</span>
+                        <span className="text-xs uppercase">{t.combat.attack}</span>
                         <span className="font-bold flex items-center text-red-500">
                             <Sword className="w-4 h-4 mr-1"/> {effectiveAttack}
                         </span>
@@ -608,12 +650,35 @@ const Combat: React.FC<CombatProps> = ({
         ) : (
              <div className="hidden md:flex w-1/4 flex-col justify-center items-center opacity-30">
                  <Shield className="w-16 h-16 text-parchment-500 mb-2" />
-                 <p className="text-parchment-500 text-center text-sm">Training Mode</p>
+                 <p className="text-parchment-500 text-center text-sm">{t.combat.trainingMode}</p>
                  <div className="mt-4 text-2xl font-bold text-amber-500">{score} pts</div>
              </div>
         )}
 
       </div>
+      
+      {isAdmin && (
+         <div className="absolute bottom-4 left-4 flex flex-col space-y-2 z-50">
+             <div className="text-xs text-purple-300 font-bold uppercase tracking-wider mb-1 flex items-center">
+                 <ShieldCheck className="w-3 h-3 mr-1" />
+                 Admin
+             </div>
+             <button 
+                onClick={adminWin}
+                className="bg-green-600 text-white p-2 rounded-full shadow hover:bg-green-500"
+                title="Force Action Success"
+             >
+                 <Check className="w-4 h-4" />
+             </button>
+             <button 
+                onClick={adminFail}
+                className="bg-red-600 text-white p-2 rounded-full shadow hover:bg-red-500"
+                title="Force Action Failure"
+             >
+                 <X className="w-4 h-4" />
+             </button>
+         </div>
+      )}
 
       <div className="mt-auto">
         <Keypad 
@@ -627,7 +692,7 @@ const Combat: React.FC<CombatProps> = ({
 
       <Modal 
         title={t.combat.battleReport}
-        actionLabel={isVictory ? (encounter ? "Continue Journey" : t.buttons.back) : "Try Again"}
+        actionLabel={isVictory ? (encounter ? t.combat.continue : t.buttons.back) : t.combat.tryAgain}
         onAction={handleModalAction} 
         isOpen={gameState === 'finished'}
         colorClass={isVictory ? "bg-parchment-200" : "bg-red-950 text-white border-red-500"}

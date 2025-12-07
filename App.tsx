@@ -1,4 +1,6 @@
 
+
+
 import React, { useState, useEffect } from 'react';
 import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item, StorageMode } from './types';
 import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS } from './constants';
@@ -420,6 +422,7 @@ const App: React.FC = () => {
       onProgressTome: handleTomeProgress,
       onTakeDamage: takeDamage,
       onAddGold: addGold,
+      isAdmin: isAdmin,
     };
 
     switch (currentView) {
@@ -489,6 +492,7 @@ const App: React.FC = () => {
                 isAdmin={isAdmin}
                 onLogout={handleLogout}
                 onUpdateInventory={updateInventoryLoadout}
+                onProgressTome={handleTomeProgress}
             />
         );
     }

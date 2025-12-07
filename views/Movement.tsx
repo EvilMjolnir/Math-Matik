@@ -1,11 +1,13 @@
 
+
+
 import React, { useState, useEffect } from 'react';
 import { GameConfig, MathProblem, MinigameProps } from '../types';
 import { generateAdditionSubtraction } from '../services/mathService';
 import Keypad from '../components/Keypad';
 import Modal from '../components/Modal';
 import ScratchpadModal from '../components/ScratchpadModal';
-import { ChevronLeft, Footprints, PencilLine } from 'lucide-react';
+import { ChevronLeft, Footprints, PencilLine, ShieldCheck, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound } from '../services/audioService';
 
@@ -17,7 +19,7 @@ type SegmentStatus = 'empty' | 'correct' | 'wrong';
 
 const XP_PER_CORRECT = 1;
 
-const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgressTome }) => {
+const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgressTome, isAdmin }) => {
   const { t } = useLocalization();
   const [problem, setProblem] = useState<MathProblem | null>(null);
   const [segmentResults, setSegmentResults] = useState<SegmentStatus[]>([]);
@@ -53,6 +55,13 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
     
     const answer = parseInt(userInput);
     const isCorrect = answer === problem.answer;
+    
+    processResult(isCorrect);
+  };
+
+  const processResult = (isCorrect: boolean) => {
+    if (currentSegmentIndex >= config.targetSegments) return;
+
     const newStatus = isCorrect ? 'correct' : 'wrong';
 
     setSegmentResults(prev => {
@@ -73,6 +82,14 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
         generateNewProblem();
       }
     }, 1000);
+  };
+
+  const adminWin = () => {
+    processResult(true);
+  };
+
+  const adminFail = () => {
+    processResult(false);
   };
 
   const finishGame = () => {
@@ -149,6 +166,29 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
           </div>
         )}
       </div>
+
+      {isAdmin && (
+         <div className="absolute bottom-4 left-4 flex flex-col space-y-2 z-50">
+             <div className="text-xs text-purple-300 font-bold uppercase tracking-wider mb-1 flex items-center">
+                 <ShieldCheck className="w-3 h-3 mr-1" />
+                 Admin
+             </div>
+             <button 
+                onClick={adminWin}
+                className="bg-green-600 text-white p-2 rounded-full shadow hover:bg-green-500"
+                title="Force Step Success"
+             >
+                 <ThumbsUp className="w-4 h-4" />
+             </button>
+             <button 
+                onClick={adminFail}
+                className="bg-red-600 text-white p-2 rounded-full shadow hover:bg-red-500"
+                title="Force Step Failure"
+             >
+                 <ThumbsDown className="w-4 h-4" />
+             </button>
+         </div>
+      )}
 
       <div className="mt-auto mb-12">
         <Keypad 

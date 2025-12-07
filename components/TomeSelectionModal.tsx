@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Tome } from '../types';
 import { Book, Lock, CheckCircle, Infinity } from 'lucide-react';
@@ -14,7 +15,7 @@ interface TomeSelectionModalProps {
 }
 
 const TomeSelectionModal: React.FC<TomeSelectionModalProps> = ({ tomes, activeTomeId, onSelectTome, isOpen, onClose }) => {
-  const { lang } = useLocalization();
+  const { lang, t } = useLocalization();
 
   if (!isOpen) return null;
 
@@ -25,10 +26,10 @@ const TomeSelectionModal: React.FC<TomeSelectionModalProps> = ({ tomes, activeTo
         <div className="flex justify-between items-center p-6 border-b-2 border-parchment-400 bg-parchment-300/50 rounded-t-lg">
           <h2 className="text-3xl font-serif font-bold text-parchment-900 flex items-center">
             <Book className="w-8 h-8 mr-3 text-parchment-800" />
-            Select Your Quest
+            {t.tomes.selectQuest}
           </h2>
           <button onClick={() => { playMenuBackSound(); onClose(); }} className="px-4 py-2 bg-parchment-800 text-parchment-100 rounded hover:bg-parchment-900 font-bold font-serif">
-            Close
+            {t.buttons.close}
           </button>
         </div>
 
@@ -50,13 +51,13 @@ const TomeSelectionModal: React.FC<TomeSelectionModalProps> = ({ tomes, activeTo
                 `}
               >
                 <Infinity className={`w-12 h-12 mb-4 ${activeTomeId === 'infinite' ? 'text-purple-700' : 'text-parchment-700'}`} />
-                <h3 className="text-xl font-bold font-serif mb-2">Infinite Mode</h3>
+                <h3 className="text-xl font-bold font-serif mb-2">{t.tomes.infiniteMode}</h3>
                 <p className="text-sm text-parchment-700">
-                  Customizable difficulty via Options. No step limit.
+                  {t.tomes.infiniteDesc}
                 </p>
                 {activeTomeId === 'infinite' && (
                   <div className="mt-4 bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">
-                     ACTIVE
+                     {t.tomes.active}
                    </div>
                 )}
             </button>
@@ -128,8 +129,8 @@ const TomeSelectionModal: React.FC<TomeSelectionModalProps> = ({ tomes, activeTo
                     
                     <div className="mt-auto pt-4 w-full">
                       <div className={`flex justify-between text-xs font-bold uppercase mb-1 ${textColor}`}>
-                        <span>Progress</span>
-                        <span>{Math.floor(tome.currentDistance)} / {tome.totalDistance} Steps</span>
+                        <span>{t.tomes.progress}</span>
+                        <span>{Math.floor(tome.currentDistance)} / {tome.totalDistance} {t.tomes.steps}</span>
                       </div>
                       <div className={`w-full h-3 rounded-full overflow-hidden border border-opacity-30 ${progressBarBg}`}>
                         <div 
@@ -141,7 +142,7 @@ const TomeSelectionModal: React.FC<TomeSelectionModalProps> = ({ tomes, activeTo
 
                     {isActive && (
                       <div className="absolute -top-3 -left-3 bg-amber-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md border border-amber-800 z-20">
-                        ACTIVE
+                        {t.tomes.active}
                       </div>
                     )}
                   </button>

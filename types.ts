@@ -1,5 +1,6 @@
 
 
+
 export enum GameView {
   HOME = 'HOME',
   MOVEMENT = 'MOVEMENT',
@@ -169,4 +170,5 @@ export interface MinigameProps {
   onTakeDamage?: (amount: number) => void;
   playerStats?: PlayerStats; // Passed down for calculating damage
   lootWeights?: LootWeight[]; // Added for dynamic loot
+  isAdmin?: boolean;
 }

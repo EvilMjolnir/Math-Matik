@@ -24,6 +24,15 @@ export interface Translation {
     deleteAccount: string;
     resetProfile: string;
   };
+  tomes: {
+    selectQuest: string;
+    infiniteMode: string;
+    infiniteDesc: string;
+    active: string;
+    progress: string;
+    steps: string;
+    locked: string;
+  };
   combat: {
     target: string;
     score: string;
@@ -32,9 +41,18 @@ export interface Translation {
     finalScore: string;
     victory: string;
     defeat: string;
-    monsterHP: string; // Renamed from threshold
+    monsterHP: string;
     hpLost: string;
     encounterStart: string;
+    trainingMode: string;
+    question: string;
+    pendingDamage: string;
+    attackPower: string;
+    attack: string;
+    damageDealt: string;
+    tryAgain: string;
+    continue: string;
+    charge: string;
   };
   movement: {
     steps: string;
@@ -67,6 +85,11 @@ export interface Translation {
     exitWarning: string;
     entryFee: string;
     entryFeeTitle: string;
+    deciphering: string;
+    toUnlock: string;
+    lock: string;
+    locks: string;
+    lockSealed: string;
   };
   auth: {
     username: string;
@@ -86,6 +109,15 @@ export interface Translation {
       hero: string;
       code: string;
     }
+  };
+  profile: {
+    save: string;
+    heroName: string;
+    photoUrl: string;
+    companions: string;
+    empty: string;
+    effects: string;
+    noEffects: string;
   };
   bonuses: {
     xp: string;
