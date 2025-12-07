@@ -26,7 +26,7 @@ const AppWrapper: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  const { t, lang, setLang } = useLocalization();
+  const { t, lang } = useLocalization();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentView, setCurrentView] = useState<GameView>(GameView.HOME);
   const [config, setConfig] = useState<GameConfig>(DEFAULT_CONFIG);
