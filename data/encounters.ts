@@ -1,9 +1,9 @@
 
-
 import { Encounter } from '../types';
 
 export const ENCOUNTERS: Record<string, Encounter> = {
-  // --- Tome 1: Forest ---
+  // --- Tome 1: Forest (Levels 1-2) ---
+  // HP kept low for new players, Boss HP slightly increased.
   t1_wolf: {
     id: 't1_wolf',
     name: 'Timber Wolf',
@@ -47,21 +47,22 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     name_fr: 'Le Gardien des Racines',
     description: 'An ancient ent guarding the secrets of the forest.',
     description_fr: 'Un ent ancien gardant les secrets de la forêt.',
-    monsterHP: 20,
+    monsterHP: 25, // Increased from 20
     attack: 10,
     goldReward: 10,
     xpReward: 50,
     type: 'boss'
   },
 
-  // --- Tome 2: Iron Fortress ---
+  // --- Tome 2: Iron Fortress (Levels 3-4) ---
+  // HP increased by ~20%
   t2_exponent_eater: {
     id: 't2_exponent_eater',
     name: 'Exponent Eater',
     name_fr: 'Mangeur d’Exposants',
     description: 'Its power level is growing exponentially! Only correct simplification can stop it!',
     description_fr: 'Son niveau de puissance croît de façon exponentielle ! Seule la bonne simplification peut l’arrêter !',
-    monsterHP: 22,
+    monsterHP: 26, // Increased from 22
     attack: 12,
     goldReward: 6,
     xpReward: 18,
@@ -73,7 +74,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     name_fr: 'Ogre des Fractions',
     description: 'He splits everything into parts. Unify the portions to defeat him!',
     description_fr: 'Il divise tout en parties. Unifiez les portions pour le vaincre !',
-    monsterHP: 25,
+    monsterHP: 30, // Increased from 25
     attack: 15,
     goldReward: 8,
     xpReward: 20,
@@ -86,7 +87,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     name_fr: 'Garde de Fer',
     description: 'An animated suit of armor stands vigil.',
     description_fr: 'Une armure animée monte la garde.',
-    monsterHP: 27,
+    monsterHP: 32, // Increased from 27
     attack: 10,
     goldReward: 10,
     xpReward: 22,
@@ -99,7 +100,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     name_fr: 'Golem de Pierre',
     description: 'A massive construct made of heavy equations.',
     description_fr: 'Un colosse fait d\'équations lourdes.',
-    monsterHP: 30,
+    monsterHP: 36, // Increased from 30
     attack: 12,
     goldReward: 12,
     xpReward: 25,
@@ -112,7 +113,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     name_fr: 'Golem de Géométrie',
     description: 'A construct of perfect angles. Measure its dimensions to find its weakness!',
     description_fr: 'Une construction d’angles parfaits. Mesurez ses dimensions pour trouver sa faiblesse !',
-    monsterHP: 32,
+    monsterHP: 54, // Increased significantly from 32 (x1.7)
     attack: 20,
     goldReward: 20,
     xpReward: 35,
@@ -120,14 +121,15 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     tags: ['mon_elite', 'mon_armored']
   },
 
-  // --- Tome 3: Void ---
+  // --- Tome 3: Void (Levels 5-6) ---
+  // HP increased by ~50%
   t3_shade: {
     id: 't3_shade',
     name: 'Void Shade',
     name_fr: 'Ombre du Vide',
     description: 'A shadow that consumes numbers.',
     description_fr: 'Une ombre qui consume les nombres.',
-    monsterHP: 25,
+    monsterHP: 38, // Increased from 25
     attack: 20,
     goldReward: 50,
     xpReward: 100,
@@ -140,66 +142,220 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     name_fr: 'Arithméticien Fou',
     description: 'He casts spells of confusion!',
     description_fr: 'Il lance des sorts de confusion !',
-    monsterHP: 35,
+    monsterHP: 53, // Increased from 35
     attack: 25,
     goldReward: 75,
     xpReward: 150,
     timerDuration: 10
   },
-
-  // --- Tome 4: Summit ---
-  t4_elemental: {
-    id: 't4_elemental',
-    name: 'Storm Elemental',
-    name_fr: 'Élémentaire de Tempête',
-    description: 'A being composed of pure lightning and thunder.',
-    description_fr: 'Un être composé de pur foudre et tonnerre.',
-    monsterHP: 45,
-    attack: 30,
-    goldReward: 100,
-    xpReward: 200,
-    tags: ['mon_fierce', 'mon_elite'],
-    timerDuration: 9
-  },
-  t4_sorcerer: {
-    id: 't4_sorcerer',
-    name: 'High Sorcerer',
-    name_fr: 'Grand Sorcier',
-    description: 'He weaves complex equations to trap travelers.',
-    description_fr: 'Il tisse des équations complexes pour piéger les voyageurs.',
-    monsterHP: 55,
-    attack: 35,
-    goldReward: 125,
-    xpReward: 250,
-    tags: ['mon_wealthy'],
-    timerDuration: 10
-  },
-
-  // --- Tome 5: Chaos ---
-  t5_chaos: {
-    id: 't5_chaos',
-    name: 'Chaos Bringer',
-    name_fr: 'Porteur de Chaos',
-    description: 'An entity that defies the laws of arithmetic.',
-    description_fr: 'Une entité qui défie les lois de l\'arithmétique.',
-    monsterHP: 70,
-    attack: 40,
-    goldReward: 200,
-    xpReward: 400,
-    tags: ['mon_deadly', 'mon_armored'],
+  t3_prime_slime: {
+    id: 't3_prime_slime',
+    name: 'Prime Slime',
+    name_fr: 'Slime Premier',
+    description: 'This creature can only be divided by two things: 1 and itself. Find its factors!',
+    description_fr: 'Cette créature ne peut être divisée que par deux choses : 1 et elle-même. Trouvez ses facteurs !',
+    monsterHP: 42, // Increased from 28
+    attack: 18,
+    goldReward: 10,
+    xpReward: 25,
     timerDuration: 8
   },
-  t5_dragon: {
-    id: 't5_dragon',
-    name: 'Null Dragon',
-    name_fr: 'Dragon du Néant',
-    description: 'The ancient devourer of all values.',
-    description_fr: 'L\'ancien dévoreur de toutes valeurs.',
-    monsterHP: 90,
-    attack: 50,
-    goldReward: 300,
-    xpReward: 500,
-    tags: ['mon_deadly', 'mon_armored', 'mon_elite'],
+  t3_algebra_wraith: {
+    id: 't3_algebra_wraith',
+    name: 'Algebra Wraith',
+    name_fr: 'Spectre Algébrique',
+    description: 'A floating equation! Isolate the variable to banish the spirit.',
+    description_fr: 'Une équation flottante ! Isolez la variable pour bannir l’esprit.',
+    monsterHP: 45, // Increased from 30
+    attack: 20,
+    goldReward: 12,
+    xpReward: 30,
+    timerDuration: 8
+  },
+  t3_logarithm_lizard: {
+    id: 't3_logarithm_lizard',
+    name: 'Logarithm Lizard',
+    name_fr: 'Lézard Logarithme',
+    description: 'Its camouflage is based on powers. Find the exponent to reveal its position!',
+    description_fr: 'Son camouflage est basé sur les puissances. Trouvez l’exposant pour révéler sa position !',
+    monsterHP: 47, // Increased from 31
+    attack: 21,
+    goldReward: 13,
+    xpReward: 32,
+    timerDuration: 8
+  },
+  t3_tangent_tree: {
+    id: 't3_tangent_tree',
+    name: 'Tangent Tree',
+    name_fr: 'Arbre Tangente',
+    description: 'It touches the ground at only one point. Find the slope of the curve to fell it!',
+    description_fr: 'Il ne touche le sol qu’en un seul point. Trouvez la pente de la courbe pour l’abattre !',
+    monsterHP: 50, // Increased from 33
+    attack: 23,
+    goldReward: 15,
+    xpReward: 37,
+    timerDuration: 8
+  },
+
+  // --- Tome 4: Summit (Levels 7-8) ---
+  // HP doubled (x2.0). Attack capped at 40.
+  t4_trigonometry_troll: {
+    id: 't4_trigonometry_troll',
+    name: 'Trigonometry Troll',
+    name_fr: 'Troll de Trigonométrie',
+    description: 'He guards the bridge, demanding you solve the sine, cosine, or tangent of his giant club!',
+    description_fr: 'Il garde le pont, exigeant que vous résolviez le sinus, le cosinus ou la tangente de sa massue géante !',
+    monsterHP: 70, // Increased from 35
+    attack: 25,
+    goldReward: 16,
+    xpReward: 40,
+    timerDuration: 10
+  },
+  t4_integration_imp: {
+    id: 't4_integration_imp',
+    name: 'Integration Imp',
+    name_fr: 'Diablotin d’Intégration',
+    description: 'It collects the area under the function. Find the total area to silence its spell!',
+    description_fr: 'Il recueille l’aire sous la fonction. Trouvez l’aire totale pour faire taire son sort !',
+    monsterHP: 72, // Increased from 36
+    attack: 26,
+    goldReward: 17,
+    xpReward: 42,
+    timerDuration: 10
+  },
+  t4_calculus_kraken: {
+    id: 't4_calculus_kraken',
+    name: 'Calculus Kraken',
+    name_fr: 'Kraken du Calcul',
+    description: 'Its tentacles shift continuously. Find the rate of change to escape its grasp!',
+    description_fr: 'Ses tentacules changent continuellement. Trouvez le taux de changement pour échapper à son emprise !',
+    monsterHP: 76, // Increased from 38
+    attack: 30,
+    goldReward: 20,
+    xpReward: 45,
+    timerDuration: 10
+  },
+  t4_probability_phantom: {
+    id: 't4_probability_phantom',
+    name: 'Probability Phantom',
+    name_fr: 'Fantôme de Probabilité',
+    description: 'An ethereal menace that attacks based on chance. Calculate the odds of victory!',
+    description_fr: 'Une menace éthérée qui attaque par hasard. Calculez les chances de victoire !',
+    monsterHP: 78, // Increased from 39
+    attack: 32,
+    goldReward: 22,
+    xpReward: 47,
+    timerDuration: 10
+  },
+  t4_statistic_sphinx: {
+    id: 't4_statistic_sphinx',
+    name: 'Statistic Sphinx',
+    name_fr: 'Sphinx des Statistiques',
+    description: 'She poses a data puzzle. Calculate the mean, median, or mode to pass!',
+    description_fr: 'Elle pose une énigme de données. Calculez la moyenne, la médiane ou le mode pour passer !',
+    monsterHP: 80, // Increased from 40
+    attack: 35,
+    goldReward: 25,
+    xpReward: 50,
+    timerDuration: 10
+  },
+  t4_matrix_minotaur: {
+    id: 't4_matrix_minotaur',
+    name: 'Matrix Minotaur',
+    name_fr: 'Minotaure Matrice',
+    description: 'The labyrinth walls are lined with numbers. Multiply the arrays correctly to find the exit!',
+    description_fr: 'Les murs du labyrinthe sont tapissés de chiffres. Multipliez correctement les tableaux pour trouver la sortie !',
+    monsterHP: 90, // Increased from 45
+    attack: 40, // Capped at 40 (was 40)
+    goldReward: 30,
+    xpReward: 55,
+    timerDuration: 12
+  },
+
+  // --- Tome 5: Chaos (Levels 9-10) ---
+  // HP increased by ~150% (x2.5). Attack capped at 50.
+  t5_eigenvalue_elemental: {
+    id: 't5_eigenvalue_elemental',
+    name: 'Eigenvalue Elemental',
+    name_fr: 'Élémentaire de Valeur Propre',
+    description: 'A creature only defeated by its primary scaling factor. Find the eigenvalue!',
+    description_fr: 'Une créature vaincue uniquement par son facteur d’échelle principal. Trouvez la valeur propre !',
+    monsterHP: 120, // Increased from 48
+    attack: 42, // Capped at 50
+    goldReward: 32,
+    xpReward: 57,
+    timerDuration: 12
+  },
+  t5_permutation_puck: {
+    id: 't5_permutation_puck',
+    name: 'Permutation Puck',
+    name_fr: 'Lutin de Permutation',
+    description: 'A mischievous creature that scrambles paths. Order the possibilities to corner it!',
+    description_fr: 'Une créature espiègle qui brouille les chemins. Ordonnez les possibilités pour la coincer !',
+    monsterHP: 125, // Increased from 50
+    attack: 45, // Capped at 50
+    goldReward: 35,
+    xpReward: 60,
+    timerDuration: 12
+  },
+  t5_limit_leviathan: {
+    id: 't5_limit_leviathan',
+    name: 'Limit Leviathan',
+    name_fr: 'Léviathan Limite',
+    description: 'It approaches infinity! Determine what value it never quite reaches to harm it!',
+    description_fr: 'Il approche l’infini ! Déterminez la valeur qu’il n’atteint jamais tout à fait pour le blesser !',
+    monsterHP: 130, // Increased from 52
+    attack: 47, // Capped at 50
+    goldReward: 37,
+    xpReward: 63,
+    timerDuration: 12
+  },
+  t5_set_theory_serpent: {
+    id: 't5_set_theory_serpent',
+    name: 'Set Theory Serpent',
+    name_fr: 'Serpent de la Théorie des Ensembles',
+    description: 'It creates overlapping rings of confusion. Find the correct intersection or union to strike!',
+    description_fr: 'Il crée des anneaux de confusion qui se chevauchent. Trouvez la bonne intersection ou union pour frapper !',
+    monsterHP: 138, // Increased from 55
+    attack: 50, // Capped at 50 (was 50)
+    goldReward: 40,
+    xpReward: 70,
+    timerDuration: 12
+  },
+  t5_series_sorcerer: {
+    id: 't5_series_sorcerer',
+    name: 'Series Sorcerer',
+    name_fr: 'Sorcier des Séries',
+    description: 'He casts endless spells. Calculate if the infinite sum converges or diverges to counter!',
+    description_fr: 'Il lance des sorts sans fin. Calculez si la somme infinie converge ou diverge pour contrer !',
+    monsterHP: 145, // Increased from 58
+    attack: 50, // Capped at 50 (was 55)
+    goldReward: 45,
+    xpReward: 75,
+    timerDuration: 12
+  },
+  t5_quadric_quest: {
+    id: 't5_quadric_quest',
+    name: 'Quadric Quest',
+    name_fr: 'Quête Quadratique',
+    description: 'The path splits into a parabolic curve. Use the quadratic formula to find the two roots!',
+    description_fr: 'Le chemin se divise en une courbe parabolique. Utilisez la formule quadratique pour trouver les deux racines !',
+    monsterHP: 150, // Increased from 60
+    attack: 50, // Capped at 50 (was 60)
+    goldReward: 50,
+    xpReward: 80,
+    timerDuration: 12
+  },
+  t5_pi_phantom: {
+    id: 't5_pi_phantom',
+    name: 'Pi Phantom',
+    name_fr: 'Fantôme de Pi',
+    description: 'An endless, non-repeating sequence of terror! Recite the correct digits to banish it!',
+    description_fr: 'Une séquence de terreur infinie et non répétitive ! Récitez les chiffres corrects pour le bannir !',
+    monsterHP: 163, // Increased from 65
+    attack: 50, // Capped at 50 (was 70)
+    goldReward: 60,
+    xpReward: 90,
     timerDuration: 12
   }
 };

@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import { PlayerStats, StorageMode } from '../types';
 import { DEFAULT_PLAYER } from '../constants';
@@ -7,6 +5,7 @@ import * as localStore from '../services/storageService';
 import * as cloudStore from '../services/storageService_Live';
 import { Scroll, Shield, UserPlus, LogIn, User, ArrowLeft, Cloud, Database, Loader2 } from 'lucide-react';
 import { useLocalization } from '../localization';
+import { APP_VERSION } from '../version';
 
 interface AuthScreenProps {
   onLogin: (player: PlayerStats, mode: StorageMode) => void;
@@ -198,7 +197,7 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin, currentStorageMode, on
             <Shield className="w-4 h-4 mr-2" />
             {t.auth.secure}
         </div>
-        <div className="text-xs mt-1 font-mono">v1.9 - {currentStorageMode}</div>
+        <div className="text-xs mt-1 font-mono">v{APP_VERSION} - {currentStorageMode}</div>
       </div>
     </div>
   );

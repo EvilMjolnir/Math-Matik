@@ -172,13 +172,17 @@ const App: React.FC = () => {
       if (newLevel > prev.level) {
         // Defer the modal, just set the state for now
         setPendingLevelUp(newLevel);
-        const hpIncrease = (newLevel - prev.level) * 5;
+        const levelDiff = newLevel - prev.level;
+        const hpIncrease = levelDiff * 10;
+        const attackIncrease = levelDiff * 1;
+
         return {
           ...prev,
           currentXp: newXp,
           level: newLevel,
           maxHp: prev.maxHp + hpIncrease,
-          currentHp: prev.currentHp + hpIncrease,
+          currentHp: prev.currentHp, // HP stays the same, no healing
+          attack: (prev.attack || 5) + attackIncrease,
         };
       }
 
@@ -513,8 +517,8 @@ const App: React.FC = () => {
         <div className="flex flex-col items-center">
           <div className="w-16 h-16 text-yellow-400 mb-4 animate-spin-slow">⭐</div>
           <p className="text-xl">You have reached Level {leveledUpTo}!</p>
-          <p className="mt-2 text-yellow-200">+5 Max HP</p>
-          <p className="text-yellow-200">Full Health Restored</p>
+          <p className="mt-2 text-yellow-200">+10 Max HP</p>
+          <p className="text-yellow-200">+1 Attack Power</p>
         </div>
       </Modal>
 

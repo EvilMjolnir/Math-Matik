@@ -55,8 +55,8 @@ export const XP_TABLE = [
   420,  // Level 8
   540,  // Level 9
   675,  // Level 10
-  825,  // Level 11
-  990,  // Level 12
+  825,  // Level 11
+  990,  // Level 12
   1170, // Level 13
   1365, // Level 14
   1575, // Level 15

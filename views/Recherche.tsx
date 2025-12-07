@@ -27,6 +27,14 @@ const DIFFICULTY_CONFIG: Record<Rarity, { steps: number; wins: number }> = {
   [Rarity.MYTHIC]: { steps: 5, wins: 3 },
 };
 
+const CHEST_IMAGES: Record<Rarity, string> = {
+  [Rarity.COMMON]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/common.png',
+  [Rarity.RARE]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/rare.png',
+  [Rarity.MAGIC]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/magic.png',
+  [Rarity.LEGENDARY]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/legendary.png',
+  [Rarity.MYTHIC]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/Mythic.png',
+};
+
 const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgressTome, onAddItem, playerGold = 0, lootWeights = [] }) => {
   const { t } = useLocalization();
   const [phase, setPhase] = useState<'select' | 'solve' | 'result'>('select');
@@ -193,19 +201,31 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
                 key={card.id}
                 onClick={() => handleCardSelect(card)}
                 className={`
-                  h-64 rounded-xl border-4 shadow-lg transform transition-all relative overflow-hidden flex flex-col items-center justify-center p-4
+                  h-80 rounded-xl border-4 shadow-lg transform transition-all relative overflow-hidden flex flex-col items-center p-0
                   ${card.color}
                   hover:scale-105
                 `}
               >
-                <div className="absolute inset-0 bg-black/20" />
-                <Search className="w-16 h-16 text-white/80 z-10 mb-4" />
-                <span className="z-10 text-white font-serif font-bold text-xl uppercase tracking-wider shadow-black drop-shadow-md">
-                  {card.rarity}
-                </span>
-                <div className="z-10 mt-2 text-white/70 text-xs font-bold flex items-center bg-black/40 px-3 py-1 rounded-full">
-                   <Lock className="w-3 h-3 mr-1" />
-                   {diff.wins} {diff.wins > 1 ? 'Locks' : 'Lock'}
+                <div className="w-full h-3/5 relative bg-black/20 overflow-hidden flex items-center justify-center border-b border-black/10">
+                   {/* Fallback Icon behind image */}
+                   <Search className="w-16 h-16 text-white/20 absolute z-0" />
+                   
+                   <img 
+                      src={CHEST_IMAGES[card.rarity]} 
+                      alt={`${card.rarity} Chest`}
+                      className="w-full h-full object-cover z-10 relative"
+                      onError={(e) => e.currentTarget.style.opacity = '0'} 
+                   />
+                </div>
+                
+                <div className="w-full h-2/5 flex flex-col items-center justify-center bg-black/30 p-2">
+                    <span className="text-white font-serif font-bold text-xl uppercase tracking-wider shadow-black drop-shadow-md">
+                    {card.rarity}
+                    </span>
+                    <div className="mt-2 text-white/90 text-xs font-bold flex items-center bg-black/50 px-3 py-1 rounded-full border border-white/10">
+                        <Lock className="w-3 h-3 mr-1" />
+                        {diff.wins} {diff.wins > 1 ? 'Locks' : 'Lock'}
+                    </div>
                 </div>
               </button>
             );
