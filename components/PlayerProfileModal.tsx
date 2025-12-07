@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useEffect } from 'react';
 import { PlayerStats, Item, EffectType, Companion } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS } from '../constants';
@@ -152,28 +150,6 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
   // Calc Stats
   const activeStats = getAggregatedStats(player);
   
-  // Helper to format descriptions based on activeStats
-  const getEffectsList = () => {
-    const list: string[] = [];
-    if (activeStats.xpMultiplier > 1.0) {
-      const val = Math.round((activeStats.xpMultiplier - 1) * 100);
-      list.push(t.bonuses.xp.replace('{value}', val.toString()));
-    }
-    if (activeStats.goldMultiplier > 1.0) {
-      const val = Math.round((activeStats.goldMultiplier - 1) * 100);
-      list.push(t.bonuses.gold.replace('{value}', val.toString()));
-    }
-    if (activeStats.movementBonus > 0) {
-      list.push(t.bonuses.movement.replace('{value}', activeStats.movementBonus.toString()));
-    }
-    if (activeStats.combatScoreBonus > 0) {
-      list.push(t.bonuses.combat.replace('{value}', activeStats.combatScoreBonus.toString()));
-    }
-    return list;
-  };
-
-  const effectsList = getEffectsList();
-
   const getItemName = (item: Item) => (lang === 'fr' && item.name_fr) ? item.name_fr : item.name;
   const getItemDesc = (item: Item) => (lang === 'fr' && item.description_fr) ? item.description_fr : item.description;
 
@@ -382,14 +358,24 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                   <Sparkles className="w-5 h-5 mr-2 text-purple-600" />
                   {t.stats.activeEffects}
                 </h3>
-                {effectsList.length > 0 ? (
+                {activeStats.effectDetails.length > 0 ? (
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {effectsList.map((desc, idx) => (
-                      <li key={idx} className="bg-purple-100 text-purple-900 px-3 py-2 rounded border border-purple-200 font-bold text-sm flex items-center">
-                        <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                        {desc}
-                      </li>
-                    ))}
+                    {activeStats.effectDetails.map((detail, idx) => {
+                      const desc = (lang === 'fr' && detail.description_fr) ? detail.description_fr : detail.description;
+                      const source = (lang === 'fr' && detail.sourceName_fr) ? detail.sourceName_fr : detail.sourceName;
+                      
+                      return (
+                        <li key={idx} className="bg-purple-100 text-purple-900 px-3 py-2 rounded border border-purple-200 text-sm flex flex-col">
+                            <div className="flex items-center font-bold">
+                                <div className="w-2 h-2 bg-purple-500 rounded-full mr-2 shrink-0"></div>
+                                {desc}
+                            </div>
+                            <div className="text-xs text-purple-600 ml-4 mt-0.5 italic">
+                                From: {source}
+                            </div>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ) : (
                   <p className="italic text-parchment-600">{t.bonuses.none}</p>

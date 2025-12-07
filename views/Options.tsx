@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { GameConfig, StorageMode } from '../types';
-import { ChevronLeft, Info, Cloud, Database, Trash2, Gamepad2, Server, RefreshCw } from 'lucide-react';
+import { ChevronLeft, Info, Cloud, Database, Trash2, Gamepad2, Server, RefreshCw, Settings, Check, Globe } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound } from '../services/audioService';
 
@@ -17,8 +17,8 @@ interface OptionsProps {
 }
 
 const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, storageMode, onStorageModeChange, onDeleteAccount, onResetProfile }) => {
-  const { t } = useLocalization();
-  const [activeTab, setActiveTab] = useState<'gameplay' | 'data'>('gameplay');
+  const { t, lang, setLang } = useLocalization();
+  const [activeTab, setActiveTab] = useState<'general' | 'gameplay' | 'data'>('general');
   
   const handleChange = (section: keyof GameConfig, field: string, value: number) => {
     setConfig({
@@ -54,6 +54,17 @@ const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, storageMod
       {/* Tabs */}
       <div className="flex bg-parchment-900/50 rounded-lg p-1 mb-6 border border-parchment-700">
         <button 
+          onClick={() => setActiveTab('general')}
+          className={`flex-1 py-3 px-4 rounded font-serif font-bold flex items-center justify-center transition-all ${
+            activeTab === 'general' 
+              ? 'bg-parchment-200 text-parchment-900 shadow-md' 
+              : 'text-parchment-400 hover:text-parchment-200 hover:bg-parchment-800'
+          }`}
+        >
+          <Settings className="w-5 h-5 mr-2" />
+          General
+        </button>
+        <button 
           onClick={() => setActiveTab('gameplay')}
           className={`flex-1 py-3 px-4 rounded font-serif font-bold flex items-center justify-center transition-all ${
             activeTab === 'gameplay' 
@@ -79,6 +90,40 @@ const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, storageMod
 
       <div className="flex-1 overflow-y-auto space-y-6 pr-2 custom-scrollbar">
         
+        {activeTab === 'general' && (
+          <div className="space-y-6 animate-fadeIn">
+            {/* Language Settings */}
+            <section className="bg-parchment-900/50 p-6 rounded-lg border-2 border-parchment-800">
+               <h2 className="text-2xl font-serif text-parchment-300 mb-4 flex items-center">
+                 <Globe className="w-6 h-6 mr-2" />
+                 Language / Langue
+               </h2>
+               <div className="space-y-2">
+                 {[
+                   { code: 'en', label: 'English', flag: '🇬🇧' },
+                   { code: 'fr', label: 'Français', flag: '🇫🇷' }
+                 ].map((opt) => (
+                   <button
+                    key={opt.code}
+                    onClick={() => setLang(opt.code as 'en' | 'fr')}
+                    className={`w-full p-4 rounded-lg border-2 flex items-center justify-between transition-all ${
+                      lang === opt.code 
+                        ? 'bg-parchment-200 border-amber-500 text-parchment-900 shadow-md' 
+                        : 'bg-parchment-800/50 border-parchment-700 text-parchment-400 hover:bg-parchment-800'
+                    }`}
+                   >
+                     <div className="flex items-center">
+                       <span className="text-2xl mr-4">{opt.flag}</span>
+                       <span className="font-bold text-lg">{opt.label}</span>
+                     </div>
+                     {lang === opt.code && <Check className="w-6 h-6 text-green-600" />}
+                   </button>
+                 ))}
+               </div>
+            </section>
+          </div>
+        )}
+
         {activeTab === 'data' && (
           <div className="space-y-6 animate-fadeIn">
             {/* Storage Settings */}

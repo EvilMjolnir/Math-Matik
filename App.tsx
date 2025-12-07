@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item, StorageMode } from './types';
 import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS } from './constants';
@@ -11,7 +9,7 @@ import Options from './views/Options';
 import AdminPanel from './views/AdminPanel';
 import Home from './views/Home';
 import TomeSelectionModal from './components/TomeSelectionModal';
-import Modal from './components/Modal';
+import LevelUpModal from './components/LevelUpModal';
 import AuthScreen from './components/AuthScreen';
 import { LocalizationProvider, useLocalization } from './localization';
 import * as localStore from './services/storageService';
@@ -243,7 +241,7 @@ const App: React.FC = () => {
 
     // Apply Movement Bonuses
     const stats = getAggregatedStats(player);
-    const steps = baseSteps + stats.movementBonus;
+    const steps = Math.floor(baseSteps * stats.movementMultiplier);
 
     const activeTomeIndex = tomes.findIndex(t => t.id === player.activeTomeId);
     if (activeTomeIndex === -1) return;
@@ -485,7 +483,7 @@ const App: React.FC = () => {
                 activeEncounter={activeEncounter}
                 isInfinite={player.activeTomeId === 'infinite'}
                 lang={lang}
-                onToggleLang={() => setLang(lang === 'en' ? 'fr' : 'en')}
+                // onToggleLang removed, handled in Options
                 activeConfig={activeConfig}
                 onStartRecherche={handleStartRecherche}
                 isAdmin={isAdmin}
@@ -510,20 +508,12 @@ const App: React.FC = () => {
         {renderView()}
       </main>
 
-      <Modal 
-        title={t.levelUp.title}
-        actionLabel={t.levelUp.action} 
-        onAction={() => setShowLevelUp(false)} 
-        isOpen={showLevelUp}
-        colorClass="bg-purple-900 border-yellow-500 text-white"
-      >
-        <div className="flex flex-col items-center">
-          <div className="w-16 h-16 text-yellow-400 mb-4 animate-spin-slow">⭐</div>
-          <p className="text-xl">{t.levelUp.message.replace('{level}', leveledUpTo.toString())}</p>
-          <p className="mt-2 text-yellow-200">{t.levelUp.statHp}</p>
-          <p className="text-yellow-200">{t.levelUp.statAttack}</p>
-        </div>
-      </Modal>
+      <LevelUpModal 
+        isOpen={showLevelUp} 
+        level={leveledUpTo} 
+        onClose={() => setShowLevelUp(false)}
+        t={t}
+      />
 
       <TomeSelectionModal 
         tomes={tomes} 

@@ -24,7 +24,7 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
   const xpPercentage = Math.min(100, Math.max(0, (xpInLevel / xpNeededForLevel) * 100));
 
   const stats = getAggregatedStats(player);
-  const hasBonuses = stats.xpMultiplier > 1 || stats.goldMultiplier > 1 || stats.movementBonus > 0 || stats.combatScoreBonus > 0;
+  const hasBonuses = stats.xpMultiplier > 1 || stats.goldMultiplier > 1 || stats.movementMultiplier > 1 || stats.attackMultiplier > 0;
   
   const activeCompanion = player.companions?.find(c => c.id === player.activeCompanionId);
 
@@ -135,27 +135,27 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
           </div>
           <div className="space-y-1 text-sm font-mono text-parchment-200">
              {stats.xpMultiplier > 1 && (
-                <div className="flex justify-between">
-                  <span>XP</span>
-                  <span className="text-yellow-400">x{stats.xpMultiplier.toFixed(2)}</span>
+                <div className="flex justify-between items-center">
+                  <span className="flex items-center"><Star className="w-3 h-3 text-yellow-500 mr-1" /> XP</span>
+                  <span className="text-yellow-400">+{Math.round((stats.xpMultiplier - 1) * 100)}%</span>
                 </div>
              )}
              {stats.goldMultiplier > 1 && (
-                <div className="flex justify-between">
-                  <span>Gold</span>
-                  <span className="text-amber-400">x{stats.goldMultiplier.toFixed(2)}</span>
+                <div className="flex justify-between items-center">
+                  <span className="flex items-center"><Coins className="w-3 h-3 text-amber-500 mr-1" /> Gold</span>
+                  <span className="text-amber-400">+{Math.round((stats.goldMultiplier - 1) * 100)}%</span>
                 </div>
              )}
-             {stats.movementBonus > 0 && (
-                <div className="flex justify-between">
-                  <span className="flex items-center"><Footprints className="w-3 h-3 mr-1"/> Step</span>
-                  <span className="text-green-400">+{stats.movementBonus}</span>
+             {stats.movementMultiplier > 1 && (
+                <div className="flex justify-between items-center">
+                  <span className="flex items-center"><Footprints className="w-3 h-3 mr-1"/> Speed</span>
+                  <span className="text-green-400">+{Math.round((stats.movementMultiplier - 1) * 100)}%</span>
                 </div>
              )}
-             {stats.combatScoreBonus > 0 && (
-                <div className="flex justify-between">
+             {stats.attackMultiplier > 0 && (
+                <div className="flex justify-between items-center">
                   <span className="flex items-center"><Sword className="w-3 h-3 mr-1"/> Atk</span>
-                  <span className="text-red-400">+{stats.combatScoreBonus}</span>
+                  <span className="text-red-400">+{Math.round(stats.attackMultiplier * 100)}%</span>
                 </div>
              )}
           </div>

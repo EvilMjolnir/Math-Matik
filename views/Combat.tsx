@@ -6,8 +6,10 @@ import Keypad from '../components/Keypad';
 import Modal from '../components/Modal';
 import ScratchpadModal from '../components/ScratchpadModal';
 import EncounterIntroCard from '../components/EncounterIntroCard';
+import CombatPlayerPanel from '../components/CombatPlayerPanel';
+import CombatEnemyPanel from '../components/CombatEnemyPanel';
 import { useLocalization } from '../localization';
-import { ChevronLeft, Timer, Skull, Trophy, PencilLine, Zap, Sword, Heart, User, Shield, ShieldCheck, Check, X } from 'lucide-react';
+import { ChevronLeft, Timer, Skull, Trophy, PencilLine, Check, X, ShieldCheck } from 'lucide-react';
 import { playMenuBackSound } from '../services/audioService';
 
 interface CombatProps extends MinigameProps {
@@ -466,58 +468,14 @@ const Combat: React.FC<CombatProps> = ({
       <div className="flex-1 flex flex-col md:flex-row items-stretch justify-center gap-4 mb-4">
         
         {/* LEFT: PLAYER STATS */}
-        <div className="w-full md:w-1/4 bg-black/40 rounded-lg p-3 border-2 border-parchment-700 flex flex-col justify-center relative">
-           <div className="flex items-center mb-2">
-              <div className="w-10 h-10 rounded-full bg-parchment-300 border-2 border-amber-600 flex items-center justify-center mr-2">
-                 <User className="w-6 h-6 text-parchment-900" />
-              </div>
-              <div className="overflow-hidden">
-                 <div className="text-parchment-100 font-bold truncate">{playerStats?.username || "Hero"}</div>
-                 <div className="text-xs text-parchment-400">{t.common.level} {playerStats?.level || 1}</div>
-              </div>
-           </div>
-
-           {/* Player HP */}
-           <div className="mb-3">
-              <div className="flex justify-between text-xs text-parchment-300 mb-1">
-                 <span className="flex items-center"><Heart className="w-3 h-3 text-red-500 mr-1"/> {t.common.hp}</span>
-                 <span>{playerStats?.currentHp}/{playerStats?.maxHp}</span>
-              </div>
-              <div className="w-full h-3 bg-gray-900 rounded-full overflow-hidden border border-gray-700">
-                 <div 
-                    className="h-full bg-red-600 transition-all duration-300" 
-                    style={{width: `${playerStats ? (playerStats.currentHp / playerStats.maxHp) * 100 : 100}%`}}
-                 />
-              </div>
-           </div>
-
-           {/* Stats / Action Gauge */}
-           {isBossMode ? (
-              <div>
-                  <div className="flex justify-between text-xs text-amber-400 mb-1 font-bold">
-                      <span className="flex items-center"><Zap className="w-3 h-3 mr-1"/> {t.combat.charge}</span>
-                      <span>{playerAttackPower} Dmg</span>
-                  </div>
-                  <div className="w-full h-4 bg-gray-900 border border-amber-900/50 rounded-full overflow-hidden relative">
-                      {/* Segments */}
-                      <div className="absolute inset-0 flex">
-                         {Array.from({length: activeBossConfig.actionsPerTurn}).map((_, i) => (
-                           <div key={i} className="flex-1 border-r border-black/30 last:border-0 z-10"></div>
-                         ))}
-                      </div>
-                      <div 
-                        className="h-full bg-amber-500 transition-all duration-200" 
-                        style={{width: `${(actionGauge / activeBossConfig.actionsPerTurn) * 100}%`}}
-                      ></div>
-                  </div>
-              </div>
-           ) : (
-              <div className="flex items-center justify-between text-parchment-300 bg-white/5 p-2 rounded">
-                 <span className="text-xs uppercase">{t.combat.attackPower}</span>
-                 <span className="font-bold flex items-center text-amber-500"><Sword className="w-4 h-4 mr-1"/> {playerAttackPower}</span>
-              </div>
-           )}
-        </div>
+        <CombatPlayerPanel
+            playerStats={playerStats}
+            isBossMode={!!isBossMode}
+            actionGauge={actionGauge}
+            actionsPerTurn={activeBossConfig.actionsPerTurn}
+            attackPower={playerAttackPower}
+            t={t}
+        />
 
         {/* CENTER: ARENA (Problem & Timer) */}
         <div className="flex-1 flex flex-col items-center justify-center relative min-h-[300px]">
@@ -591,64 +549,16 @@ const Combat: React.FC<CombatProps> = ({
         </div>
 
         {/* RIGHT: ENEMY STATS */}
-        {encounter ? (
-            <div className="w-full md:w-1/4 bg-red-950/40 rounded-lg p-3 border-2 border-red-800/60 flex flex-col justify-center">
-                <div className="flex items-center justify-end mb-2">
-                    <div className="text-right overflow-hidden mr-2">
-                        <div className="text-red-200 font-bold truncate">{(lang === 'fr' && encounter.name_fr) ? encounter.name_fr : encounter.name}</div>
-                        <div className="text-xs text-red-400 uppercase tracking-wider">{encounter.type === 'boss' ? 'Boss' : t.combat.encounterStart}</div>
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-red-900 border-2 border-red-500 flex items-center justify-center overflow-hidden">
-                        {encounter.image ? (
-                           <img src={encounter.image} alt="enemy" className="w-full h-full object-cover" />
-                        ) : (
-                           <Skull className="w-6 h-6 text-red-200" />
-                        )}
-                    </div>
-                </div>
-
-                {/* Enemy HP / Progress */}
-                <div className="mb-3">
-                    <div className="flex justify-between text-xs text-red-300 mb-1">
-                        <span>{isBossMode ? t.common.hp : t.combat.damageDealt}</span>
-                        <span>
-                            {isBossMode ? bossHp : encounterScore}/{effectiveMaxHp}
-                        </span>
-                    </div>
-                    <div className="w-full h-3 bg-gray-900 rounded-full overflow-hidden border border-gray-700">
-                        <div 
-                            className={`h-full transition-all duration-300 ${isBossMode ? 'bg-purple-600' : 'bg-blue-600'}`} 
-                            style={{width: `${isBossMode ? (bossHp / effectiveMaxHp) * 100 : (encounterScore / effectiveMaxHp) * 100}%`}}
-                        />
-                    </div>
-                </div>
-
-                {/* Stats */}
-                <div className="space-y-2">
-                    <div className="flex items-center justify-between text-red-200 bg-white/5 p-2 rounded">
-                        <span className="text-xs uppercase">{t.combat.attack}</span>
-                        <span className="font-bold flex items-center text-red-500">
-                            <Sword className="w-4 h-4 mr-1"/> {effectiveAttack}
-                        </span>
-                    </div>
-                    {encounter.tags && encounter.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1 justify-end">
-                             {encounter.tags.map(tag => (
-                                 <span key={tag} className="text-[10px] bg-red-900 text-red-200 px-1 rounded border border-red-700">
-                                     {tag.replace('mon_', '')}
-                                 </span>
-                             ))}
-                        </div>
-                    )}
-                </div>
-            </div>
-        ) : (
-             <div className="hidden md:flex w-1/4 flex-col justify-center items-center opacity-30">
-                 <Shield className="w-16 h-16 text-parchment-500 mb-2" />
-                 <p className="text-parchment-500 text-center text-sm">{t.combat.trainingMode}</p>
-                 <div className="mt-4 text-2xl font-bold text-amber-500">{score} pts</div>
-             </div>
-        )}
+        <CombatEnemyPanel
+            encounter={encounter}
+            isBossMode={!!isBossMode}
+            currentHp={isBossMode ? bossHp : encounterScore}
+            maxHp={effectiveMaxHp}
+            attackPower={effectiveAttack}
+            t={t}
+            lang={lang}
+            score={score}
+        />
 
       </div>
       

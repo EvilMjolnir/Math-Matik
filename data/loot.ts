@@ -224,84 +224,96 @@ export const lootData = {
       "name_fr": "Fleur de Fibonacci",
       "description": "Its petals grow in a perfect sequence.",
       "description_fr": "Ses pétales poussent selon une séquence parfaite.",
-      "tags": ["scholar_2", "merchant_1"]
+      "tags": ["scholar_2", "merchant_1"],
+	    "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/fibbonacci_flower.png"
     },
     {
       "name": "Potion of Clarity",
       "name_fr": "Potion de Clarté",
       "description": "Instantly solves one mental block.",
       "description_fr": "Résout instantanément un blocage mental.",
-      "tags": ["scholar_2"]
+      "tags": ["scholar_2"],
+	    "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/potion_clarity.png"
     },
     {
       "name": "Klein Bottle",
       "name_fr": "Bouteille de Klein",
       "description": "A glass vessel with no inside or outside.",
       "description_fr": "Un récipient en verre sans intérieur ni extérieur.",
-      "tags": ["merchant_2"]
+      "tags": ["merchant_2"],
+	    "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/klein_bottle.png"
     },
     {
       "name": "Möbius Strip",
       "name_fr": "Ruban de Möbius",
       "description": "A loop of parchment with only one side.",
       "description_fr": "Une boucle de parchemin avec un seul côté.",
-      "tags": ["navigator_2"]
+      "tags": ["navigator_2"],
+	    "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/moebius_strip.png"
     },
     {
       "name": "Fractal Fern",
       "name_fr": "Fougère Fractale",
       "description": "Each leaf contains a miniature copy of the whole.",
       "description_fr": "Chaque feuille contient une copie miniature du tout.",
-      "tags": ["scholar_2"]
+      "tags": ["scholar_2"],
+	    "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/fractal_fern.png"
     },
     {
       "name": "Zeno's Arrow",
       "name_fr": "Flèche de Zénon",
       "description": "It never quite reaches its target.",
       "description_fr": "Elle n'atteint jamais tout à fait sa cible.",
-      "tags": ["navigator_2", "fighter_1"]
+      "tags": ["navigator_2", "fighter_1"],
+	    "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/zeno_arrow.png"
     },
     {
       "name": "Ring of Sets",
       "name_fr": "Anneau des Ensembles",
       "description": "Intersects magically with other jewelry.",
       "description_fr": "S'intersecte magiquement avec d'autres bijoux.",
-      "tags": ["merchant_2"]
+      "tags": ["merchant_2"],
+	    "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/ring_of_sets.png"
     },
     {
       "name": "Matrix Orb",
       "name_fr": "Orbe Matrice",
       "description": "Rearranges numbers into rows and columns.",
       "description_fr": "Réarrange les nombres en lignes et colonnes.",
-      "tags": ["scholar_2"]
+      "tags": ["scholar_2"],
+	    "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/matrix_orb.png"
     },
     {
       "name": "Variable Cloak",
       "name_fr": "Cape Variable",
       "description": "Changes value based on the environment.",
       "description_fr": "Change de valeur selon l'environnement.",
-      "tags": ["fighter_1", "navigator_1"]
+      "tags": ["fighter_1", "navigator_1"],
+	    "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/variable_cloak.png"
     },
     {
       "name": "Sine Wave Wand",
       "name_fr": "Baguette Sinusoïdale",
       "description": "Casts spells in a rhythmic, oscillating pattern.",
       "description_fr": "Lance des sorts selon un motif rythmique et oscillant.",
-      "tags": ["fighter_1", "scholar_1"]
+      "tags": ["fighter_1", "scholar_1"],
+	    "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/sinewave_wand.png"
     },
     {
       "name": "Pi Stone",
       "name_fr": "Pierre de Pi",
       "description": "Engraved with digits that never end.",
       "description_fr": "Gravée de chiffres qui ne finissent jamais.",
-      "tags": ["scholar_2", "merchant_1"]
+      "tags": ["scholar_2", "merchant_1"],
+	    "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/pi_stone.png"
     },
     {
       "name": "Vector Boots",
       "name_fr": "Bottes Vectorielles",
       "description": "Increases magnitude and direction of movement.",
       "description_fr": "Augmente la magnitude et la direction du mouvement.",
-      "tags": ["navigator_2"]
+      "tags": ["navigator_2"],
+	    "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/vector_boots2.png"
     }
   ],
   [Rarity.LEGENDARY]: [

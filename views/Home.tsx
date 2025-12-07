@@ -1,10 +1,11 @@
+
 import React, { useState } from 'react';
 import { GameView, PlayerStats, Tome, Encounter, GameConfig, Item } from '../types';
 import PlayerStatsWidget from '../components/PlayerStatsWidget';
 import ActiveQuestPanel from '../components/ActiveQuestPanel';
 import GameMenu from '../components/GameMenu';
 import PlayerProfileModal from '../components/PlayerProfileModal';
-import { Settings, BookOpen, ShieldCheck, Footprints, Backpack, Users } from 'lucide-react';
+import { ShieldCheck, Footprints } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuOpenSound } from '../services/audioService';
 
@@ -17,7 +18,6 @@ interface HomeProps {
   activeEncounter: Encounter | null;
   isInfinite: boolean;
   lang: string;
-  onToggleLang: () => void;
   activeConfig: GameConfig;
   onStartRecherche: (cost: number) => void;
   isAdmin: boolean;
@@ -35,7 +35,6 @@ const Home: React.FC<HomeProps> = ({
   activeEncounter, 
   isInfinite, 
   lang, 
-  onToggleLang, 
   activeConfig, 
   onStartRecherche, 
   isAdmin, 
@@ -139,14 +138,22 @@ const Home: React.FC<HomeProps> = ({
                       className="p-3 bg-amber-800 rounded-full hover:bg-amber-700 transition-all shadow-lg border-2 border-amber-600 group"
                       title={t.buttons.select}
                       >
-                      <BookOpen className="w-8 h-8 text-parchment-200 group-hover:scale-110 transition-transform" />
+                       <img 
+                        src="https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/icon_tomes.png" 
+                        alt="Tomes" 
+                        className="w-16 h-16 object-contain group-hover:scale-110 transition-transform"
+                      />
                   </button>
                   <button 
                       onClick={() => { playMenuOpenSound(); onViewChange(GameView.OPTIONS); }}
-                      className="p-3 bg-parchment-800 rounded-full hover:bg-parchment-700 hover:rotate-90 transition-all shadow-lg border-2 border-parchment-600"
+                      className="p-3 bg-parchment-800 rounded-full hover:bg-parchment-700 transition-all shadow-lg border-2 border-parchment-600 group"
                       title={t.titles.options}
                       >
-                      <Settings className="w-8 h-8 text-parchment-200" />
+                      <img 
+                        src="https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/icon_gear1.png" 
+                        alt="Options" 
+                        className="w-16 h-16 object-contain group-hover:rotate-90 transition-transform"
+                      />
                   </button>
               </div>
               {isAdmin && (
@@ -161,33 +168,31 @@ const Home: React.FC<HomeProps> = ({
           </div>
 
           {/* Bottom Left Controls (Inventory & Companions) */}
-          <div className="absolute bottom-6 left-6 z-30 flex space-x-4">
+          <div className="absolute bottom-6 left-6 z-30 flex items-end space-x-4">
             <button 
               onClick={() => handleOpenProfile('inventory')}
               className="p-3 bg-parchment-800 rounded-full hover:bg-parchment-700 transition-all shadow-lg border-2 border-parchment-600 group"
               title={t.equipment.title}
             >
-              <Backpack className="w-8 h-8 text-parchment-200 group-hover:scale-110 transition-transform" />
+              {/* Inventory icon 15% bigger than others (w-12 vs w-10) */}
+              <img 
+                src="https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/icon_inventory.png" 
+                alt="Inventory" 
+                className="w-24 h-24 object-contain group-hover:scale-110 transition-transform"
+              />
             </button>
             <button 
               onClick={() => handleOpenProfile('companions')}
               className="p-3 bg-parchment-800 rounded-full hover:bg-parchment-700 transition-all shadow-lg border-2 border-parchment-600 group"
               title="Companions"
             >
-              <Users className="w-8 h-8 text-parchment-200 group-hover:scale-110 transition-transform" />
+              <img 
+                src="https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/icon_friends.png" 
+                alt="Friends" 
+                className="w-16 h-16 object-contain group-hover:scale-110 transition-transform"
+              />
             </button>
           </div>
-
-          <div className="absolute bottom-6 right-6 z-30">
-            <button 
-              onClick={onToggleLang}
-              className="p-3 bg-parchment-800 rounded-full hover:bg-parchment-700 transition-all shadow-lg border-2 border-parchment-600 font-bold font-serif w-12 h-12 flex items-center justify-center text-lg"
-              title="Switch Language"
-            >
-              {lang.toUpperCase()}
-            </button>
-          </div>
-
         </div>
       </div>
 

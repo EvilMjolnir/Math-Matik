@@ -45,82 +45,82 @@ export const STATUS_EFFECTS: Record<string, StatusEffect> = {
     description_fr: '+15% Gain d\'Or'
   },
 
-  // Movement Bonuses
+  // Movement Bonuses (Changed to %)
   'navigator_1': {
     id: 'navigator_1',
     name: 'Pathfinder',
     name_fr: 'Éclaireur',
     type: EffectType.MOVEMENT_BONUS,
-    value: 1,
-    description: '+1 Extra Step per completion',
-    description_fr: '+1 Pas supplémentaire par réussite'
+    value: 0.25,
+    description: '+25% Travel Speed',
+    description_fr: '+25% Vitesse de Voyage'
   },
   'navigator_2': {
     id: 'navigator_2',
     name: 'Wayfarer',
     name_fr: 'Voyageur',
     type: EffectType.MOVEMENT_BONUS,
-    value: 2,
-    description: '+2 Extra Steps per completion',
-    description_fr: '+2 Pas supplémentaires par réussite'
+    value: 0.50,
+    description: '+50% Travel Speed',
+    description_fr: '+50% Vitesse de Voyage'
   },
 
-  // Combat Bonuses
+  // Combat Bonuses (Changed to % Attack)
   'fighter_1': {
     id: 'fighter_1',
     name: 'Sharp',
     name_fr: 'Vif',
     type: EffectType.COMBAT_SCORE_BONUS,
-    value: 1,
-    description: '+1 Bonus Score in Combat',
-    description_fr: '+1 Score bonus en Combat'
+    value: 0.20,
+    description: '+20% Attack Power',
+    description_fr: '+20% Puissance d\'Attaque'
   },
 
-  // --- MONSTER EFFECTS ---
+  // --- MONSTER EFFECTS (Changed to %) ---
 
   'mon_fierce': {
     id: 'mon_fierce',
     name: 'Fierce',
     name_fr: 'Féroce',
     type: EffectType.ENEMY_DAMAGE_BONUS,
-    value: 5,
-    description: 'Deals +5 Damage',
-    description_fr: 'Inflige +5 Dégâts'
+    value: 0.20,
+    description: '+20% Damage',
+    description_fr: '+20% Dégâts'
   },
   'mon_armored': {
     id: 'mon_armored',
     name: 'Armored',
     name_fr: 'Blindé',
     type: EffectType.ENEMY_HP_BONUS,
-    value: 5,
-    description: 'Requires +5 Score to defeat',
-    description_fr: 'Nécessite +5 Score pour vaincre'
+    value: 0.20,
+    description: '+20% HP',
+    description_fr: '+20% PV'
   },
   'mon_elite': {
     id: 'mon_elite',
     name: 'Elite',
     name_fr: 'Élite',
     type: EffectType.ENEMY_XP_REWARD_BONUS,
-    value: 20,
-    description: 'Drops +20 XP',
-    description_fr: 'Donne +20 XP'
+    value: 0.50,
+    description: '+50% XP Reward',
+    description_fr: '+50% Récompense XP'
   },
   'mon_wealthy': {
     id: 'mon_wealthy',
     name: 'Wealthy',
     name_fr: 'Riche',
     type: EffectType.ENEMY_GOLD_REWARD_BONUS,
-    value: 10,
-    description: 'Drops +10 Gold',
-    description_fr: 'Donne +10 Or'
+    value: 0.50,
+    description: '+50% Gold Reward',
+    description_fr: '+50% Récompense Or'
   },
   'mon_deadly': {
     id: 'mon_deadly',
     name: 'Deadly',
     name_fr: 'Mortel',
     type: EffectType.ENEMY_DAMAGE_BONUS,
-    value: 10,
-    description: 'Deals +10 Damage',
-    description_fr: 'Inflige +10 Dégâts'
+    value: 0.40,
+    description: '+40% Damage',
+    description_fr: '+40% Dégâts'
   }
 };

@@ -2,6 +2,8 @@
 
 
 
+
+
 import { Translation } from './types';
 
 export const UI_SOURCE = {
@@ -129,8 +131,8 @@ export const UI_SOURCE = {
   bonuses: {
     xp: { en: "+{value}% XP Gain", fr: "+{value}% Gain d'XP" },
     gold: { en: "+{value}% Gold Gain", fr: "+{value}% Gain d'Or" },
-    movement: { en: "+{value} Steps / Set", fr: "+{value} Pas / Série" },
-    combat: { en: "+{value} Combat Score", fr: "+{value} Score de Combat" },
+    movement: { en: "+{value}% Travel Speed", fr: "+{value}% Vitesse de Voyage" },
+    combat: { en: "+{value}% Attack Power", fr: "+{value}% Puissance d'Attaque" },
     none: { en: "No active magical effects.", fr: "Aucun effet magique actif." },
   },
   equipment: {
