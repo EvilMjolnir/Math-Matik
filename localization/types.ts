@@ -2,6 +2,7 @@
 
 
 
+
 export interface Translation {
   titles: {
     movement: string;
@@ -124,6 +125,7 @@ export interface Translation {
     noEffects: string;
     clickDetails: string;
     activeCompanion: string;
+    agility: string;
   };
   bonuses: {
     xp: string;
@@ -157,5 +159,6 @@ export interface Translation {
     message: string;
     statHp: string;
     statAttack: string;
+    statAgility: string;
   };
 }

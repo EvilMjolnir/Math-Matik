@@ -22,16 +22,16 @@ export const tome2: Tome = {
     },
     combat: {
       multiplicationMax: 10,
-      questionsCount: 8,
+      questionsCount: 5,
     },
     recherche: {
-      divisionMaxDividend: 50,
+      divisionMaxDividend: 20,
       baseCost: 10,
       costIncrement: 3,
     },
     boss: {
       timerDuration: 15,
-      actionsPerTurn: 5
+      actionsPerTurn: 4
     }
   },
   encounterRate: 15,

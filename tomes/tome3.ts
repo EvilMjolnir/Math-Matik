@@ -1,5 +1,3 @@
-
-
 import { Tome } from '../types';
 import { ENCOUNTERS } from '../data/encounters';
 
@@ -16,27 +14,31 @@ export const tome3: Tome = {
   difficultyMultiplier: 1.5,
   config: {
     movement: {
-      minVal: 20,
+      minVal: 5,
       maxVal: 100,
-      targetSegments: 8,
+      targetSegments: 5,
     },
     combat: {
       multiplicationMax: 15,
-      questionsCount: 15,
+      questionsCount: 8,
     },
     recherche: {
-      divisionMaxDividend: 144,
-      baseCost: 20,
-      costIncrement: 5,
+      divisionMaxDividend: 25,
+      baseCost: 10,
+      costIncrement: 3,
     },
     boss: {
       timerDuration: 12,
-      actionsPerTurn: 6
+      actionsPerTurn: 5
     }
   },
-  encounterRate: 20,
+  encounterRate: 15,
   possibleEncounters: [
     ENCOUNTERS.t3_shade,
-    ENCOUNTERS.t3_wizard
+    ENCOUNTERS.t3_wizard,
+    ENCOUNTERS.t3_prime_slime,
+    ENCOUNTERS.t3_algebra_wraith,
+    ENCOUNTERS.t3_logarithm_lizard,
+    ENCOUNTERS.t3_tangent_tree
   ]
 };

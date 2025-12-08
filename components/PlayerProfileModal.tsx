@@ -1,4 +1,6 @@
 
+
+
 import React, { useState, useEffect } from 'react';
 import { PlayerStats, Item, EffectType, Companion } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS } from '../constants';
@@ -336,7 +338,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                   </div>
                 </div>
 
-                {/* Attack/Defense/Gold */}
+                {/* Attack/Defense/Agility/Gold */}
                 <div className="pt-2 border-t border-parchment-300 mt-2 space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="flex items-center text-lg"><Sword className="w-5 h-5 mr-2 text-red-600" /> {t.combat.attack}</span>
@@ -345,6 +347,10 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                   <div className="flex justify-between items-center">
                     <span className="flex items-center text-lg"><Shield className="w-5 h-5 mr-2 text-blue-600" /> {t.stats.defense}</span>
                     <span className="font-mono font-bold text-xl">{player.defense}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="flex items-center text-lg"><Footprints className="w-5 h-5 mr-2 text-green-600" /> {t.profile.agility}</span>
+                    <span className="font-mono font-bold text-xl">{player.agility || 0}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="flex items-center text-lg"><Coins className="w-5 h-5 mr-2 text-amber-600" /> {t.common.gold}</span>

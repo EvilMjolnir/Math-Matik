@@ -1,4 +1,5 @@
 
+
 import { GameConfig, Rarity, PlayerStats } from './types';
 import { STARTING_COMPANIONS } from './data/companions';
 
@@ -31,6 +32,7 @@ export const DEFAULT_PLAYER: PlayerStats = {
   maxHp: 20,
   defense: 0,
   attack: 5, 
+  agility: 0,
   gold: 5, // Start with a little gold to try mechanics
   inventory: [],
   equipped: [], // New equipment slots

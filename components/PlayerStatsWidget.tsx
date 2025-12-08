@@ -1,6 +1,8 @@
 
 
 
+
+
 import React from 'react';
 import { PlayerStats } from '../types';
 import { XP_TABLE } from '../constants';
@@ -85,7 +87,7 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
           </div>
           <div className="w-full h-4 bg-gray-900 rounded-full overflow-hidden border border-gray-700">
             <div 
-              className="h-full bg-red-700" 
+              className="h-full bg-red-600" 
               style={{ width: `${(player.currentHp / player.maxHp) * 100}%` }}
             ></div>
           </div>
@@ -105,15 +107,19 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
           </div>
         </div>
         
-        {/* Attack & Defense Row */}
-        <div className="flex justify-between pt-3 px-2">
-            <div className="flex items-center text-parchment-100 text-lg" title="Attack Power">
-                <Sword className="w-6 h-6 mr-2 text-red-500" />
+        {/* Attack, Defense & Agility Row */}
+        <div className="flex justify-between pt-3 px-2 text-parchment-100 text-lg">
+            <div className="flex items-center" title="Attack Power">
+                <Sword className="w-6 h-6 mr-1 text-red-500" />
                 <span className="font-bold">{stats.totalAttack}</span>
             </div>
-            <div className="flex items-center text-parchment-100 text-lg" title="Defense">
-                <Shield className="w-6 h-6 mr-2 text-blue-400" />
+            <div className="flex items-center" title="Defense">
+                <Shield className="w-6 h-6 mr-1 text-blue-400" />
                 <span className="font-bold">{player.defense}</span>
+            </div>
+            <div className="flex items-center" title="Agility">
+                <Footprints className="w-6 h-6 mr-1 text-green-400" />
+                <span className="font-bold">{player.agility || 0}</span>
             </div>
         </div>
 

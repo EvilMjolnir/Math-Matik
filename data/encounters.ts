@@ -82,7 +82,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 15,
     goldReward: 8,
     xpReward: 20,
-    tags: ['mon_fierce'],
+    tags: ['fierce_2'], // +20% dmg
     timerDuration: 12,
 	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/fraction_ogre.png"
   },
@@ -96,7 +96,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 10,
     goldReward: 10,
     xpReward: 22,
-    tags: ['mon_armored'],
+    tags: ['armored_2'], // +20% HP
     timerDuration: 9,
 	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/iron_guard.png"
   },
@@ -110,7 +110,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 12,
     goldReward: 12,
     xpReward: 25,
-    tags: ['mon_armored'],
+    tags: ['armored_3'], // +30% HP
     timerDuration: 15,
 	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/stone_golem.png"
   },
@@ -125,7 +125,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     goldReward: 20,
     xpReward: 35,
     type: 'boss',
-    tags: ['mon_armored'],
+    tags: ['armored_2'], // +20% HP
 	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/geometry%20golem.png"
   },
 
@@ -141,7 +141,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 20,
     goldReward: 50,
     xpReward: 100,
-    tags: ['mon_deadly'],
+    tags: ['fierce_4'], // +40% Dmg (was Deadly)
     timerDuration: 7
   },
   t3_wizard: {
@@ -217,6 +217,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 25,
     goldReward: 16,
     xpReward: 40,
+    tags: ['armored_3', 'fierce_2'],
     timerDuration: 10
   },
   t4_integration_imp: {
@@ -241,6 +242,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 30,
     goldReward: 20,
     xpReward: 45,
+    tags: ['elite_2'],
     timerDuration: 10
   },
   t4_probability_phantom: {
@@ -273,10 +275,11 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     name_fr: 'Minotaure Matrice',
     description: 'The labyrinth walls are lined with numbers. Multiply the arrays correctly to find the exit!',
     description_fr: 'Les murs du labyrinthe sont tapissés de chiffres. Multipliez correctement les tableaux pour trouver la sortie !',
-    monsterHP: 90, // Increased from 45
+    monsterHP: 150, // Increased from 45
     attack: 40, // Capped at 40 (was 40)
     goldReward: 30,
     xpReward: 55,
+    tags: ['elite_3', 'wealthy_2'],
     timerDuration: 12
   },
 
@@ -292,6 +295,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 42, // Capped at 50
     goldReward: 32,
     xpReward: 57,
+    tags: ['armored_4'],
     timerDuration: 12
   },
   t5_permutation_puck: {
@@ -316,6 +320,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 47, // Capped at 50
     goldReward: 37,
     xpReward: 63,
+    tags: ['fierce_3'],
     timerDuration: 12
   },
   t5_set_theory_serpent: {
@@ -340,6 +345,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 50, // Capped at 50 (was 55)
     goldReward: 45,
     xpReward: 75,
+    tags: ['elite_4'],
     timerDuration: 12
   },
   t5_quadric_quest: {
@@ -360,10 +366,11 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     name_fr: 'Fantôme de Pi',
     description: 'An endless, non-repeating sequence of terror! Recite the correct digits to banish it!',
     description_fr: 'Une séquence de terreur infinie et non répétitive ! Récitez les chiffres corrects pour le bannir !',
-    monsterHP: 163, // Increased from 65
+    monsterHP: 225, // Increased from 65
     attack: 50, // Capped at 50 (was 70)
     goldReward: 60,
     xpReward: 90,
+    tags: ['elite_5', 'fierce_5'],
     timerDuration: 12
   }
 };

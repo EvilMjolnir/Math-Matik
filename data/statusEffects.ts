@@ -1,126 +1,130 @@
 
-
 import { StatusEffect, EffectType } from '../types';
 
-export const STATUS_EFFECTS: Record<string, StatusEffect> = {
+const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V"];
+
+interface EffectBase {
+  baseId: string;
+  name: string;
+  name_fr: string;
+  type: EffectType;
+  baseValue: number; // Value for Tier 1
+  descTemplate: string;
+  descTemplate_fr: string;
+  isPercentage: boolean; // formatting helper
+}
+
+const EFFECT_DEFINITIONS: EffectBase[] = [
   // --- PLAYER EFFECTS ---
-
-  // Experience Bonuses
-  'scholar_1': {
-    id: 'scholar_1',
-    name: 'Novice Scholar',
-    name_fr: 'Érudit Novice',
+  {
+    baseId: 'scholar',
+    name: 'Scholar',
+    name_fr: 'Érudit',
     type: EffectType.XP_MULTIPLIER,
-    value: 0.05, // +5%
-    description: '+5% XP gain',
-    description_fr: '+5% Gain d\'XP'
+    baseValue: 0.05,
+    descTemplate: '+{val}% XP gain',
+    descTemplate_fr: '+{val}% Gain d\'XP',
+    isPercentage: true
   },
-  'scholar_2': {
-    id: 'scholar_2',
-    name: 'Adept Scholar',
-    name_fr: 'Érudit Expert',
-    type: EffectType.XP_MULTIPLIER,
-    value: 0.10, // +10%
-    description: '+10% XP gain',
-    description_fr: '+10% Gain d\'XP'
-  },
-
-  // Gold Bonuses
-  'merchant_1': {
-    id: 'merchant_1',
-    name: 'Thrifty',
-    name_fr: 'Économe',
+  {
+    baseId: 'merchant',
+    name: 'Merchant',
+    name_fr: 'Marchand',
     type: EffectType.GOLD_MULTIPLIER,
-    value: 0.05,
-    description: '+5% Gold gain',
-    description_fr: '+5% Gain d\'Or'
+    baseValue: 0.05,
+    descTemplate: '+{val}% Gold gain',
+    descTemplate_fr: '+{val}% Gain d\'Or',
+    isPercentage: true
   },
-  'merchant_2': {
-    id: 'merchant_2',
-    name: 'Deep Pockets',
-    name_fr: 'Poches Profondes',
-    type: EffectType.GOLD_MULTIPLIER,
-    value: 0.15,
-    description: '+15% Gold gain',
-    description_fr: '+15% Gain d\'Or'
-  },
-
-  // Movement Bonuses (Changed to %)
-  'navigator_1': {
-    id: 'navigator_1',
+  {
+    baseId: 'navigator', // Formerly Pathfinder/Navigator mixed
     name: 'Pathfinder',
     name_fr: 'Éclaireur',
     type: EffectType.MOVEMENT_BONUS,
-    value: 0.25,
-    description: '+25% Travel Speed',
-    description_fr: '+25% Vitesse de Voyage'
+    baseValue: 0.10,
+    descTemplate: '+{val}% Travel Speed',
+    descTemplate_fr: '+{val}% Vitesse de Voyage',
+    isPercentage: true
   },
-  'navigator_2': {
-    id: 'navigator_2',
-    name: 'Wayfarer',
-    name_fr: 'Voyageur',
-    type: EffectType.MOVEMENT_BONUS,
-    value: 0.50,
-    description: '+50% Travel Speed',
-    description_fr: '+50% Vitesse de Voyage'
-  },
-
-  // Combat Bonuses (Changed to % Attack)
-  'fighter_1': {
-    id: 'fighter_1',
-    name: 'Sharp',
-    name_fr: 'Vif',
+  {
+    baseId: 'fighter',
+    name: 'Fighter',
+    name_fr: 'Combattant',
     type: EffectType.COMBAT_SCORE_BONUS,
-    value: 0.20,
-    description: '+20% Attack Power',
-    description_fr: '+20% Puissance d\'Attaque'
+    baseValue: 0.10,
+    descTemplate: '+{val}% Attack Power',
+    descTemplate_fr: '+{val}% Puissance d\'Attaque',
+    isPercentage: true
   },
 
-  // --- MONSTER EFFECTS (Changed to %) ---
-
-  'mon_fierce': {
-    id: 'mon_fierce',
+  // --- MONSTER EFFECTS ---
+  {
+    baseId: 'fierce',
     name: 'Fierce',
     name_fr: 'Féroce',
     type: EffectType.ENEMY_DAMAGE_BONUS,
-    value: 0.20,
-    description: '+20% Damage',
-    description_fr: '+20% Dégâts'
+    baseValue: 0.10,
+    descTemplate: '+{val}% Damage',
+    descTemplate_fr: '+{val}% Dégâts',
+    isPercentage: true
   },
-  'mon_armored': {
-    id: 'mon_armored',
+  {
+    baseId: 'armored',
     name: 'Armored',
     name_fr: 'Blindé',
     type: EffectType.ENEMY_HP_BONUS,
-    value: 0.20,
-    description: '+20% HP',
-    description_fr: '+20% PV'
+    baseValue: 0.10,
+    descTemplate: '+{val}% HP',
+    descTemplate_fr: '+{val}% PV',
+    isPercentage: true
   },
-  'mon_elite': {
-    id: 'mon_elite',
+  {
+    baseId: 'elite',
     name: 'Elite',
     name_fr: 'Élite',
     type: EffectType.ENEMY_XP_REWARD_BONUS,
-    value: 0.50,
-    description: '+50% XP Reward',
-    description_fr: '+50% Récompense XP'
+    baseValue: 0.20,
+    descTemplate: '+{val}% XP Reward',
+    descTemplate_fr: '+{val}% Récompense XP',
+    isPercentage: true
   },
-  'mon_wealthy': {
-    id: 'mon_wealthy',
+  {
+    baseId: 'wealthy',
     name: 'Wealthy',
     name_fr: 'Riche',
     type: EffectType.ENEMY_GOLD_REWARD_BONUS,
-    value: 0.50,
-    description: '+50% Gold Reward',
-    description_fr: '+50% Récompense Or'
-  },
-  'mon_deadly': {
-    id: 'mon_deadly',
-    name: 'Deadly',
-    name_fr: 'Mortel',
-    type: EffectType.ENEMY_DAMAGE_BONUS,
-    value: 0.40,
-    description: '+40% Damage',
-    description_fr: '+40% Dégâts'
+    baseValue: 0.20,
+    descTemplate: '+{val}% Gold Reward',
+    descTemplate_fr: '+{val}% Récompense Or',
+    isPercentage: true
   }
+];
+
+const generateEffects = (): Record<string, StatusEffect> => {
+  const effects: Record<string, StatusEffect> = {};
+
+  EFFECT_DEFINITIONS.forEach(def => {
+    // Generate Tiers 1 to 5
+    for (let i = 1; i <= 5; i++) {
+      const tierValue = parseFloat((def.baseValue * i).toFixed(2));
+      const id = `${def.baseId}_${i}`;
+      const roman = ROMAN_NUMERALS[i - 1];
+      
+      const displayVal = def.isPercentage ? Math.round(tierValue * 100) : tierValue;
+
+      effects[id] = {
+        id: id,
+        name: `${def.name} ${roman}`,
+        name_fr: `${def.name_fr} ${roman}`,
+        type: def.type,
+        value: tierValue,
+        description: def.descTemplate.replace('{val}', displayVal.toString()),
+        description_fr: def.descTemplate_fr.replace('{val}', displayVal.toString())
+      };
+    }
+  });
+
+  return effects;
 };
+
+export const STATUS_EFFECTS = generateEffects();

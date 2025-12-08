@@ -4,7 +4,7 @@ import { Item, Rarity } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 import { Gift, Coins, Star, Footprints, Sword, Sparkles, AlertTriangle } from 'lucide-react';
 import { useLocalization } from '../localization';
-import { playMenuBackSound, playItemRevealSound, fadeOutCurrentSound } from '../services/audioService';
+import { playMenuBackSound, playItemRevealSound, playEpicRevealSound, playFlipCardSound, fadeOutCurrentSound } from '../services/audioService';
 
 interface LootRewardCardProps {
   item: Item | null;
@@ -46,9 +46,18 @@ const RARITY_STYLES: Record<Rarity, { border: string; bg: string; text: string }
 const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCorrectly }) => {
   const { t, lang } = useLocalization();
 
+  // Play flip sound on mount (when card appears)
+  useEffect(() => {
+    playFlipCardSound();
+  }, []);
+
   useEffect(() => {
     if (solvedCorrectly && item) {
-        playItemRevealSound();
+        if (item.rarity === Rarity.LEGENDARY || item.rarity === Rarity.MYTHIC) {
+            playEpicRevealSound();
+        } else {
+            playItemRevealSound();
+        }
     }
   }, [solvedCorrectly, item]);
 

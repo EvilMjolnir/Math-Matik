@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useEffect } from 'react';
 import { GameConfig, MathProblem, MinigameProps } from '../types';
 import { generateAdditionSubtraction } from '../services/mathService';
@@ -17,7 +14,7 @@ interface MovementProps extends MinigameProps {
 
 type SegmentStatus = 'empty' | 'correct' | 'wrong';
 
-const XP_PER_CORRECT = 1;
+const XP_PER_CORRECT = 4;
 
 const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgressTome, isAdmin }) => {
   const { t } = useLocalization();

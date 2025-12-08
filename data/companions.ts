@@ -9,7 +9,7 @@ export const COMPANIONS_DATA: Record<string, Companion> = {
     level: 1,
     description: "A wise old owl who helps you learn faster.",
     description_fr: "Un vieux hibou sage qui vous aide à apprendre plus vite.",
-    tags: ["scholar_1"]
+    tags: ["scholar_1"] 
   },
   comp_frog: {
     id: "comp_frog",
@@ -18,7 +18,7 @@ export const COMPANIONS_DATA: Record<string, Companion> = {
     level: 1,
     description: "A quick hopper who finds shortcuts in the path.",
     description_fr: "Une grenouille agile qui trouve des raccourcis sur le chemin.",
-    tags: ["navigator_1"]
+    tags: ["navigator_1"] 
   },
   comp_zelda: {
     id: "comp_zelda",
@@ -27,27 +27,25 @@ export const COMPANIONS_DATA: Record<string, Companion> = {
     level: 1,
     description: "A loyal protector who fights with fierce determination.",
     description_fr: "Un protecteur loyal qui se bat avec une détermination féroce.",
-    tags: ["fighter_1"],
-    // Example of image usage:
-    // image: "https://example.com/zelda.png"
+    tags: ["fighter_1"], 
   },
   comp_dee: {
     id: "comp_dee",
-    name: "Dee, the Cat",
+    name: "Dee the Cat",
     role: "Mystic",
     level: 1,
     description: "A mysterious feline who seems to know the secrets of the universe.",
     description_fr: "Un félin mystérieux qui semble connaître les secrets de l'univers.",
-    tags: ["scholar_2"]
+    tags: ["scholar_1"] 
   },
   comp_fib: {
     id: "comp_fib",
-    name: "Fib, the Stoat",
+    name: "Fib the Stoat",
     role: "Thief",
     level: 1,
     description: "A sneaky little rascal who loves shiny gold coins.",
     description_fr: "Un petit coquin sournois qui adore les pièces d'or brillantes.",
-    tags: ["merchant_1"]
+    tags: ["merchant_1"] 
   }
 };
 

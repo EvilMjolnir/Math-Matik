@@ -4,15 +4,28 @@ const MENU_BACK_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com
 const HIT_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/swoosh-1.mp3';
 const LEVEL_UP_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/flute_complete.mp3';
 const ITEM_REVEAL_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/simple-piano-reverse-logo.mp3';
+const EPIC_REVEAL_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/epic-flute-reveal-logo.mp3';
 const DAMAGE_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/breaking-small-bone-finger.mp3';
 const BOSS_INTRO_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/epic-transition.mp3';
 const VICTORY_TRUMPET_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/victory_trumpet.mp3';
+const FLIP_CARD_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/flipcard.mp3';
 
 let currentLongSound: HTMLAudioElement | null = null;
 
-const playSound = (url: string, volume: number = 0.5, isLong: boolean = false) => {
+const playSound = (url: string, volume: number = 0.5, isLong: boolean = false, pitchVariance: number = 0) => {
   const audio = new Audio(url);
   audio.volume = volume;
+  
+  // Apply pitch variation if requested (changes playback rate which affects pitch)
+  if (pitchVariance > 0) {
+    // Generates a random rate between (1 - variance) and (1 + variance)
+    // e.g. 0.1 variance => random between 0.9 and 1.1
+    const rate = 1 + (Math.random() * (pitchVariance * 2) - pitchVariance);
+    audio.playbackRate = rate;
+    
+    // For browser compatibility to ensure pitch changes with rate
+    (audio as any).preservesPitch = false; 
+  }
   
   if (isLong) {
     // If there is already a long sound playing, stop it immediately
@@ -56,9 +69,27 @@ export const fadeOutCurrentSound = () => {
 export const playMenuOpenSound = () => playSound(MENU_OPEN_SOUND);
 export const playMenuBackSound = () => playSound(MENU_BACK_SOUND);
 
-export const playHitSound = () => playSound(HIT_SOUND, 0.6);
+// Added 0.1 (10%) variance to Hit and Damage sounds
+export const playHitSound = () => playSound(HIT_SOUND, 0.6, false, 0.1);
+export const playDamageSound = () => playSound(DAMAGE_SOUND, 0.7, false, 0.1);
+
 export const playLevelUpSound = () => playSound(LEVEL_UP_SOUND, 0.5, true);
 export const playItemRevealSound = () => playSound(ITEM_REVEAL_SOUND, 0.6, true);
-export const playDamageSound = () => playSound(DAMAGE_SOUND, 0.7);
+export const playEpicRevealSound = () => playSound(EPIC_REVEAL_SOUND, 0.6, true);
 export const playBossIntroSound = () => playSound(BOSS_INTRO_SOUND, 0.6, true);
 export const playVictoryTrumpetSound = () => playSound(VICTORY_TRUMPET_SOUND, 0.6, true);
+export const playFlipCardSound = () => playSound(FLIP_CARD_SOUND, 0.5);
+
+// Export map for Admin Panel
+export const ALL_SOUNDS = [
+    { name: "Menu Open", fn: playMenuOpenSound },
+    { name: "Menu Back", fn: playMenuBackSound },
+    { name: "Hit (Var)", fn: playHitSound },
+    { name: "Damage (Var)", fn: playDamageSound },
+    { name: "Card Flip", fn: playFlipCardSound },
+    { name: "Item Reveal", fn: playItemRevealSound },
+    { name: "Epic Reveal", fn: playEpicRevealSound },
+    { name: "Level Up", fn: playLevelUpSound },
+    { name: "Victory", fn: playVictoryTrumpetSound },
+    { name: "Boss Intro", fn: playBossIntroSound },
+];

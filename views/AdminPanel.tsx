@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType, Item, StorageMode, EffectType } from '../types';
-import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud, Sword, TestTube, X, Gift, Sparkles, Star, Footprints, Shield, Skull, ZoomIn } from 'lucide-react';
+import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud, Sword, TestTube, X, Gift, Sparkles, Star, Footprints, Shield, Skull, ZoomIn, Music } from 'lucide-react';
 import * as localStore from '../services/storageService';
 import * as cloudStore from '../services/storageService_Live';
 import { lootData } from '../data/loot';
@@ -10,7 +10,7 @@ import { RARITY_TEXT_COLORS } from '../constants';
 import ItemDetailOverlay from '../components/ItemDetailOverlay';
 import EncounterIntroCard from '../components/EncounterIntroCard';
 import LootRewardCard from '../components/LootRewardCard';
-import { playMenuBackSound } from '../services/audioService';
+import { playMenuBackSound, ALL_SOUNDS } from '../services/audioService';
 import { getEnemyStats } from '../services/statusService';
 
 interface AdminPanelProps {
@@ -24,7 +24,7 @@ interface AdminPanelProps {
 }
 
 const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, setLootWeights, onBack, storageMode, onTestEncounter }) => {
-  const [activeTab, setActiveTab] = useState<'tomes' | 'loot' | 'users' | 'items' | 'uilab' | 'effects'>('tomes');
+  const [activeTab, setActiveTab] = useState<'tomes' | 'loot' | 'users' | 'items' | 'uilab' | 'effects' | 'sounds'>('tomes');
   const [editingTomeId, setEditingTomeId] = useState<string | null>(null);
   const [users, setUsers] = useState<PlayerStats[]>([]);
   const [previewItem, setPreviewItem] = useState<Item | null>(null);
@@ -314,6 +314,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
             <NavButton tab="items" icon={<Box className="w-5 h-5"/>} label="Items" />
             <NavButton tab="loot" icon={<Sliders className="w-5 h-5"/>} label="Loot" />
             <NavButton tab="effects" icon={<Sparkles className="w-5 h-5"/>} label="Effects" />
+            <NavButton tab="sounds" icon={<Music className="w-5 h-5"/>} label="Sounds" />
             <NavButton tab="users" icon={<Users className="w-5 h-5"/>} label="Users" />
             <NavButton tab="uilab" icon={<TestTube className="w-5 h-5"/>} label="UI Lab" />
         </nav>
@@ -714,6 +715,30 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                                    </div>
                                </div>
                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* --- SOUND TEST --- */}
+            {activeTab === 'sounds' && (
+                <div className="bg-parchment-200 p-6 rounded-lg shadow-lg border-2 border-parchment-400 text-parchment-900">
+                    <h3 className="text-2xl font-serif font-bold mb-4 flex items-center">
+                        <Music className="w-6 h-6 mr-2" />
+                        Sound Board
+                    </h3>
+                    <p className="mb-6 italic text-parchment-700">Test all sound effects used in the game.</p>
+
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {ALL_SOUNDS.map((sound, idx) => (
+                            <button
+                                key={idx}
+                                onClick={() => sound.fn()}
+                                className="flex items-center justify-center p-4 bg-white rounded border border-parchment-300 shadow-sm hover:shadow-md hover:bg-parchment-100 active:bg-parchment-300 transition-all"
+                            >
+                                <Music className="w-4 h-4 mr-2 text-purple-600" />
+                                <span className="font-bold">{sound.name}</span>
+                            </button>
                         ))}
                     </div>
                 </div>

@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item, StorageMode } from './types';
 import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS } from './constants';
@@ -69,6 +71,7 @@ const GameContent: React.FC = () => {
       ...JSON.parse(JSON.stringify(DEFAULT_PLAYER)), // Deep copy default base
       ...loadedPlayer,
       equipped: loadedPlayer.equipped || [],
+      agility: loadedPlayer.agility !== undefined ? loadedPlayer.agility : Math.floor((loadedPlayer.level || 1) / 3), // Backfill agility based on level if missing
     };
     setStorageMode(mode);
     setPlayer(modernizedPlayer);
@@ -165,6 +168,8 @@ const GameContent: React.FC = () => {
         const levelDiff = newLevel - prev.level;
         const hpIncrease = levelDiff * 10;
         const attackIncrease = levelDiff * 1;
+        // Agility increases by 1 every 3 levels (Level 3, 6, 9...)
+        const newAgility = Math.floor(newLevel / 3);
 
         return {
           ...prev,
@@ -173,6 +178,7 @@ const GameContent: React.FC = () => {
           maxHp: prev.maxHp + hpIncrease,
           currentHp: prev.currentHp, // HP stays the same, no healing
           attack: (prev.attack || 5) + attackIncrease,
+          agility: newAgility,
         };
       }
 
@@ -230,9 +236,14 @@ const GameContent: React.FC = () => {
   const handleTomeProgress = (baseSteps: number, bypassEncounters: boolean = false) => {
     if (player.activeTomeId === 'infinite') return;
 
-    // Apply Movement Bonuses (Skip if bypassing to ensure exact Admin positioning)
+    // Apply Movement Bonuses
+    // Agility Bonus: +1 movement per successful segment per Agility point
+    // Multiplier Bonus: Percentage multiplier from items
+    const agilityBonus = (player.agility || 0) * baseSteps;
+    const totalBaseSteps = baseSteps + agilityBonus;
+    
     const stats = getAggregatedStats(player);
-    const steps = bypassEncounters ? baseSteps : Math.floor(baseSteps * stats.movementMultiplier);
+    const steps = bypassEncounters ? baseSteps : Math.floor(totalBaseSteps * stats.movementMultiplier);
 
     const activeTomeIndex = tomes.findIndex(t => t.id === player.activeTomeId);
     if (activeTomeIndex === -1) return;

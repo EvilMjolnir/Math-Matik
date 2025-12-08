@@ -148,6 +148,7 @@ export interface PlayerStats {
   maxHp: number;
   defense: number;
   attack: number; // Base attack stat
+  agility: number; // Agility stat (moves +1 per segment)
   gold: number;
   inventory: Item[]; 
   equipped: Item[]; // Items currently in active slots

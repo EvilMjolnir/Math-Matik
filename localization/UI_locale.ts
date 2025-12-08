@@ -4,6 +4,8 @@
 
 
 
+
+
 import { Translation } from './types';
 
 export const UI_SOURCE = {
@@ -127,6 +129,7 @@ export const UI_SOURCE = {
     noEffects: { en: "No Magical Properties", fr: "Aucune Propriété Magique" },
     clickDetails: { en: "Click to view details", fr: "Cliquez pour voir les détails" },
     activeCompanion: { en: "Active Companion", fr: "Compagnon Actif" },
+    agility: { en: "Agility", fr: "Agilité" },
   },
   bonuses: {
     xp: { en: "+{value}% XP Gain", fr: "+{value}% Gain d'XP" },
@@ -159,7 +162,8 @@ export const UI_SOURCE = {
     action: { en: "Awesome!", fr: "Génial !" },
     message: { en: "You have reached Level {level}!", fr: "Vous avez atteint le niveau {level} !" },
     statHp: { en: "+10 Max HP", fr: "+10 PV Max" },
-    statAttack: { en: "+1 Attack Power", fr: "+1 Puissance d'Attaque" }
+    statAttack: { en: "+1 Attack Power", fr: "+1 Puissance d'Attaque" },
+    statAgility: { en: "+1 Agility", fr: "+1 Agilité" },
   }
 };
 
@@ -285,6 +289,7 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       noEffects: UI_SOURCE.profile.noEffects[lang],
       clickDetails: UI_SOURCE.profile.clickDetails[lang],
       activeCompanion: UI_SOURCE.profile.activeCompanion[lang],
+      agility: UI_SOURCE.profile.agility[lang],
     },
     bonuses: {
       xp: UI_SOURCE.bonuses.xp[lang],
@@ -318,6 +323,7 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       message: UI_SOURCE.levelUp.message[lang],
       statHp: UI_SOURCE.levelUp.statHp[lang],
       statAttack: UI_SOURCE.levelUp.statAttack[lang],
+      statAgility: UI_SOURCE.levelUp.statAgility[lang],
     }
   };
 };
