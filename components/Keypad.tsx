@@ -15,32 +15,32 @@ const Keypad: React.FC<KeypadProps> = ({ onInput, onDelete, onValidate, disabled
 
   if (mode === 'operator') {
     return (
-      <div className="grid grid-cols-2 gap-4 w-full max-w-sm mx-auto mt-6">
+      <div className="grid grid-cols-2 gap-3 w-full max-w-sm mx-auto mt-6">
         <button
           onClick={() => { onInput('+'); setTimeout(onValidate, 100); }}
           disabled={disabled}
-          className="h-24 bg-parchment-300 text-parchment-900 border-2 border-parchment-800 rounded-lg text-4xl flex items-center justify-center hover:bg-parchment-200 shadow-md"
+          className="h-[172px] bg-parchment-300 text-parchment-900 border-2 border-parchment-800 rounded-lg text-4xl flex items-center justify-center hover:bg-parchment-200 shadow-md"
         >
           <Plus className="w-10 h-10" />
         </button>
         <button
            onClick={() => { onInput('-'); setTimeout(onValidate, 100); }}
            disabled={disabled}
-           className="h-24 bg-parchment-300 text-parchment-900 border-2 border-parchment-800 rounded-lg text-4xl flex items-center justify-center hover:bg-parchment-200 shadow-md"
+           className="h-[172px] bg-parchment-300 text-parchment-900 border-2 border-parchment-800 rounded-lg text-4xl flex items-center justify-center hover:bg-parchment-200 shadow-md"
         >
           <Minus className="w-10 h-10" />
         </button>
         <button
            onClick={() => { onInput('×'); setTimeout(onValidate, 100); }}
            disabled={disabled}
-           className="h-24 bg-parchment-300 text-parchment-900 border-2 border-parchment-800 rounded-lg text-4xl flex items-center justify-center hover:bg-parchment-200 shadow-md"
+           className="h-[172px] bg-parchment-300 text-parchment-900 border-2 border-parchment-800 rounded-lg text-4xl flex items-center justify-center hover:bg-parchment-200 shadow-md"
         >
           <X className="w-10 h-10" />
         </button>
         <button
            onClick={() => { onInput('÷'); setTimeout(onValidate, 100); }}
            disabled={disabled}
-           className="h-24 bg-parchment-300 text-parchment-900 border-2 border-parchment-800 rounded-lg text-4xl flex items-center justify-center hover:bg-parchment-200 shadow-md"
+           className="h-[172px] bg-parchment-300 text-parchment-900 border-2 border-parchment-800 rounded-lg text-4xl flex items-center justify-center hover:bg-parchment-200 shadow-md"
         >
           <Divide className="w-10 h-10" />
         </button>

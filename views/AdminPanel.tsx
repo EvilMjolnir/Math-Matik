@@ -475,12 +475,19 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                                         {/* Image Input */}
                                         <div className="mb-2">
                                             <label className="text-xs font-bold block text-gray-600">Image URL</label>
-                                            <input 
-                                                className="w-full p-1 border rounded bg-white text-gray-900 text-sm"
-                                                value={encounter.image || ''}
-                                                placeholder="https://... (Optional)"
-                                                onChange={(e) => updateEncounter(tome.id, encounter.id, 'image', e.target.value)}
-                                            />
+                                            <div className="flex gap-2">
+                                                <input 
+                                                    className="w-full p-1 border rounded bg-white text-gray-900 text-sm"
+                                                    value={encounter.image || ''}
+                                                    placeholder="https://... (Optional)"
+                                                    onChange={(e) => updateEncounter(tome.id, encounter.id, 'image', e.target.value)}
+                                                />
+                                                {encounter.image && (
+                                                    <div className="w-10 h-10 shrink-0 border border-gray-300 rounded overflow-hidden bg-gray-100">
+                                                        <img src={encounter.image} alt="Preview" className="w-full h-full object-cover" />
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
 
                                         <div className="grid grid-cols-4 gap-2 mb-2">
@@ -784,6 +791,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                                         className="w-full py-2 bg-green-700 text-white rounded hover:bg-green-600 font-bold"
                                     >
                                         Test Rare Reward
+                                    </button>
+                                    <button 
+                                        onClick={() => handleTestLoot(Rarity.MAGIC)}
+                                        className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-500 font-bold"
+                                    >
+                                        Test Magic Reward
                                     </button>
                                     <button 
                                         onClick={() => handleTestLoot(Rarity.LEGENDARY)}

@@ -47,7 +47,7 @@ const EncounterIntroCard: React.FC<EncounterIntroCardProps> = ({ encounter, enem
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-4 animate-fadeIn relative z-10 w-full h-full overflow-y-auto custom-scrollbar">
+    <div className="flex flex-col items-center justify-center p-4 puff-in-center relative z-10 w-full h-full overflow-y-auto custom-scrollbar">
       
       {/* Boss Ambient Glow */}
       {isBossMode && (

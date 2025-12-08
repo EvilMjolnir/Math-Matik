@@ -42,6 +42,7 @@ const Combat: React.FC<CombatProps> = ({
   const [feedback, setFeedback] = useState<'none' | 'correct' | 'wrong'>('none');
   const [isVictory, setIsVictory] = useState(false);
   const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
+  const [sessionDamageTaken, setSessionDamageTaken] = useState(0);
   
   // -- Normal Combat State --
   const [problems, setProblems] = useState<MathProblem[]>([]);
@@ -79,8 +80,19 @@ const Combat: React.FC<CombatProps> = ({
   const playerAggrStats = playerStats ? getAggregatedStats(playerStats) : { totalAttack: 1 };
   const playerAttackPower = playerAggrStats.totalAttack;
 
+  // Track initialization to prevent resets on parent re-renders
+  const initializationRef = useRef<string | null>(null);
+
   // Initialize
   useEffect(() => {
+    const activeId = encounter ? encounter.id : 'infinite_mode';
+
+    // Guard: Only initialize if we haven't set up this specific encounter yet
+    if (initializationRef.current === activeId) {
+      return;
+    }
+    initializationRef.current = activeId;
+
     if (!encounter) {
       // Normal Infinite Mode
       const newProblems = Array.from({ length: config.questionsCount }).map(() => 
@@ -107,7 +119,7 @@ const Combat: React.FC<CombatProps> = ({
         setPendingTurnDamage(0);
       }
     }
-  }, [config, encounter, isBossMode, effectiveMaxHp, normalMaxTime]);
+  }, [config, encounter, isBossMode, effectiveMaxHp, normalMaxTime, activeBossConfig.timerDuration]);
 
   // --- Normal Mode Timer Logic ---
   useEffect(() => {
@@ -150,6 +162,7 @@ const Combat: React.FC<CombatProps> = ({
 
   const handleBossAttack = () => {
      if (onTakeDamage) onTakeDamage(effectiveAttack);
+     setSessionDamageTaken(prev => prev + effectiveAttack);
      
      // Visual Shake or Red Flash could go here
      const root = document.getElementById('root');
@@ -164,6 +177,7 @@ const Combat: React.FC<CombatProps> = ({
     // In encounter mode, time expire = wrong answer
     if (encounter) {
       if (onTakeDamage) onTakeDamage(effectiveAttack);
+      setSessionDamageTaken(prev => prev + effectiveAttack);
       // Pending damage for this turn slot is 0
     }
     setTimeout(nextQuestionNormal, 1000);
@@ -334,6 +348,7 @@ const Combat: React.FC<CombatProps> = ({
     if (encounter) {
         // Encounter: Immediate Damage to Player
         if (onTakeDamage) onTakeDamage(effectiveAttack);
+        setSessionDamageTaken(prev => prev + effectiveAttack);
         // Zero damage to monster for this action
         setTimeout(nextQuestionNormal, 500);
     } else {
@@ -601,21 +616,22 @@ const Combat: React.FC<CombatProps> = ({
         onAction={handleModalAction} 
         isOpen={gameState === 'finished'}
         colorClass={isVictory ? "bg-parchment-200" : "bg-red-950 text-white border-red-500"}
+        isButtonOutside={true}
       >
         <div className="space-y-4 flex flex-col items-center w-full">
           {isVictory ? (
-            <Trophy className="w-16 h-16 text-yellow-500 mb-2" />
+            <Trophy className="w-20 h-20 text-yellow-500 mb-2 drop-shadow-md" />
           ) : (
-            <Skull className="w-16 h-16 text-red-500 mb-2" />
+            <Skull className="w-20 h-20 text-red-500 mb-2 drop-shadow-md" />
           )}
           
-          <p className="text-2xl font-serif font-bold">
+          <p className="text-4xl font-serif font-bold tracking-wider">
             {isVictory ? t.combat.victory : t.combat.defeat}
           </p>
           
-          <div className="bg-parchment-100/10 p-4 rounded-lg border border-parchment-400/30 w-full mb-2">
+          <div className="bg-black/10 p-6 rounded-lg border-2 border-dashed border-current w-full mb-2">
             {!encounter && (
-                <div className="flex justify-between items-end mb-2 border-b border-parchment-400/30 pb-2">
+                <div className="flex justify-between items-end mb-2 border-b border-current pb-2">
                 <span className="text-sm uppercase tracking-widest opacity-80">{t.combat.finalScore}</span>
                 <div className="text-2xl font-bold">
                     {score}
@@ -626,16 +642,16 @@ const Combat: React.FC<CombatProps> = ({
             {encounter && (
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm uppercase tracking-widest opacity-80">{t.combat.hpLost}</span>
-                <span className={`font-bold text-xl ${isVictory ? 'text-green-500' : 'text-red-500'}`}>
-                   {isVictory && !isBossMode ? '0' : (isBossMode && isVictory ? 'Victory' : `-${effectiveAttack}`)}
+                <span className="font-bold text-2xl text-red-500">
+                   -{sessionDamageTaken}
                 </span>
               </div>
             )}
 
             {isVictory && encounter && effectiveGoldReward > 0 && (
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center pt-2 border-t border-current/20">
                     <span className="text-sm uppercase tracking-widest opacity-80">{t.common.gold}</span>
-                    <span className="font-bold text-xl text-amber-500">
+                    <span className="font-bold text-2xl text-amber-500 flex items-center">
                         +{effectiveGoldReward}
                     </span>
                 </div>
@@ -643,7 +659,7 @@ const Combat: React.FC<CombatProps> = ({
           </div>
 
           {isVictory && (
-             <p className="text-lg font-bold text-yellow-500">
+             <p className="text-xl font-bold text-yellow-600 bg-yellow-100/50 px-4 py-1 rounded-full border border-yellow-500/30">
                +{encounter ? (effectiveXpReward > 0 ? effectiveXpReward : score * 3) : score * 2} {t.common.xp}
              </p>
           )}

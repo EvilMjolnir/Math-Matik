@@ -168,7 +168,7 @@ export interface MinigameProps {
   onAddXp: (amount: number) => void;
   onAddGold?: (amount: number) => void;
   onSpendGold?: (amount: number) => void;
-  onProgressTome: (steps: number) => void;
+  onProgressTome: (steps: number, bypassEncounters?: boolean) => void;
   playerGold?: number;
   playCount?: number; 
   encounter?: Encounter;

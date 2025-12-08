@@ -16,16 +16,7 @@ import * as localStore from './services/storageService';
 import * as cloudStore from './services/storageService_Live';
 import { getAggregatedStats } from './services/statusService';
 
-// Wrap the main app logic to provide context
-const AppWrapper: React.FC = () => {
-  return (
-    <LocalizationProvider>
-      <App />
-    </LocalizationProvider>
-  );
-};
-
-const App: React.FC = () => {
+const GameContent: React.FC = () => {
   const { t, lang } = useLocalization();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentView, setCurrentView] = useState<GameView>(GameView.HOME);
@@ -236,12 +227,12 @@ const App: React.FC = () => {
     }));
   };
 
-  const handleTomeProgress = (baseSteps: number) => {
+  const handleTomeProgress = (baseSteps: number, bypassEncounters: boolean = false) => {
     if (player.activeTomeId === 'infinite') return;
 
-    // Apply Movement Bonuses
+    // Apply Movement Bonuses (Skip if bypassing to ensure exact Admin positioning)
     const stats = getAggregatedStats(player);
-    const steps = Math.floor(baseSteps * stats.movementMultiplier);
+    const steps = bypassEncounters ? baseSteps : Math.floor(baseSteps * stats.movementMultiplier);
 
     const activeTomeIndex = tomes.findIndex(t => t.id === player.activeTomeId);
     if (activeTomeIndex === -1) return;
@@ -256,49 +247,51 @@ const App: React.FC = () => {
     let encounterToTrigger: Encounter | null = null;
     let eventDist = Infinity;
 
-    // 1. Check for Mini-Bosses
-    const miniBosses = tome.possibleEncounters.filter(e => e.type === 'miniboss' && e.triggerStep);
-    for (const mb of miniBosses) {
-        // If we cross the trigger step
-        if (mb.triggerStep! > currentDist && mb.triggerStep! <= targetDist) {
-            // Find the closest one
-            if (mb.triggerStep! < eventDist) {
-                eventDist = mb.triggerStep!;
-                encounterToTrigger = mb;
-            }
-        }
-    }
+    if (!bypassEncounters) {
+      // 1. Check for Mini-Bosses
+      const miniBosses = tome.possibleEncounters.filter(e => e.type === 'miniboss' && e.triggerStep);
+      for (const mb of miniBosses) {
+          // If we cross the trigger step
+          if (mb.triggerStep! > currentDist && mb.triggerStep! <= targetDist) {
+              // Find the closest one
+              if (mb.triggerStep! < eventDist) {
+                  eventDist = mb.triggerStep!;
+                  encounterToTrigger = mb;
+              }
+          }
+      }
 
-    // 2. Check for Boss (End of Tome)
-    const isReachingEnd = targetDist >= tome.totalDistance;
-    if (isReachingEnd) {
-        if (tome.totalDistance < eventDist) {
-            eventDist = tome.totalDistance;
-            // Look for boss encounter
-            const boss = tome.possibleEncounters.find(e => e.type === 'boss');
-            if (boss) {
-                encounterToTrigger = boss;
-            } else {
-                // Reaching end with no boss defined
-                encounterToTrigger = null; 
-            }
-        }
-    }
+      // 2. Check for Boss (End of Tome)
+      const isReachingEnd = targetDist >= tome.totalDistance;
+      if (isReachingEnd) {
+          if (tome.totalDistance < eventDist) {
+              eventDist = tome.totalDistance;
+              // Look for boss encounter
+              const boss = tome.possibleEncounters.find(e => e.type === 'boss');
+              if (boss) {
+                  encounterToTrigger = boss;
+              } else {
+                  // Reaching end with no boss defined
+                  encounterToTrigger = null; 
+              }
+          }
+      }
 
-    // 3. Check for random encounters
-    const rate = tome.encounterRate;
-    const nextRandomEncounterDist = (Math.floor(currentDist / rate) + 1) * rate;
-    
-    if (nextRandomEncounterDist <= targetDist && nextRandomEncounterDist < tome.totalDistance) {
-        if (nextRandomEncounterDist < eventDist) {
-            eventDist = nextRandomEncounterDist;
-            
-            // Pick a random encounter that is NOT a boss or mini-boss
-            const randomPool = tome.possibleEncounters.filter(e => e.type !== 'boss' && e.type !== 'miniboss');
-            if (randomPool.length > 0) {
-                encounterToTrigger = randomPool[Math.floor(Math.random() * randomPool.length)];
-            }
-        }
+      // 3. Check for random encounters
+      const rate = tome.encounterRate;
+      const nextRandomEncounterDist = (Math.floor(currentDist / rate) + 1) * rate;
+      
+      if (nextRandomEncounterDist <= targetDist && nextRandomEncounterDist < tome.totalDistance) {
+          if (nextRandomEncounterDist < eventDist) {
+              eventDist = nextRandomEncounterDist;
+              
+              // Pick a random encounter that is NOT a boss or mini-boss
+              const randomPool = tome.possibleEncounters.filter(e => e.type !== 'boss' && e.type !== 'miniboss');
+              if (randomPool.length > 0) {
+                  encounterToTrigger = randomPool[Math.floor(Math.random() * randomPool.length)];
+              }
+          }
+      }
     }
 
     // Final decision on where to stop
@@ -526,4 +519,12 @@ const App: React.FC = () => {
   );
 };
 
-export default AppWrapper;
+const App: React.FC = () => {
+  return (
+    <LocalizationProvider>
+      <GameContent />
+    </LocalizationProvider>
+  );
+};
+
+export default App;

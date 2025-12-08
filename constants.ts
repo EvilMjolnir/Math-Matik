@@ -1,7 +1,6 @@
 
-
-
 import { GameConfig, Rarity, PlayerStats } from './types';
+import { STARTING_COMPANIONS } from './data/companions';
 
 export const DEFAULT_CONFIG: GameConfig = {
   movement: {
@@ -36,26 +35,7 @@ export const DEFAULT_PLAYER: PlayerStats = {
   inventory: [],
   equipped: [], // New equipment slots
   itemBonuses: [], // Deprecated
-  companions: [
-    { 
-      id: "comp_owl",
-      name: "Pythagoras the Owl", 
-      role: "Advisor", 
-      level: 1,
-      description: "A wise old owl who helps you learn faster.",
-      description_fr: "Un vieux hibou sage qui vous aide à apprendre plus vite.",
-      tags: ["scholar_1"]
-    },
-    { 
-      id: "comp_frog",
-      name: "Pascal the Frog", 
-      role: "Scout", 
-      level: 1,
-      description: "A quick hopper who finds shortcuts in the path.",
-      description_fr: "Une grenouille agile qui trouve des raccourcis sur le chemin.",
-      tags: ["navigator_1"]
-    }
-  ],
+  companions: STARTING_COMPANIONS,
   activeCompanionId: undefined,
   activeTomeId: 'tome_1',
   researchPlayCount: 0,

@@ -36,6 +36,17 @@ const CombatEnemyPanel: React.FC<CombatEnemyPanelProps> = ({
 
   const name = (lang === 'fr' && encounter.name_fr) ? encounter.name_fr : encounter.name;
 
+  // Calculate Bar Width
+  let barWidth = 100;
+  if (isBossMode) {
+      // Boss: Starts full, goes to 0. currentHp is remaining HP.
+      barWidth = (currentHp / maxHp) * 100;
+  } else {
+      // Normal: currentHp is Damage Dealt (starts 0, goes to maxHp).
+      // We want bar to start full and deplete.
+      barWidth = Math.max(0, ((maxHp - currentHp) / maxHp) * 100);
+  }
+
   return (
     <div className="w-full md:w-1/4 bg-red-950/40 rounded-lg p-3 border-2 border-red-800/60 flex flex-col justify-center">
       <div className="flex items-center justify-end mb-2">
@@ -55,15 +66,15 @@ const CombatEnemyPanel: React.FC<CombatEnemyPanelProps> = ({
       {/* Enemy HP / Progress */}
       <div className="mb-3">
         <div className="flex justify-between text-xs text-red-300 mb-1">
-          <span>{isBossMode ? t.common.hp : t.combat.damageDealt}</span>
+          <span>{t.common.hp}</span>
           <span>
-            {currentHp}/{maxHp}
+            {isBossMode ? currentHp : Math.max(0, maxHp - currentHp)}/{maxHp}
           </span>
         </div>
         <div className="w-full h-3 bg-gray-900 rounded-full overflow-hidden border border-gray-700">
           <div 
             className={`h-full transition-all duration-300 ${isBossMode ? 'bg-purple-600' : 'bg-blue-600'}`} 
-            style={{width: `${(currentHp / maxHp) * 100}%`}}
+            style={{width: `${barWidth}%`}}
           />
         </div>
       </div>

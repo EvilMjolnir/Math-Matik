@@ -2,7 +2,7 @@
 import { Encounter } from '../types';
 
 export const ENCOUNTERS: Record<string, Encounter> = {
-  // --- Tome 1: Forest (Levels 1-2) ---
+          // --- Tome 1: Forest (Levels 1-2) ---
   // HP kept low for new players, Boss HP slightly increased.
   t1_wolf: {
     id: 't1_wolf',
@@ -27,7 +27,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 8,
     goldReward: 3,
     xpReward: 10,
-    timerDuration: 10
+    timerDuration: 10,
+	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/math_goblin"
   },
   t1_vector_viper: {
     id: 't1_vector_viper',
@@ -39,7 +40,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 10,
     goldReward: 5,
     xpReward: 15,
-    timerDuration: 8
+    timerDuration: 8,
+	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/vector_viper"
   },
   t1_boss: {
     id: 't1_boss',
@@ -51,7 +53,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 10,
     goldReward: 10,
     xpReward: 50,
-    type: 'boss'
+    type: 'boss',
+	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/root_keeper"
   },
 
   // --- Tome 2: Iron Fortress (Levels 3-4) ---
@@ -66,7 +69,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 12,
     goldReward: 6,
     xpReward: 18,
-    timerDuration: 10
+    timerDuration: 10,
+	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/exponent_eater"
   },
   t2_fraction_ogre: {
     id: 't2_fraction_ogre',
@@ -78,8 +82,9 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 15,
     goldReward: 8,
     xpReward: 20,
-    tags: ['mon_armored'],
-    timerDuration: 12
+    tags: ['mon_fierce'],
+    timerDuration: 12,
+	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/fraction_ogre"
   },
   t2_guard: {
     id: 't2_guard',
@@ -92,7 +97,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     goldReward: 10,
     xpReward: 22,
     tags: ['mon_armored'],
-    timerDuration: 9
+    timerDuration: 9,
+	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/iron_guard"
   },
   t2_golem: {
     id: 't2_golem',
@@ -104,8 +110,9 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 12,
     goldReward: 12,
     xpReward: 25,
-    tags: ['mon_armored', 'mon_fierce'],
-    timerDuration: 15
+    tags: ['mon_armored'],
+    timerDuration: 15,
+	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/stone_golem"
   },
   t2_geometry_golem: {
     id: 't2_geometry_golem',
@@ -118,7 +125,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     goldReward: 20,
     xpReward: 35,
     type: 'boss',
-    tags: ['mon_elite', 'mon_armored']
+    tags: ['mon_armored'],
+	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/geometry_golem"
   },
 
   // --- Tome 3: Void (Levels 5-6) ---

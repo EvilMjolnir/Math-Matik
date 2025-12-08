@@ -69,6 +69,7 @@ const TomeSelectionModal: React.FC<TomeSelectionModalProps> = ({ tomes, activeTo
               {tomes.map((tome) => {
                 const isActive = tome.id === activeTomeId;
                 const progressPercent = (tome.currentDistance / tome.totalDistance) * 100;
+                const isClickable = tome.isUnlocked && !tome.isCompleted;
 
                 // Localization Logic
                 const title = (lang === 'fr' && tome.title_fr) ? tome.title_fr : tome.title;
@@ -88,6 +89,11 @@ const TomeSelectionModal: React.FC<TomeSelectionModalProps> = ({ tomes, activeTo
                    titleColor = "text-stone-400";
                    progressBarBg = "bg-stone-800";
                    progressBarFill = "bg-stone-700";
+                } else if (tome.isCompleted) {
+                   // Completed State
+                   cardStyles = isActive
+                     ? "bg-amber-100 border-amber-600 shadow-sm ring-2 ring-amber-500 cursor-default opacity-90"
+                     : "bg-parchment-100 border-parchment-400 cursor-default opacity-75";
                 } else if (isActive) {
                    // Active State
                    cardStyles = "bg-amber-100 border-amber-600 shadow-[0_0_15px_rgba(217,119,6,0.3)] ring-2 ring-amber-500";
@@ -99,9 +105,9 @@ const TomeSelectionModal: React.FC<TomeSelectionModalProps> = ({ tomes, activeTo
                 return (
                   <button
                     key={tome.id}
-                    disabled={!tome.isUnlocked}
+                    disabled={!isClickable}
                     onClick={() => {
-                      if (tome.isUnlocked) {
+                      if (isClickable) {
                         playMenuOpenSound();
                         onSelectTome(tome.id);
                         onClose();

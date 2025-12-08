@@ -5,7 +5,7 @@ import PlayerStatsWidget from '../components/PlayerStatsWidget';
 import ActiveQuestPanel from '../components/ActiveQuestPanel';
 import GameMenu from '../components/GameMenu';
 import PlayerProfileModal from '../components/PlayerProfileModal';
-import { ShieldCheck, Footprints } from 'lucide-react';
+import { ShieldCheck, Footprints, FastForward } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuOpenSound } from '../services/audioService';
 
@@ -23,7 +23,7 @@ interface HomeProps {
   isAdmin: boolean;
   onLogout: () => void;
   onUpdateInventory: (inventory: Item[], equipped: Item[]) => void;
-  onProgressTome: (steps: number) => void;
+  onProgressTome: (steps: number, bypassEncounters?: boolean) => void;
 }
 
 const Home: React.FC<HomeProps> = ({ 
@@ -44,10 +44,17 @@ const Home: React.FC<HomeProps> = ({
 }) => {
   // We use this state to track WHICH tab is open. If null, modal is closed.
   const [activeProfileTab, setActiveProfileTab] = useState<'stats' | 'inventory' | 'companions' | null>(null);
+  
+  // Track if the quest bar is currently filling up. If so, we delay the "Encounter" lock.
+  const [isPanelAnimating, setIsPanelAnimating] = useState(false);
+
   const { t } = useLocalization();
 
-  const canMove = isInfinite || !activeEncounter;
-  const canCombat = isInfinite || !!activeEncounter; 
+  // Effectively hide the encounter from the UI until the animation is done
+  const visibleEncounter = isPanelAnimating ? null : activeEncounter;
+
+  const canMove = (isInfinite || !visibleEncounter) && !activeTome?.isCompleted;
+  const canCombat = isInfinite || !!visibleEncounter; 
 
   const rechercheCost = activeConfig.recherche.baseCost + (player.researchPlayCount * activeConfig.recherche.costIncrement);
   const canAffordRecherche = player.gold >= rechercheCost;
@@ -58,9 +65,20 @@ const Home: React.FC<HomeProps> = ({
   };
 
   const handleAdminAddSteps = () => {
-    if (activeTome && !isInfinite) {
+    if (activeTome && !isInfinite && !isPanelAnimating) {
         onProgressTome(5);
     }
+  };
+
+  const handleAdminJumpToBoss = () => {
+      if (activeTome && !isInfinite && !isPanelAnimating) {
+          // Calculate steps needed to reach (Total Distance - 1)
+          // We don't want to trigger it immediately, just get right before it so 1 movement triggers it
+          const stepsNeeded = Math.max(0, activeTome.totalDistance - activeTome.currentDistance - 1);
+          if (stepsNeeded > 0) {
+              onProgressTome(stepsNeeded, true);
+          }
+      }
   };
 
   return (
@@ -89,21 +107,34 @@ const Home: React.FC<HomeProps> = ({
 
                 <div className="relative">
                   <ActiveQuestPanel 
-                    activeEncounter={activeEncounter}
+                    activeEncounter={visibleEncounter}
                     activeTome={activeTome}
                     t={t}
                     lang={lang}
+                    onAnimating={setIsPanelAnimating}
                   />
                   
                   {isAdmin && activeTome && !isInfinite && !activeEncounter && (
-                     <button 
-                        onClick={handleAdminAddSteps}
-                        className="absolute bottom-4 right-4 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg hover:bg-purple-500 flex items-center z-10"
-                        title="Admin: Advance 5 steps"
-                     >
-                        <ShieldCheck className="w-3 h-3 mr-1" />
-                        +5 Steps
-                     </button>
+                     <div className="absolute bottom-4 right-4 flex space-x-2 z-10">
+                        <button 
+                            onClick={handleAdminJumpToBoss}
+                            disabled={isPanelAnimating}
+                            className={`bg-red-800 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center transition-opacity ${isPanelAnimating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700 cursor-pointer'}`}
+                            title="Admin: Jump to Boss"
+                        >
+                            <FastForward className="w-3 h-3 mr-1" />
+                            Boss
+                        </button>
+                        <button 
+                            onClick={handleAdminAddSteps}
+                            disabled={isPanelAnimating}
+                            className={`bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center transition-opacity ${isPanelAnimating ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-500 cursor-pointer'}`}
+                            title="Admin: Advance 5 steps"
+                        >
+                            <ShieldCheck className="w-3 h-3 mr-1" />
+                            +5 Steps
+                        </button>
+                     </div>
                   )}
                 </div>
 
@@ -114,7 +145,7 @@ const Home: React.FC<HomeProps> = ({
                   canMove={canMove}
                   canCombat={canCombat}
                   canAffordRecherche={canAffordRecherche}
-                  activeEncounter={!!activeEncounter}
+                  activeEncounter={!!visibleEncounter}
                   rechercheCost={rechercheCost}
                 />
              </div>
@@ -135,7 +166,10 @@ const Home: React.FC<HomeProps> = ({
              <div className="flex space-x-4">
                   <button 
                       onClick={() => { playMenuOpenSound(); onOpenTomes(); }}
-                      className="p-3 bg-amber-800 rounded-full hover:bg-amber-700 transition-all shadow-lg border-2 border-amber-600 group"
+                      className={`
+                        p-3 bg-amber-800 rounded-full hover:bg-amber-700 transition-all shadow-lg border-2 border-amber-600 group relative
+                        ${activeTome?.isCompleted ? 'animate-pulse ring-4 ring-green-500 ring-opacity-50' : ''}
+                      `}
                       title={t.buttons.select}
                       >
                        <img 
@@ -143,6 +177,11 @@ const Home: React.FC<HomeProps> = ({
                         alt="Tomes" 
                         className="w-16 h-16 object-contain group-hover:scale-110 transition-transform"
                       />
+                      {activeTome?.isCompleted && (
+                          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-red-600 text-white text-[10px] font-bold px-3 py-0.5 rounded-full border border-red-800 shadow-md whitespace-nowrap">
+                              NEW
+                          </div>
+                      )}
                   </button>
                   <button 
                       onClick={() => { playMenuOpenSound(); onViewChange(GameView.OPTIONS); }}
