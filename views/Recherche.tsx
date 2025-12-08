@@ -1,9 +1,3 @@
-
-
-
-
-
-
 import React, { useState, useEffect } from 'react';
 import { GameConfig, MathProblem, Rarity, Item, Card, MinigameProps } from '../types';
 import { generateDivision } from '../services/mathService';
@@ -40,7 +34,7 @@ const CHEST_IMAGES: Record<Rarity, string> = {
   [Rarity.MYTHIC]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/Mythic.png',
 };
 
-const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgressTome, onAddItem, playerGold = 0, lootWeights = [], isAdmin }) => {
+const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddItem, playerGold = 0, lootWeights = [], isAdmin }) => {
   const { t } = useLocalization();
   const [phase, setPhase] = useState<'select' | 'solve' | 'result'>('select');
   const [cards, setCards] = useState<Card[]>([]);
