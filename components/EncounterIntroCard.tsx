@@ -1,10 +1,11 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Encounter, EffectType } from '../types';
 import { Skull, Zap, Sword, Shield, Coins, Star } from 'lucide-react';
 import { EnemyStats } from '../services/statusService';
 import { useLocalization } from '../localization';
 import { STATUS_EFFECTS } from '../data/statusEffects';
+import { playBossIntroSound } from '../services/audioService';
 
 interface EncounterIntroCardProps {
   encounter: Encounter;
@@ -15,6 +16,12 @@ interface EncounterIntroCardProps {
 
 const EncounterIntroCard: React.FC<EncounterIntroCardProps> = ({ encounter, enemyStats, isBossMode, onStart }) => {
   const { t, lang } = useLocalization();
+
+  useEffect(() => {
+    if (isBossMode) {
+      playBossIntroSound();
+    }
+  }, [isBossMode]);
 
   const encounterName = (lang === 'fr' && encounter.name_fr) ? encounter.name_fr : encounter.name;
   const encounterDesc = (lang === 'fr' && encounter.description_fr) ? encounter.description_fr : encounter.description;

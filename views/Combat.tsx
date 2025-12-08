@@ -1,3 +1,6 @@
+
+
+
 import React, { useState, useEffect, useRef } from 'react';
 import { GameConfig, MathProblem, MinigameProps, PlayerStats } from '../types';
 import { generateMultiplication, generateBossProblem } from '../services/mathService';
@@ -10,7 +13,7 @@ import CombatPlayerPanel from '../components/CombatPlayerPanel';
 import CombatEnemyPanel from '../components/CombatEnemyPanel';
 import { useLocalization } from '../localization';
 import { ChevronLeft, Timer, Skull, Trophy, PencilLine, Check, X, ShieldCheck } from 'lucide-react';
-import { playMenuBackSound } from '../services/audioService';
+import { playMenuBackSound, playHitSound, playDamageSound, playVictoryTrumpetSound, fadeOutCurrentSound } from '../services/audioService';
 
 interface CombatProps extends MinigameProps {
   config: GameConfig['combat'];
@@ -162,6 +165,7 @@ const Combat: React.FC<CombatProps> = ({
 
   const handleBossAttack = () => {
      if (onTakeDamage) onTakeDamage(effectiveAttack);
+     playDamageSound();
      setSessionDamageTaken(prev => prev + effectiveAttack);
      
      // Visual Shake or Red Flash could go here
@@ -177,6 +181,7 @@ const Combat: React.FC<CombatProps> = ({
     // In encounter mode, time expire = wrong answer
     if (encounter) {
       if (onTakeDamage) onTakeDamage(effectiveAttack);
+      playDamageSound();
       setSessionDamageTaken(prev => prev + effectiveAttack);
       // Pending damage for this turn slot is 0
     }
@@ -197,6 +202,10 @@ const Combat: React.FC<CombatProps> = ({
         if (nextActionIndex >= TURN_ACTIONS) {
             // End of Turn: Apply Damage
             const totalDmg = pendingTurnDamage;
+            if (totalDmg > 0) {
+              playHitSound();
+            }
+            
             const newScore = encounterScore + totalDmg;
             setEncounterScore(newScore);
             setPendingTurnDamage(0);
@@ -204,7 +213,10 @@ const Combat: React.FC<CombatProps> = ({
 
             // Check Win Condition
             if (newScore >= effectiveMaxHp) {
-                finishGameNormal(true); // Victory
+                // Delay to allow hit animation and sound to play out
+                setTimeout(() => {
+                    finishGameNormal(true); // Victory
+                }, 2000);
                 return;
             }
         } else {
@@ -232,6 +244,7 @@ const Combat: React.FC<CombatProps> = ({
     if (encounter) {
       if (victory || encounterScore >= effectiveMaxHp) {
         setIsVictory(true);
+        playVictoryTrumpetSound();
         const xpEarned = effectiveXpReward > 0 ? effectiveXpReward : (finalScore * 3);
         onAddXp(xpEarned);
         if (onAddGold && effectiveGoldReward > 0) {
@@ -256,17 +269,20 @@ const Combat: React.FC<CombatProps> = ({
       const newHp = Math.max(0, bossHp - playerAttackPower);
       setBossHp(newHp);
       setActionGauge(0);
+      playHitSound();
       
       // Visual Feedback
       setFeedback('correct'); // Re-use correct visual briefly for attack impact?
 
       if (newHp === 0) {
+          // Delay to allow sound and animation to finish
           setTimeout(() => {
              setGameState('finished');
              setIsVictory(true);
+             playVictoryTrumpetSound();
              if (onAddXp) onAddXp(effectiveXpReward);
              if (onAddGold) onAddGold(effectiveGoldReward);
-          }, 1000);
+          }, 2000);
       }
   };
 
@@ -348,6 +364,7 @@ const Combat: React.FC<CombatProps> = ({
     if (encounter) {
         // Encounter: Immediate Damage to Player
         if (onTakeDamage) onTakeDamage(effectiveAttack);
+        playDamageSound();
         setSessionDamageTaken(prev => prev + effectiveAttack);
         // Zero damage to monster for this action
         setTimeout(nextQuestionNormal, 500);
@@ -404,6 +421,7 @@ const Combat: React.FC<CombatProps> = ({
 
   const handleModalAction = () => {
     playMenuBackSound();
+    fadeOutCurrentSound();
     if (encounter && isVictory && onEncounterComplete) {
       onEncounterComplete();
     } else {
@@ -455,7 +473,10 @@ const Combat: React.FC<CombatProps> = ({
         encounter={encounter}
         enemyStats={enemyStats}
         isBossMode={!!isBossMode}
-        onStart={() => setGameState('playing')}
+        onStart={() => {
+            if (isBossMode) fadeOutCurrentSound();
+            setGameState('playing');
+        }}
       />
     );
   }

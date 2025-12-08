@@ -2,6 +2,8 @@
 
 
 
+
+
 import React, { useState, useEffect } from 'react';
 import { GameConfig, MathProblem, Rarity, Item, Card, MinigameProps } from '../types';
 import { generateDivision } from '../services/mathService';
@@ -13,7 +15,7 @@ import { RARITY_COLORS, RARITY_TEXT_COLORS } from '../constants';
 import { ChevronLeft, Search, Loader2, Coins, AlertTriangle, CheckCircle, XCircle, Lock, PencilLine, ShieldCheck, Key } from 'lucide-react';
 import { useLocalization } from '../localization';
 import Modal from '../components/Modal';
-import { playMenuOpenSound, playMenuBackSound } from '../services/audioService';
+import { playMenuOpenSound, playMenuBackSound, fadeOutCurrentSound } from '../services/audioService';
 
 interface RechercheProps extends MinigameProps {
   config: GameConfig['recherche'];
@@ -170,7 +172,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
       setIsLoadingItem(true);
       setPhase('result');
       onAddXp(XP_REWARD);
-      onProgressTome(1);
+      // Removed onProgressTome(1) - Recherche no longer grants steps
       const loot = await generateLootItem(selectedCard.rarity);
       setItem(loot);
       onAddItem(loot); 
@@ -187,6 +189,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
       setShowExitWarning(true);
     } else {
       playMenuBackSound();
+      fadeOutCurrentSound();
       onBack();
     }
   };
@@ -253,7 +256,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
           title={t.recherche.entryFee}
           isOpen={showExitWarning}
           actionLabel={t.buttons.confirmLeave}
-          onAction={() => { playMenuBackSound(); onBack(); }}
+          onAction={() => { playMenuBackSound(); fadeOutCurrentSound(); onBack(); }}
           colorClass="bg-red-950 text-white border-red-500"
         >
           <div className="flex flex-col items-center text-center">
@@ -389,7 +392,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onProgre
   return (
     <LootRewardCard 
       item={item}
-      onBack={() => { playMenuBackSound(); onBack(); }}
+      onBack={() => { playMenuBackSound(); fadeOutCurrentSound(); onBack(); }}
       solvedCorrectly={solvedCorrectly}
     />
   );

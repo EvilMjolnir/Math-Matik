@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Encounter } from '../types';
 import { Skull, Sword, Shield } from 'lucide-react';
@@ -48,24 +49,33 @@ const CombatEnemyPanel: React.FC<CombatEnemyPanelProps> = ({
   }
 
   return (
-    <div className="w-full md:w-1/4 bg-red-950/40 rounded-lg p-3 border-2 border-red-800/60 flex flex-col justify-center">
-      <div className="flex items-center justify-end mb-2">
-        <div className="text-right overflow-hidden mr-2">
-          <div className="text-red-200 font-bold truncate">{name}</div>
-          <div className="text-xs text-red-400 uppercase tracking-wider">{encounter.type === 'boss' ? 'Boss' : t.combat.encounterStart}</div>
-        </div>
-        <div className="w-10 h-10 rounded-full bg-red-900 border-2 border-red-500 flex items-center justify-center overflow-hidden">
+    <div className="w-full md:w-1/4 bg-red-950/40 rounded-lg p-3 border-2 border-red-800/60 flex flex-col justify-center relative">
+      
+      {/* Image Frame */}
+      <div className={`w-full aspect-square bg-black/40 rounded border-2 mb-3 flex items-center justify-center overflow-hidden relative shadow-[inset_0_0_15px_rgba(0,0,0,0.8)] ${isBossMode ? 'border-purple-800/60' : 'border-red-900/50'}`}>
           {encounter.image ? (
-            <img src={encounter.image} alt="enemy" className="w-full h-full object-cover" />
+              <img src={encounter.image} alt={name} className="w-full h-full object-cover" />
           ) : (
-            <Skull className="w-6 h-6 text-red-200" />
+              <Skull className="w-24 h-24 text-red-900/30" />
           )}
+          {isBossMode && (
+             <div className="absolute inset-0 border-4 border-purple-500/30 rounded pointer-events-none"></div>
+          )}
+      </div>
+
+      {/* Header Info */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="overflow-hidden w-full">
+          <div className="text-red-200 font-bold truncate text-lg">{name}</div>
+          <div className={`text-xs uppercase tracking-wider font-bold ${isBossMode ? 'text-purple-400' : 'text-red-400'}`}>
+            {encounter.type === 'boss' ? 'Boss' : t.combat.encounterStart}
+          </div>
         </div>
       </div>
 
       {/* Enemy HP / Progress */}
       <div className="mb-3">
-        <div className="flex justify-between text-xs text-red-300 mb-1">
+        <div className="flex justify-between text-xs text-red-300 mb-1 font-bold">
           <span>{t.common.hp}</span>
           <span>
             {isBossMode ? currentHp : Math.max(0, maxHp - currentHp)}/{maxHp}
@@ -81,16 +91,16 @@ const CombatEnemyPanel: React.FC<CombatEnemyPanelProps> = ({
 
       {/* Stats */}
       <div className="space-y-2">
-        <div className="flex items-center justify-between text-red-200 bg-white/5 p-2 rounded">
-          <span className="text-xs uppercase">{t.combat.attack}</span>
-          <span className="font-bold flex items-center text-red-500">
-            <Sword className="w-4 h-4 mr-1"/> {attackPower}
+        <div className="flex items-center justify-between text-red-200 bg-white/5 p-2 rounded border border-red-900/30">
+          <span className="text-xs uppercase font-bold">{t.combat.attack}</span>
+          <span className="font-bold flex items-center text-red-500 text-lg">
+            <Sword className="w-5 h-5 mr-1"/> {attackPower}
           </span>
         </div>
         {encounter.tags && encounter.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 justify-end">
+          <div className="flex flex-wrap gap-1 justify-start">
             {encounter.tags.map(tag => (
-              <span key={tag} className="text-[10px] bg-red-900 text-red-200 px-1 rounded border border-red-700">
+              <span key={tag} className="text-[10px] bg-red-900 text-red-200 px-1.5 py-0.5 rounded border border-red-700 font-bold uppercase">
                 {tag.replace('mon_', '')}
               </span>
             ))}

@@ -1,6 +1,8 @@
-import React from 'react';
+
+import React, { useEffect } from 'react';
 import Modal from './Modal';
 import { Translation } from '../localization/types';
+import { playLevelUpSound, fadeOutCurrentSound } from '../services/audioService';
 
 interface LevelUpModalProps {
   isOpen: boolean;
@@ -10,11 +12,22 @@ interface LevelUpModalProps {
 }
 
 const LevelUpModal: React.FC<LevelUpModalProps> = ({ isOpen, level, onClose, t }) => {
+  useEffect(() => {
+    if (isOpen) {
+        playLevelUpSound();
+    }
+  }, [isOpen]);
+
+  const handleClose = () => {
+      fadeOutCurrentSound();
+      onClose();
+  };
+
   return (
     <Modal 
       title={t.levelUp.title}
       actionLabel={t.levelUp.action} 
-      onAction={onClose} 
+      onAction={handleClose} 
       isOpen={isOpen}
       colorClass="bg-purple-900 border-yellow-500 text-white"
     >

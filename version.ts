@@ -1,22 +1,16 @@
 
 //Versioning semantic : Major.minor.patch
-export const APP_VERSION = "1.21.13";
+export const APP_VERSION = "1.21.18";
 
 /*
   Changelog (Last 15 changes):
-  1. Fixed ActiveQuestPanel animation not playing by initializing state from session storage.
-  2. Added sound effect with fade-in/fade-out for quest progress bar.
-  3. Extracted companion data to data/companions.ts.
-  4. Added 3 new companions: Zelda, Dee, and Fib.
-  5. Enabled image support for companions with automatic fallback to icons.
-  6. Disabled Admin 'Add Steps' button while quest progress animation is playing to prevent skipping logic.
-  7. Isolated animation notification state logic in ActiveQuestPanel to ensure button reactivates reliably.
-  8. Inverted health bar logic for normal enemies (depletes instead of fills).
-  9. Added "Jump to Boss" Admin button in Home screen.
-  10. Updated Combat Result Modal to show total HP lost during the fight.
-  11. Moved "Continue" button outside the result modal box for better visibility.
-  12. Added "Completed" overlay visual to Active Quest Panel when tome is finished.
-  13. Added pulsing animation to Tome button when current quest is completed.
-  14. Updated Admin 'Jump to Boss' to bypass random encounter checks.
-  15. Changed 'Completed' overlay to Red text with drop shadow and moved Tome badge to bottom center saying 'NEW'.
+  1. Added sound effects for Combat hits, Player damage, Level up fanfare, and Item Loot reveal.
+  2. Added delay for combat victory to allow sound/animation to finish.
+  3. Added epic transition sound for Boss encounters.
+  4. Added victory trumpet sound for won encounters.
+  5. Added texture overlay to Rare and Magic loot cards.
+  6. Fixed issue where sound would continue playing after modal close (added fade-out).
+  7. Updated ActiveQuestPanel to include a Boss Node Segment at the end of progress bar.
+  8. Fixed step counter initialization to correctly reset to 0 on new game/tome switch.
+  9. Removed step progression reward from Recherche minigame.
 */

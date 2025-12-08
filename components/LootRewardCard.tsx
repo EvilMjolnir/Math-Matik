@@ -1,17 +1,18 @@
 
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Item, Rarity } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 import { Gift, Coins, Star, Footprints, Sword, Sparkles, AlertTriangle } from 'lucide-react';
 import { useLocalization } from '../localization';
-import { playMenuBackSound } from '../services/audioService';
+import { playMenuBackSound, playItemRevealSound, fadeOutCurrentSound } from '../services/audioService';
 
 interface LootRewardCardProps {
   item: Item | null;
   onBack: () => void;
   solvedCorrectly: boolean;
 }
+
+const TEXTURE_URL = "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/texture_5.jpg";
 
 // Define specific styles for border (standard) and background (darker tint)
 const RARITY_STYLES: Record<Rarity, { border: string; bg: string; text: string }> = {
@@ -45,6 +46,18 @@ const RARITY_STYLES: Record<Rarity, { border: string; bg: string; text: string }
 const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCorrectly }) => {
   const { t, lang } = useLocalization();
 
+  useEffect(() => {
+    if (solvedCorrectly && item) {
+        playItemRevealSound();
+    }
+  }, [solvedCorrectly, item]);
+
+  const handleBack = () => {
+      playMenuBackSound();
+      fadeOutCurrentSound();
+      onBack();
+  };
+
   const getItemName = (itm: Item) => (lang === 'fr' && itm.name_fr) ? itm.name_fr : itm.name;
   const getItemDesc = (itm: Item) => (lang === 'fr' && itm.description_fr) ? itm.description_fr : itm.description;
 
@@ -57,6 +70,7 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
   };
 
   const isHolo = item && (item.rarity === Rarity.LEGENDARY || item.rarity === Rarity.MYTHIC);
+  const showTexture = item && (item.rarity === Rarity.RARE || item.rarity === Rarity.MAGIC);
   
   // Safe access to styles, fallback to Common if rarity matches nothing
   const safeRarity = (item && RARITY_STYLES[item.rarity]) ? item.rarity : Rarity.COMMON;
@@ -79,6 +93,18 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
               <div className="absolute inset-0 holo-rainbow opacity-40 pointer-events-none z-40"></div>
             </>
           )}
+
+          {/* Texture Overlay for Rare/Magic */}
+          {solvedCorrectly && showTexture && (
+             <div 
+               className="absolute inset-0 z-0 opacity-30 pointer-events-none mix-blend-overlay"
+               style={{ 
+                 backgroundImage: `url('${TEXTURE_URL}')`,
+                 backgroundSize: 'cover',
+                 backgroundPosition: 'center'
+               }}
+             />
+           )}
 
           {solvedCorrectly && item ? (
             <>
@@ -156,7 +182,7 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
                </div>
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+            <div className="flex flex-col items-center justify-center h-full p-6 text-center z-10 relative">
                <AlertTriangle className="w-20 h-20 text-red-500 mb-6 animate-pulse" />
                <h2 className="text-3xl font-serif font-bold mb-4">{t.combat.defeat}</h2>
                <p className="text-red-200 text-lg leading-relaxed">{t.recherche.lockSealed}</p>
@@ -165,7 +191,7 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
         </div>
 
         <button 
-            onClick={() => { playMenuBackSound(); onBack(); }}
+            onClick={handleBack}
             className="mt-8 px-12 py-4 bg-parchment-200 text-parchment-900 font-serif font-bold rounded-full shadow-lg hover:bg-white transition-all transform hover:scale-105 active:scale-95 border-4 border-parchment-500 flex items-center text-xl"
         >
             {t.buttons.back}

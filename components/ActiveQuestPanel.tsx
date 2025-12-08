@@ -22,14 +22,25 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ activeEncounter, ac
   // Initialize state lazily from session storage to capture the "Old" value before the update
   const [displayDistance, setDisplayDistance] = useState<number>(() => {
     if (!activeTome) return 0;
+    // Strict reset if we are at 0
+    if (activeTome.currentDistance === 0) return 0;
+
     const saved = sessionStorage.getItem(storageKey);
-    // If we have a saved value, use it (unless it's somehow larger than current, which implies a reset)
+    // If we have a saved value, use it (unless it's larger than current)
     if (saved) {
         const val = parseFloat(saved);
         return val <= activeTome.currentDistance ? val : activeTome.currentDistance;
     }
-    return activeTome.currentDistance; // Default to current if no history (no animation)
+    return activeTome.currentDistance;
   });
+
+  // Force snap to 0 if the prop is 0 (handles resets or tome switches properly)
+  useEffect(() => {
+    if (activeTome?.currentDistance === 0 && displayDistance !== 0) {
+      setDisplayDistance(0);
+      sessionStorage.setItem(storageKey, '0');
+    }
+  }, [activeTome?.currentDistance, storageKey]);
 
   // Derived state: If display doesn't match target, we are (or should be) animating
   const targetDistance = activeTome?.currentDistance || 0;
@@ -38,12 +49,10 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ activeEncounter, ac
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // --- Effect 1: Notify Parent of Animation State ---
-  // This is isolated to ensure it fires reliably only when state flips, and cleans up on unmount.
   useEffect(() => {
     if (onAnimating) {
         onAnimating(isAnimating);
     }
-    // Safety cleanup: Ensure we unlock the UI if this component unmounts mid-animation
     return () => {
         if (onAnimating) onAnimating(false);
     };
@@ -54,7 +63,7 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ activeEncounter, ac
     if (!activeTome) return;
 
     // Only animate if the display (old) is less than the target (new)
-    if (isAnimating) {
+    if (isAnimating && targetDistance > 0) {
       const diff = targetDistance - displayDistance;
       const duration = 2000; // 2 seconds total animation
       const steps = 60; // 60fps approx
@@ -122,20 +131,25 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ activeEncounter, ac
         clearInterval(timer);
       };
     } else {
-        // Ensure storage is synced if no animation needed (e.g. initial load or reset)
-        if (sessionStorage.getItem(storageKey) !== targetDistance.toString()) {
-            sessionStorage.setItem(storageKey, targetDistance.toString());
-        }
-        // Force sync display if logic missed it (e.g. rapid updates)
+        // Sync display if logic missed it (e.g. rapid updates or 0 start)
         if (displayDistance !== targetDistance) {
             setDisplayDistance(targetDistance);
+            sessionStorage.setItem(storageKey, targetDistance.toString());
         }
     }
   }, [targetDistance, isAnimating, storageKey, activeTome]); 
 
-  // Decide what to render: If animating, FORCE the progress view, even if activeEncounter is set.
+  // Decide what to render: If animating, FORCE the progress view.
   const showEncounter = activeEncounter && !isAnimating;
   const isCompleted = activeTome?.isCompleted;
+
+  // Progress Bar Logic
+  // We want a bar that goes from 0 to totalDistance-1, and a final segment for the boss.
+  // The 'boss segment' activates when currentDistance >= totalDistance.
+  const bossNodeActive = activeTome && displayDistance >= activeTome.totalDistance;
+  // Percentage for the main bar (excluding boss node)
+  const maxBarDistance = activeTome ? activeTome.totalDistance : 1;
+  const progressPercent = activeTome ? Math.min(100, (displayDistance / maxBarDistance) * 100) : 0;
 
   return (
     <div className="relative w-full mb-16">
@@ -163,6 +177,7 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ activeEncounter, ac
                 <div className="w-24 h-24 md:w-32 md:h-32 rounded-lg border-4 border-amber-700 shadow-[0_0_15px_rgba(0,0,0,0.5)] overflow-hidden bg-black/50">
                   <img src={activeTome.image} alt="Quest Location" className="w-full h-full object-cover" />
                 </div>
+                {/* Decorative corners */}
                 <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-amber-400"></div>
                 <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-amber-400"></div>
                 <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-amber-400"></div>
@@ -177,12 +192,29 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ activeEncounter, ac
                 </span>
                 <span className="text-sm text-parchment-400 font-bold">{Math.floor(displayDistance)} / {activeTome.totalDistance}</span>
               </div>
-              <div className="w-full h-5 bg-gray-900 rounded-full overflow-hidden border border-gray-700 relative">
-                <div 
-                  className="h-full bg-gradient-to-r from-blue-700 to-blue-500 transition-all duration-75"
-                  style={{ width: `${(displayDistance / activeTome.totalDistance) * 100}%` }}
-                />
+              
+              {/* Custom Segmented Progress Bar */}
+              <div className="flex items-center w-full h-8 relative">
+                  {/* Main Bar Track */}
+                  <div className="flex-1 h-5 bg-gray-900 rounded-l-full overflow-hidden border border-gray-700 relative mr-1">
+                      <div 
+                        className="h-full bg-gradient-to-r from-blue-700 to-blue-500 transition-all duration-75"
+                        style={{ width: `${progressPercent}%` }}
+                      />
+                  </div>
+
+                  {/* Boss Node Segment */}
+                  <div className={`
+                     w-10 h-10 shrink-0 rounded-full border-2 flex items-center justify-center shadow-lg z-10 transition-all duration-500
+                     ${bossNodeActive 
+                        ? 'bg-red-600 border-red-400 shadow-[0_0_15px_rgba(220,38,38,0.6)]' 
+                        : 'bg-gray-800 border-gray-600'
+                     }
+                  `}>
+                     <Skull className={`w-6 h-6 ${bossNodeActive ? 'text-white animate-pulse' : 'text-gray-500'}`} />
+                  </div>
               </div>
+
               <p className="text-base text-parchment-500 mt-2 italic">{getTomeDesc(activeTome)}</p>
             </div>
           </div>
