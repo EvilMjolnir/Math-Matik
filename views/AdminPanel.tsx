@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType, Item, StorageMode, EffectType } from '../types';
-import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud, Sword, TestTube, X, Gift, Sparkles, Star, Footprints, Shield } from 'lucide-react';
+import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud, Sword, TestTube, X, Gift, Sparkles, Star, Footprints, Shield, Skull, ZoomIn } from 'lucide-react';
 import * as localStore from '../services/storageService';
 import * as cloudStore from '../services/storageService_Live';
 import { lootData } from '../data/loot';
@@ -28,6 +28,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
   const [editingTomeId, setEditingTomeId] = useState<string | null>(null);
   const [users, setUsers] = useState<PlayerStats[]>([]);
   const [previewItem, setPreviewItem] = useState<Item | null>(null);
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
   
   // UI Lab State
   const [testView, setTestView] = useState<'none' | 'intro' | 'loot'>('none');
@@ -447,114 +448,134 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                                             ${encounter.type === 'boss' || encounter.type === 'miniboss' ? 'border-4 border-yellow-500' : 'border border-parchment-300'}
                                         `}
                                     >
-                                        <div className="absolute top-2 right-2 flex space-x-1">
-                                        <button
-                                            onClick={() => onTestEncounter(encounter, tome.id)}
-                                            className="p-1 text-blue-500 hover:text-blue-700 hover:bg-blue-100 rounded transition-colors"
-                                            title="Test Battle"
-                                        >
-                                            <Sword className="w-4 h-4" />
-                                        </button>
-                                        <button 
-                                            onClick={() => removeEncounter(tome.id, encounter.id)}
-                                            className="p-1 text-red-400 hover:text-red-700 hover:bg-red-100 rounded transition-colors"
-                                            title="Remove Enemy"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
+                                        <div className="absolute top-2 right-2 flex space-x-1 z-10">
+                                            <button
+                                                onClick={() => onTestEncounter(encounter, tome.id)}
+                                                className="p-1 text-blue-500 hover:text-blue-700 hover:bg-blue-100 rounded transition-colors"
+                                                title="Test Battle"
+                                            >
+                                                <Sword className="w-4 h-4" />
+                                            </button>
+                                            <button 
+                                                onClick={() => removeEncounter(tome.id, encounter.id)}
+                                                className="p-1 text-red-400 hover:text-red-700 hover:bg-red-100 rounded transition-colors"
+                                                title="Remove Enemy"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
                                         </div>
                                         
-                                        <div className="flex justify-between mb-2 mr-16">
-                                            <input 
-                                                className="font-bold text-red-900 bg-transparent border-b border-dashed border-gray-300 focus:border-red-500 outline-none w-full"
-                                                value={encounter.name}
-                                                onChange={(e) => updateEncounter(tome.id, encounter.id, 'name', e.target.value)}
-                                            />
-                                        </div>
-                                        
-                                        {/* Image Input */}
-                                        <div className="mb-2">
-                                            <label className="text-xs font-bold block text-gray-600">Image URL</label>
-                                            <div className="flex gap-2">
-                                                <input 
-                                                    className="w-full p-1 border rounded bg-white text-gray-900 text-sm"
-                                                    value={encounter.image || ''}
-                                                    placeholder="https://... (Optional)"
-                                                    onChange={(e) => updateEncounter(tome.id, encounter.id, 'image', e.target.value)}
-                                                />
-                                                {encounter.image && (
-                                                    <div className="w-10 h-10 shrink-0 border border-gray-300 rounded overflow-hidden bg-gray-100">
-                                                        <img src={encounter.image} alt="Preview" className="w-full h-full object-cover" />
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-4 gap-2 mb-2">
-                                            <div>
-                                                <label className="text-xs font-bold block text-gray-600">Monster HP</label>
-                                                <input 
-                                                    type="number"
-                                                    className="w-full p-1 border rounded bg-white text-gray-900"
-                                                    value={encounter.monsterHP}
-                                                    onChange={(e) => updateEncounter(tome.id, encounter.id, 'monsterHP', parseInt(e.target.value))}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="text-xs font-bold block text-gray-600">Attack</label>
-                                                <input 
-                                                    type="number"
-                                                    className="w-full p-1 border rounded bg-white text-gray-900"
-                                                    value={encounter.attack}
-                                                    onChange={(e) => updateEncounter(tome.id, encounter.id, 'attack', parseInt(e.target.value))}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="text-xs font-bold block text-gray-600">Gold Reward</label>
-                                                <input 
-                                                    type="number"
-                                                    className="w-full p-1 border rounded bg-white text-gray-900"
-                                                    value={encounter.goldReward}
-                                                    onChange={(e) => updateEncounter(tome.id, encounter.id, 'goldReward', parseInt(e.target.value))}
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="text-xs font-bold block text-gray-600">XP Reward</label>
-                                                <input 
-                                                    type="number"
-                                                    className="w-full p-1 border rounded bg-white text-gray-900"
-                                                    value={encounter.xpReward || 0}
-                                                    onChange={(e) => updateEncounter(tome.id, encounter.id, 'xpReward', parseInt(e.target.value))}
-                                                />
-                                            </div>
-                                        </div>
-                                        
-                                        {/* Type Selector */}
-                                        <div className="flex items-center space-x-2 bg-gray-100 p-2 rounded">
-                                            <div className="flex-1">
-                                                <label className="text-xs font-bold block text-gray-600">Type</label>
-                                                <select 
-                                                    className="w-full p-1 border rounded bg-white text-gray-900"
-                                                    value={encounter.type || 'normal'}
-                                                    onChange={(e) => updateEncounter(tome.id, encounter.id, 'type', e.target.value as EncounterType)}
-                                                >
-                                                    <option value="normal">Normal</option>
-                                                    <option value="boss">Boss (End of Tome)</option>
-                                                    <option value="miniboss">Mini-Boss</option>
-                                                </select>
-                                            </div>
-                                            {encounter.type === 'miniboss' && (
-                                                <div className="flex-1">
-                                                    <label className="text-xs font-bold block text-gray-600">Trigger Step</label>
+                                        <div className="flex gap-4 items-stretch">
+                                            {/* Left Side: Info inputs */}
+                                            <div className="flex-1 space-y-2">
+                                                <div>
+                                                    <label className="text-xs font-bold block text-gray-600">Name</label>
                                                     <input 
-                                                        type="number"
-                                                        placeholder="Step count..."
-                                                        className="w-full p-1 border rounded bg-white text-gray-900"
-                                                        value={encounter.triggerStep || 0}
-                                                        onChange={(e) => updateEncounter(tome.id, encounter.id, 'triggerStep', parseInt(e.target.value))}
+                                                        className="font-bold text-red-900 bg-transparent border-b border-dashed border-gray-300 focus:border-red-500 outline-none w-full"
+                                                        value={encounter.name}
+                                                        onChange={(e) => updateEncounter(tome.id, encounter.id, 'name', e.target.value)}
                                                     />
                                                 </div>
-                                            )}
+                                                
+                                                {/* Image Input */}
+                                                <div>
+                                                    <label className="text-xs font-bold block text-gray-600">Image URL</label>
+                                                    <input 
+                                                        className="w-full p-1 border rounded bg-white text-gray-900 text-sm"
+                                                        value={encounter.image || ''}
+                                                        placeholder="https://... (Optional)"
+                                                        onChange={(e) => updateEncounter(tome.id, encounter.id, 'image', e.target.value)}
+                                                    />
+                                                </div>
+
+                                                <div className="grid grid-cols-4 gap-2">
+                                                    <div>
+                                                        <label className="text-xs font-bold block text-gray-600">Monster HP</label>
+                                                        <input 
+                                                            type="number"
+                                                            className="w-full p-1 border rounded bg-white text-gray-900"
+                                                            value={encounter.monsterHP}
+                                                            onChange={(e) => updateEncounter(tome.id, encounter.id, 'monsterHP', parseInt(e.target.value))}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-xs font-bold block text-gray-600">Attack</label>
+                                                        <input 
+                                                            type="number"
+                                                            className="w-full p-1 border rounded bg-white text-gray-900"
+                                                            value={encounter.attack}
+                                                            onChange={(e) => updateEncounter(tome.id, encounter.id, 'attack', parseInt(e.target.value))}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-xs font-bold block text-gray-600">Gold Reward</label>
+                                                        <input 
+                                                            type="number"
+                                                            className="w-full p-1 border rounded bg-white text-gray-900"
+                                                            value={encounter.goldReward}
+                                                            onChange={(e) => updateEncounter(tome.id, encounter.id, 'goldReward', parseInt(e.target.value))}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-xs font-bold block text-gray-600">XP Reward</label>
+                                                        <input 
+                                                            type="number"
+                                                            className="w-full p-1 border rounded bg-white text-gray-900"
+                                                            value={encounter.xpReward || 0}
+                                                            onChange={(e) => updateEncounter(tome.id, encounter.id, 'xpReward', parseInt(e.target.value))}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                
+                                                {/* Type Selector */}
+                                                <div className="flex items-center space-x-2 bg-gray-100 p-2 rounded">
+                                                    <div className="flex-1">
+                                                        <label className="text-xs font-bold block text-gray-600">Type</label>
+                                                        <select 
+                                                            className="w-full p-1 border rounded bg-white text-gray-900"
+                                                            value={encounter.type || 'normal'}
+                                                            onChange={(e) => updateEncounter(tome.id, encounter.id, 'type', e.target.value as EncounterType)}
+                                                        >
+                                                            <option value="normal">Normal</option>
+                                                            <option value="boss">Boss (End of Tome)</option>
+                                                            <option value="miniboss">Mini-Boss</option>
+                                                        </select>
+                                                    </div>
+                                                    {encounter.type === 'miniboss' && (
+                                                        <div className="flex-1">
+                                                            <label className="text-xs font-bold block text-gray-600">Trigger Step</label>
+                                                            <input 
+                                                                type="number"
+                                                                placeholder="Step count..."
+                                                                className="w-full p-1 border rounded bg-white text-gray-900"
+                                                                value={encounter.triggerStep || 0}
+                                                                onChange={(e) => updateEncounter(tome.id, encounter.id, 'triggerStep', parseInt(e.target.value))}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            {/* Right Side: Image Preview */}
+                                            <div className="w-1/3 max-w-[180px] shrink-0 flex flex-col">
+                                                <label className="text-xs font-bold block text-gray-600 mb-1">Preview</label>
+                                                <button 
+                                                    onClick={() => encounter.image && setZoomedImage(encounter.image)}
+                                                    className={`flex-1 w-full border-2 border-dashed border-gray-300 rounded bg-gray-50 flex items-center justify-center overflow-hidden relative group ${encounter.image ? 'cursor-pointer hover:border-gray-400' : 'cursor-default'}`}
+                                                    disabled={!encounter.image}
+                                                >
+                                                    {encounter.image ? (
+                                                        <>
+                                                        <img src={encounter.image} alt="Preview" className="w-full h-full object-cover" />
+                                                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                                            <ZoomIn className="text-white opacity-0 group-hover:opacity-100 w-8 h-8 drop-shadow-md transition-opacity" />
+                                                        </div>
+                                                        </>
+                                                    ) : (
+                                                        <Skull className="w-16 h-16 text-gray-300" />
+                                                    )}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
@@ -820,6 +841,16 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
       </div>
 
       <ItemDetailOverlay item={previewItem} onClose={() => setPreviewItem(null)} />
+      
+      {/* Zoom Modal */}
+      {zoomedImage && (
+        <div className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn" onClick={() => setZoomedImage(null)}>
+            <button className="absolute top-4 right-4 text-white p-2 bg-white/20 rounded-full hover:bg-white/40">
+                <X className="w-8 h-8" />
+            </button>
+            <img src={zoomedImage} alt="Zoomed Monster" className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl border-4 border-white" />
+        </div>
+      )}
     </div>
   );
 };

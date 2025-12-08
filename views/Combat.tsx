@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { GameConfig, MathProblem, MinigameProps, PlayerStats } from '../types';
 import { generateMultiplication, generateBossProblem } from '../services/mathService';
@@ -627,7 +625,7 @@ const Combat: React.FC<CombatProps> = ({
           onDelete={handleDelete} 
           onValidate={handleValidate}
           disabled={feedback === 'correct' || gameState === 'finished'}
-          mode={isBossMode && currentProblem?.type === 'operator' ? 'operator' : 'number'}
+          mode={isBossMode && currentProblem && currentProblem.type === 'operator' ? 'operator' : 'number'}
         />
       </div>
 

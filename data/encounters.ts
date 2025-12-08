@@ -126,7 +126,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     xpReward: 35,
     type: 'boss',
     tags: ['mon_armored'],
-	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/geometry_golem.png"
+	  image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/geometry%20golem.png"
   },
 
   // --- Tome 3: Void (Levels 5-6) ---

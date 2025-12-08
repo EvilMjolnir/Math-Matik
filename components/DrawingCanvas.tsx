@@ -31,7 +31,7 @@ const DrawingCanvas: React.FC = () => {
 
   const startDrawing = ({ nativeEvent }: React.MouseEvent | React.TouchEvent) => {
     // Prevent scrolling on touch devices
-    if(nativeEvent.type === 'touchstart') {
+    if(nativeEvent && nativeEvent.type === 'touchstart') {
        // Note: preventDefault might block scroll entirely in the modal, which is desired for the canvas area
        // But we handle coordinates manually below.
     }
