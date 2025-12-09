@@ -34,7 +34,17 @@ Focuses on **Addition and Subtraction**.
 - **Objective**: Complete a sequence of equations to fill a progress bar.
 - **Result**: Successfully filling the bar advances your distance in the current Tome.
 
-### 5. Admin Panel & Tools (Game Master)
+### 5. Companions
+- **Allies**: Unlock and select companions like *Pascal the Frog* or *Zelda*.
+- **Bonuses**: Active companions provide passive buffs (e.g., more XP, Gold, or Attack).
+- **Leveling**: Spend your hard-earned Gold to level up companions (Level 1-5), increasing the potency of their buffs.
+
+### 6. Alchimie (Alchemy)
+Focuses on **Fractions**.
+- **Crafting**: Create consumable potions using 'Nems' (secondary currency) and solving fraction problems.
+- **Risk**: Failed calculations can destabilize the potion or shatter the flask.
+
+### 7. Admin Panel & Tools (Game Master)
 A powerful toolset accessible to administrators (User: Gandalf).
 - **In-Game Intervention**: Floating toolbar in all minigames to instantly force success/failure of steps or combat turns for testing or demo purposes.
 - **Enemy Management**: Add, remove, and configure enemies (HP, XP, Rewards).
@@ -43,7 +53,8 @@ A powerful toolset accessible to administrators (User: Gandalf).
 - **User Management**: View and banish users from the realm.
 - **Loot Control**: Adjust the probability weights for item rarities.
 
-### 6. Options & Localization
+### 8. Responsive Design & Localization
+- **Responsive**: Dedicated layouts for Mobile, Tablet, and Desktop to ensure optimal playability on any device.
 - **Localization**: Fully translated into **English** and **French**.
 - **Customization**: Adjust number ranges, timer settings, and progress bar lengths in the Options menu.
 

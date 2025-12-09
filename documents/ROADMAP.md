@@ -9,39 +9,37 @@
 - [x] **Cloud Save**: Cross-device progression using Firebase.
 - [x] **Static Loot System**: Robust loot table with rarities.
 
-## Recent Completions (v1.20 - Visuals & Refinement)
-- [x] **UI Overhaul**:
-    - **Borders**: Implemented 'Roman' and 'Bevel' custom CSS borders for Quest Panels and Cards.
-    - **Animations**: Added card transitions (`slide-out`, `roll-in`) and holographic effects for Loot.
-    - **Layout**: Expanded Inventory modal size and added Attack stat visibility.
-- [x] **Combat Polish**:
-    - **Admin Tools**: In-game buttons to force-kill enemies or force-take damage for testing.
-    - **Action Granularity**: Admin tools now affect single actions rather than entire battles in Combat mode.
-- [x] **Recherche Enhancements**:
-    - **Visuals**: Replaced generic icons with specific Chest images per rarity.
-    - **Layout**: New Card design splitting image and requirements.
-- [x] **Versioning**: Implemented Semantic Versioning display in Auth screen.
+## Recent Completions (v2.1 - Companions & Polish)
+- [x] **Companion System**: 
+    - **Visuals**: Dedicated artwork for 5 unique companions.
+    - **Leveling**: Implemented Gold cost scaling (150g -> 3000g) to level up companions.
+    - **Mechanics**: Auto-upgrading of Status Tags (e.g. `scholar_1` -> `scholar_2`) upon leveling.
+- [x] **Code Organization**:
+    - **Split Views**: Separated `Home` into `Mobile`, `Tablet`, and `Desktop` layouts for better maintainability.
+    - **Hooks**: Implemented `useDeviceType` for responsive logic.
+- [x] **UI Polish**:
+    - **Alchimie**: Added "Glass Break" sound effect for failed potions.
+    - **Visuals**: Enhanced detail overlays with larger images.
 
 ## Previous Completions (v2.0 - The Combat & Depth Update)
 - [x] **Centralized Data Architecture**: Decoupled encounter data from Tome definitions for easier balancing.
-- [x] **Entity Tag System**: Added Status Effects/Tags for both Items (Buffs) and Enemies (Affixes like "Armored", "Fierce").
+- [x] **Entity Tag System**: Added Status Effects/Tags for Items, Enemies, and Companions.
 - [x] **Combat Overhaul**:
-    - **Normal Mode**: Added 3-Action Turn structure with reaction-time bonuses (Gold/Green/Red timer zones).
+    - **Normal Mode**: Added 3-Action Turn structure with reaction-time bonuses.
     - **Boss Mode**: Added Real-time Timer loops and Action Gauge mechanics.
-    - **UI**: Added 3-column layout (Player Stats, Arena, Enemy Stats).
-- [x] **Recherche Deepening**: Added multi-step deciphering mechanics based on item rarity (Common = 1 step, Mythic = 5 steps).
-- [x] **Inventory 2.0**: Drag-and-Drop equipment management and locked slots based on level.
-- [x] **Scratchpad**: Integrated canvas for manual calculations during minigames.
+- [x] **Recherche Deepening**: Added multi-step deciphering mechanics based on item rarity.
+- [x] **Inventory 2.0**: Drag-and-Drop equipment management and locked slots.
+- [x] **Alchimie Minigame**: Fraction-based crafting system.
+- [x] **Black Mirror**: Item recycling system (Items -> Nems).
 
-## Short Term (v2.1)
-- [ ] **Sound Effects**: Audio feedback for combat hits, correct answers, and UI interactions (Partially implemented in menu).
-- [ ] **Code Organization**: Migrate inline CSS from `index.html` to dedicated CSS modules.
+## Short Term (v2.2)
+- [ ] **Daily Quests**: Rotational challenges for bonus gold.
+- [ ] **Sound Effects**: More varied sounds for specific item interactions.
 
 ## Medium Term (v2.5)
-- [ ] **Companion System**: Ability to level up companions for passive bonuses (currently visual only).
-- [ ] **Daily Quests**: Rotational challenges for bonus gold.
+- [ ] **Achievements**: Visual badges for milestones (e.g., "Slayer of 100 Goblins").
+- [ ] **Leaderboards**: Global ranking for Infinite Mode.
 
 ## Long Term (v3.0)
 - [ ] **Character Classes**: Wizard/Warrior/Rogue archetypes affecting starting stats and math bonuses.
-- [ ] **Leaderboards**: Global ranking for Infinite Mode.
 - [ ] **Multiplayer**: Live math duels.

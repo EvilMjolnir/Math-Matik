@@ -195,3 +195,37 @@ export interface MinigameProps {
   lootWeights?: LootWeight[]; // Added for dynamic loot
   isAdmin?: boolean;
 }
+
+// Props used by Home Layouts (Mobile, Tablet, Desktop)
+export interface HomeLayoutProps {
+  player: PlayerStats;
+  activeTome?: Tome;
+  activeEncounter: Encounter | null;
+  visibleEncounter: Encounter | null; // Null if animating
+  isInfinite: boolean;
+  lang: string;
+  t: any; // Translation object
+  isAdmin: boolean;
+  
+  // Logic Flags
+  canMove: boolean;
+  canCombat: boolean;
+  canAffordRecherche: boolean;
+  rechercheCost: number;
+  isPanelAnimating: boolean;
+
+  // Actions
+  onViewChange: (view: GameView) => void;
+  onOpenTomes: () => void;
+  onStartRecherche: (cost: number) => void;
+  onLogout: () => void;
+  onOpenProfile: (tab: 'stats' | 'inventory' | 'companions') => void;
+  onOpenBlackMirror: () => void; // Unused in layout if handled in Home, but maybe needed for buttons
+  
+  // Admin Actions
+  onAdminJumpToBoss: () => void;
+  onAdminAddSteps: () => void;
+  
+  // State Setters (for ActiveQuestPanel)
+  setIsPanelAnimating: (val: boolean) => void;
+}
