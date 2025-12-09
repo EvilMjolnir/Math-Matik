@@ -1,6 +1,8 @@
 
 
 
+
+
 import React, { useEffect } from 'react';
 import Modal from './Modal';
 import { Translation } from '../localization/types';
@@ -26,6 +28,7 @@ const LevelUpModal: React.FC<LevelUpModalProps> = ({ isOpen, level, onClose, t }
   };
 
   const isAgilityLevel = level % 3 === 0;
+  const isDefenseLevel = level % 4 === 0;
 
   return (
     <Modal 
@@ -48,9 +51,15 @@ const LevelUpModal: React.FC<LevelUpModalProps> = ({ isOpen, level, onClose, t }
                 <span>{t.levelUp.statAttack}</span>
             </p>
             {isAgilityLevel && (
-                <p className="text-green-300 font-bold flex justify-between px-4 py-1 animate-pulse">
+                <p className="text-green-300 font-bold flex justify-between px-4 py-1 animate-pulse border-b border-purple-500/30">
                     <span>{t.profile.agility}</span> 
                     <span>{t.levelUp.statAgility}</span>
+                </p>
+            )}
+            {isDefenseLevel && (
+                <p className="text-blue-300 font-bold flex justify-between px-4 py-1 animate-pulse">
+                    <span>{t.stats.defense}</span> 
+                    <span>{t.levelUp.statDefense}</span>
                 </p>
             )}
         </div>

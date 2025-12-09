@@ -69,11 +69,26 @@ export const createAdminProfile = async (): Promise<void> => {
             level: 100,
             gold: 99999,
             maxHp: 9999,
-            currentHp: 9999
+            currentHp: 9999,
+            nums: 99
         };
         db["Gandalf"] = adminUser;
         saveDB(db);
         console.log("Gandalf appears!!!.");
+    } else {
+        // Ensure existing Gandalf has resources for testing new features
+        const gandalf = db["Gandalf"];
+        let updated = false;
+        
+        if ((gandalf.nums || 0) < 99) {
+            gandalf.nums = 99;
+            updated = true;
+        }
+        
+        if (updated) {
+            db["Gandalf"] = gandalf;
+            saveDB(db);
+        }
     }
     return Promise.resolve();
 };

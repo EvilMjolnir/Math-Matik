@@ -6,9 +6,9 @@ import { PlayerStats, Item, EffectType, Companion } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS } from '../constants';
 import { getAggregatedStats } from '../services/statusService';
 import { STATUS_EFFECTS } from '../data/statusEffects';
-import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Star, Backpack, Sparkles, Lock, Footprints, Sword, Mail, Link, Info } from 'lucide-react';
+import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Star, Backpack, Sparkles, Lock, Footprints, Sword, Mail, Link, Info, Sigma, Flame, ExternalLink, Zap } from 'lucide-react';
 import { useLocalization } from '../localization';
-import { playMenuBackSound, playMenuOpenSound } from '../services/audioService';
+import { playMenuBackSound, playMenuOpenSound, playItemRevealSound } from '../services/audioService';
 import CompanionDetailOverlay from './CompanionDetailOverlay';
 
 interface PlayerProfileModalProps {
@@ -17,6 +17,8 @@ interface PlayerProfileModalProps {
   onClose: () => void;
   onUpdateProfile: (updates: Partial<PlayerStats>) => void;
   onUpdateInventory: (inventory: Item[], equipped: Item[]) => void;
+  onOpenBlackMirror: () => void;
+  onConsumeItem?: (index: number, source: 'inventory' | 'equipped') => void;
   initialTab?: 'stats' | 'inventory' | 'companions';
 }
 
@@ -26,6 +28,8 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
   onClose, 
   onUpdateProfile, 
   onUpdateInventory,
+  onOpenBlackMirror,
+  onConsumeItem,
   initialTab = 'stats'
 }) => {
   const { t, lang } = useLocalization();
@@ -33,15 +37,22 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
   const [tempName, setTempName] = useState(player.username);
   const [tempPhoto, setTempPhoto] = useState(player.photoURL || '');
   const [activeTab, setActiveTab] = useState<'stats' | 'inventory' | 'companions' | 'settings'>('stats');
+  
+  // Track View Item state, including source for consumption logic
   const [viewItem, setViewItem] = useState<Item | null>(null);
-  const [viewCompanion, setViewCompanion] = useState<Companion | null>(null);
+  const [viewItemIndex, setViewItemIndex] = useState<number>(-1);
+  const [viewItemSource, setViewItemSource] = useState<'inventory' | 'equipped'>('inventory');
+  const [isAnimatingDestroy, setIsAnimatingDestroy] = useState(false);
 
+  const [viewCompanion, setViewCompanion] = useState<Companion | null>(null);
+  
   // Sync activeTab with initialTab when modal opens
   useEffect(() => {
     if (isOpen) {
         setActiveTab(initialTab);
-        setViewItem(null); // Reset item view so it doesn't persist when reopening
+        setViewItem(null); 
         setViewCompanion(null);
+        setIsAnimatingDestroy(false);
     }
   }, [isOpen, initialTab]);
 
@@ -63,6 +74,36 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
       setIsEditing(true);
   };
 
+  const handleItemClick = (item: Item, index: number, source: 'inventory' | 'equipped') => {
+      setViewItem(item);
+      setViewItemIndex(index);
+      setViewItemSource(source);
+      setIsAnimatingDestroy(false);
+  };
+
+  const handleDrink = () => {
+      if (!viewItem || !onConsumeItem || viewItemIndex === -1) return;
+
+      const currentUses = viewItem.uses || 0;
+      
+      // If this is the last use, trigger animation then consume
+      if (currentUses <= 1) {
+          playItemRevealSound(); // Use sound for feedback
+          setIsAnimatingDestroy(true);
+          setTimeout(() => {
+              onConsumeItem(viewItemIndex, viewItemSource);
+              setViewItem(null);
+              setIsAnimatingDestroy(false);
+          }, 600); // Wait for slide-out animation (approx 0.6s)
+      } else {
+          // Just consume and update local view state to reflect changes immediately if needed
+          // Ideally Player stats update comes from parent prop, so we close or update
+          onConsumeItem(viewItemIndex, viewItemSource);
+          // Manually update the viewItem locally to show decremented uses immediately while open
+          setViewItem(prev => prev ? ({...prev, uses: (prev.uses || 1) - 1}) : null);
+      }
+  };
+
   // Drag and Drop Logic
   const handleDragStart = (e: React.DragEvent, index: number, source: 'inventory' | 'equipped') => {
     e.dataTransfer.setData('sourceIndex', index.toString());
@@ -71,6 +112,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
 
   const handleDrop = (e: React.DragEvent, targetIndex: number, targetType: 'inventory' | 'equipped') => {
     e.preventDefault();
+
     const sourceIndex = parseInt(e.dataTransfer.getData('sourceIndex'));
     const sourceType = e.dataTransfer.getData('sourceType') as 'inventory' | 'equipped';
 
@@ -94,16 +136,14 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
         newInventory.splice(sourceIndex, 1);
     } else {
         sourceItem = newEquipped[sourceIndex];
-        // Don't splice yet if swapping within same array, handle below
         if (sourceType !== targetType) {
-            newEquipped[sourceIndex] = undefined as any; // Clear slot temporarily
+            newEquipped[sourceIndex] = undefined as any; 
         }
     }
 
     // Add to target
     if (targetType === 'inventory') {
         newInventory.push(sourceItem);
-        // Clean up equipped array if moving from equipped
         if (sourceType === 'equipped') {
              newEquipped[sourceIndex] = null as any; 
         }
@@ -111,19 +151,15 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
         // Target is Equipped
         const existingItem = newEquipped[targetIndex];
 
-        // If slot is occupied
         if (existingItem) {
             if (sourceType === 'inventory') {
-                // Swap: Item in slot goes to inventory
                 newInventory.push(existingItem);
                 newEquipped[targetIndex] = sourceItem;
             } else {
-                // Swap within equipment
                 newEquipped[sourceIndex] = existingItem;
                 newEquipped[targetIndex] = sourceItem;
             }
         } else {
-            // Slot empty
             newEquipped[targetIndex] = sourceItem;
              if (sourceType === 'equipped') {
                  newEquipped[sourceIndex] = null as any;
@@ -131,23 +167,13 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
         }
     }
 
-    // Clean up nulls in inventory (it should be a packed list)
     const cleanedInventory = newInventory.filter(Boolean);
-    
     onUpdateInventory(cleanedInventory, newEquipped);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
   };
-
-
-  // XP Calculations
-  const currentLevelBaseXp = XP_TABLE[player.level - 1] || 0;
-  const nextLevelXp = XP_TABLE[player.level] || (XP_TABLE[XP_TABLE.length - 1] + 100);
-  const xpInLevel = player.currentXp - currentLevelBaseXp;
-  const xpNeededForLevel = nextLevelXp - currentLevelBaseXp;
-  const xpPercentage = Math.min(100, Math.max(0, (xpInLevel / xpNeededForLevel) * 100));
 
   // Calc Stats
   const activeStats = getAggregatedStats(player);
@@ -161,6 +187,9 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
         case EffectType.GOLD_MULTIPLIER: return <Coins className="w-4 h-4 text-amber-400" />;
         case EffectType.MOVEMENT_BONUS: return <Footprints className="w-4 h-4 text-green-400" />;
         case EffectType.COMBAT_SCORE_BONUS: return <Sword className="w-4 h-4 text-red-400" />;
+        case EffectType.DEFENSE_BONUS: return <Shield className="w-4 h-4 text-blue-400" />;
+        case EffectType.HEAL_TURN: return <Heart className="w-4 h-4 text-pink-400" />;
+        case EffectType.WEAKEN_ENEMY: return <Shield className="w-4 h-4 text-purple-400" />; 
         default: return <Sparkles className="w-4 h-4 text-purple-400" />;
     }
   };
@@ -174,12 +203,9 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
     if (index === 4) { isLocked = player.level < 10; unlockLevel = 10; }
     if (index === 5) { isLocked = player.level < 15; unlockLevel = 15; }
 
-    // Rarity Border Logic
     let borderClass = 'border-parchment-400';
     if (item) {
-        // Map text color to border color for the slot
         const rarityText = RARITY_TEXT_COLORS[item.rarity];
-        // e.g., 'text-gray-400' -> 'border-gray-400'
         borderClass = rarityText.replace('text-', 'border-') + ' border-4';
     } else if (isLocked) {
         borderClass = 'border-gray-600';
@@ -191,8 +217,9 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
             onDrop={(e) => !isLocked && handleDrop(e, index, 'equipped')}
             onDragOver={!isLocked ? handleDragOver : undefined}
             className={`
-                relative w-full aspect-square rounded-lg flex items-center justify-center transition-all bg-parchment-100
-                ${isLocked ? 'bg-gray-800' : 'hover:bg-white'}
+                relative w-full aspect-square rounded-lg flex items-center justify-center transition-all overflow-hidden
+                ${isLocked ? 'bg-gray-800' : (item ? 'bg-gray-700 shadow-inner' : 'bg-parchment-100')} 
+                ${!isLocked && !item ? 'hover:bg-white' : ''}
                 ${borderClass}
             `}
         >
@@ -205,16 +232,20 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                 <div 
                     draggable
                     onDragStart={(e) => handleDragStart(e, index, 'equipped')}
-                    onClick={() => setViewItem(item)}
-                    className="w-full h-full p-2 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing hover:scale-105 transition-transform"
+                    onClick={() => handleItemClick(item, index, 'equipped')}
+                    className={`absolute inset-0 w-full h-full flex flex-col cursor-grab active:cursor-grabbing hover:scale-105 transition-transform`}
                 >
-                     {item.image ? (
-                        <img src={item.image} className="w-12 h-12 object-contain" alt="item" />
-                     ) : (
-                        <Backpack className={`w-8 h-8 ${RARITY_TEXT_COLORS[item.rarity]}`} />
-                     )}
-                     <div className="text-[10px] text-center font-bold leading-tight mt-1 line-clamp-2">
-                        {getItemName(item)}
+                     <div className="flex-1 w-full flex items-center justify-center p-1 min-h-0 bg-gradient-to-b from-white/5 to-transparent">
+                        {item.image ? (
+                            <img src={item.image} className="w-full h-full object-contain drop-shadow-md" alt="item" />
+                        ) : (
+                            <Backpack className={`w-2/3 h-2/3 ${RARITY_TEXT_COLORS[item.rarity]}`} />
+                        )}
+                     </div>
+                     <div className="w-full bg-black/60 backdrop-blur-[2px] py-1 px-1 shrink-0 border-t border-white/10 flex justify-between items-center">
+                        <div className={`text-center w-full text-[9px] font-bold leading-tight truncate ${RARITY_TEXT_COLORS[item.rarity]}`}>
+                            {getItemName(item)}
+                        </div>
                      </div>
                 </div>
             ) : (
@@ -227,17 +258,19 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
   };
 
   const handleToggleCompanion = (id: string) => {
-    // If selecting the already active one, deselect it (dismiss)
     const newId = player.activeCompanionId === id ? undefined : id;
     onUpdateProfile({ activeCompanionId: newId });
+    if (newId) {
+        onClose();
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-6xl bg-parchment-200 rounded-lg shadow-2xl border-4 border-parchment-800 text-parchment-900 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-6xl bg-parchment-200 rounded-lg shadow-2xl border-4 border-parchment-800 transition-colors duration-500 flex flex-col max-h-[90vh]">
         
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b-2 border-parchment-400 bg-parchment-300/50 rounded-t-lg">
+        <div className="flex justify-between items-center p-6 border-b-2 rounded-t-lg bg-parchment-300/50 border-parchment-400">
           <div className="flex items-center w-full">
              <div className="w-16 h-16 bg-parchment-100 rounded-full border-2 border-amber-600 flex items-center justify-center mr-4 overflow-hidden shrink-0">
                 {player.photoURL ? (
@@ -278,7 +311,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                ) : (
                  <>
                    <div className="flex items-center group">
-                     <h2 className="text-3xl font-serif font-bold text-parchment-900 mr-3">
+                     <h2 className="text-3xl font-serif font-bold mr-3">
                         {activeTab === 'inventory' ? t.equipment.title : activeTab === 'companions' ? t.profile.companions : player.username}
                      </h2>
                      {activeTab === 'stats' && (
@@ -287,22 +320,16 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                         </button>
                      )}
                    </div>
-                   <div className="text-parchment-700 font-serif flex items-center mt-1">
+                   <div className="font-serif flex items-center mt-1 opacity-80">
                      <Crown className="w-4 h-4 mr-1 text-amber-600" />
                      {t.common.level} {player.level} Mathematician
                    </div>
-                   {player.email && activeTab === 'stats' && (
-                     <div className="text-parchment-500 text-sm flex items-center mt-1">
-                       <Mail className="w-3 h-3 mr-1" />
-                       {player.email}
-                     </div>
-                   )}
                  </>
                )}
              </div>
           </div>
-          <button onClick={() => { playMenuBackSound(); onClose(); }} className="p-2 hover:bg-parchment-400/50 rounded-full transition-colors shrink-0 ml-4">
-            <X className="w-8 h-8 text-parchment-800" />
+          <button onClick={() => { playMenuBackSound(); onClose(); }} className="p-2 hover:bg-white/20 rounded-full transition-colors shrink-0 ml-4">
+            <X className="w-8 h-8" />
           </button>
         </div>
 
@@ -314,49 +341,61 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
             <div className="space-y-6 flex flex-col h-full animate-fadeIn">
               <h3 className="text-xl font-bold font-serif text-parchment-900 border-b border-parchment-400 pb-2">{t.stats.vitalStats}</h3>
               
-              <div className="bg-parchment-100 p-4 rounded border border-parchment-300 shadow-sm space-y-4">
-                {/* HP */}
-                <div className="flex justify-between items-center">
-                  <span className="flex items-center text-lg"><Heart className="w-5 h-5 mr-2 text-red-600" /> {t.common.hp}</span>
-                  <span className="font-mono font-bold text-xl">{player.currentHp} / {player.maxHp}</span>
-                </div>
-                <div className="w-full h-4 bg-gray-300 rounded-full overflow-hidden">
-                  <div className="h-full bg-red-600" style={{ width: `${(player.currentHp / player.maxHp) * 100}%` }}></div>
-                </div>
-
-                {/* XP */}
-                <div className="pt-2">
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center text-lg"><Star className="w-5 h-5 mr-2 text-yellow-600" /> {t.common.xp}</span>
-                    <span className="font-mono font-bold text-sm text-parchment-600">{t.stats.totalXp} {player.currentXp}</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between">
+                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                          <Heart className="w-5 h-5 mr-3 text-red-600" />
+                          {t.common.hp}
+                      </div>
+                      <div className="font-mono font-bold text-xl text-parchment-900">{player.currentHp} / {player.maxHp}</div>
                   </div>
-                  <div className="w-full h-4 bg-gray-300 rounded-full overflow-hidden mt-1 relative">
-                    <div className="h-full bg-yellow-500" style={{ width: `${xpPercentage}%` }}></div>
+                  <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between">
+                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                          <Sword className="w-5 h-5 mr-3 text-red-600" />
+                          {t.combat.attack}
+                      </div>
+                      <div className="font-mono font-bold text-xl text-parchment-900">{activeStats.totalAttack}</div>
                   </div>
-                  <div className="text-xs text-right text-parchment-600 mt-1">
-                    {xpInLevel} / {xpNeededForLevel} {t.stats.nextLevel}
+                  <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between">
+                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                          <Shield className="w-5 h-5 mr-3 text-blue-600" />
+                          {t.stats.defense}
+                      </div>
+                      <div className="font-mono font-bold text-xl text-parchment-900">{activeStats.totalDefense}</div>
                   </div>
-                </div>
-
-                {/* Attack/Defense/Agility/Gold */}
-                <div className="pt-2 border-t border-parchment-300 mt-2 space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center text-lg"><Sword className="w-5 h-5 mr-2 text-red-600" /> {t.combat.attack}</span>
-                    <span className="font-mono font-bold text-xl">{activeStats.totalAttack}</span>
+                  <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between">
+                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                          <Footprints className="w-5 h-5 mr-3 text-green-600" />
+                          {t.profile.agility}
+                      </div>
+                      <div className="font-mono font-bold text-xl text-parchment-900">{player.agility || 0}</div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center text-lg"><Shield className="w-5 h-5 mr-2 text-blue-600" /> {t.stats.defense}</span>
-                    <span className="font-mono font-bold text-xl">{player.defense}</span>
+                  <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between">
+                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                          <Coins className="w-5 h-5 mr-3 text-amber-600" />
+                          {t.common.gold}
+                      </div>
+                      <div className="font-mono font-bold text-xl text-amber-700">{player.gold}</div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center text-lg"><Footprints className="w-5 h-5 mr-2 text-green-600" /> {t.profile.agility}</span>
-                    <span className="font-mono font-bold text-xl">{player.agility || 0}</span>
+                  <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between">
+                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                          <Sigma className="w-5 h-5 mr-3 text-cyan-600" />
+                          {t.common.nums}
+                      </div>
+                      <div className="font-mono font-bold text-xl text-cyan-700">{player.nums}</div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="flex items-center text-lg"><Coins className="w-5 h-5 mr-2 text-amber-600" /> {t.common.gold}</span>
-                    <span className="font-mono font-bold text-xl text-amber-700">{player.gold}</span>
+                  <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between col-span-1 md:col-span-2">
+                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                          <Star className="w-5 h-5 mr-3 text-yellow-500" />
+                          {t.stats.totalXp}
+                      </div>
+                      <div className="font-mono font-bold text-xl text-parchment-900">
+                          {player.currentXp}
+                          <span className="text-xs text-parchment-500 ml-2 font-normal">
+                              ({(player.currentXp - (XP_TABLE[player.level - 1] || 0))} / {(XP_TABLE[player.level] || (XP_TABLE[XP_TABLE.length - 1] + 100)) - (XP_TABLE[player.level - 1] || 0)} {t.stats.nextLevel})
+                          </span>
+                      </div>
                   </div>
-                </div>
               </div>
 
               <div className="space-y-2">
@@ -390,17 +429,28 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
             </div>
           )}
 
-          {/* INVENTORY TAB (Drag and Drop System) */}
+          {/* INVENTORY TAB */}
           {activeTab === 'inventory' && (
-            <div className="flex flex-col h-full animate-fadeIn">
-                <div className="text-center text-parchment-600 text-sm mb-4 italic flex items-center justify-center">
+            <div className="flex flex-col h-full animate-fadeIn relative">
+                <div className="absolute top-0 right-0 z-10">
+                    <button 
+                        onClick={onOpenBlackMirror}
+                        className="flex items-center px-4 py-2 rounded-full text-xs font-bold transition-all shadow-md bg-slate-900 text-purple-300 border border-purple-500 hover:bg-slate-800 hover:text-white"
+                    >
+                        <Flame className="w-3 h-3 mr-2 text-purple-500" />
+                        {t.profile.blackMirror}
+                        <ExternalLink className="w-3 h-3 ml-2" />
+                    </button>
+                </div>
+
+                <div className="text-center text-sm mb-4 italic flex items-center justify-center text-parchment-600">
                     <Sparkles className="w-4 h-4 mr-2" />
                     {t.equipment.dragHint}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
                     {/* Active Slots Section */}
-                    <div className="bg-parchment-300/30 p-4 rounded border border-parchment-400">
+                    <div className="p-4 rounded border bg-parchment-300/30 border-parchment-400">
                         <h3 className="text-lg font-bold font-serif mb-3 text-parchment-900 border-b border-parchment-400 pb-1">
                             {t.equipment.title}
                         </h3>
@@ -411,7 +461,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
 
                     {/* Backpack Section */}
                     <div 
-                        className="bg-parchment-100 p-4 rounded border border-parchment-400 flex flex-col h-full overflow-hidden"
+                        className="p-4 rounded border flex flex-col h-full overflow-hidden bg-parchment-100 border-parchment-400"
                         onDrop={(e) => handleDrop(e, 0, 'inventory')}
                         onDragOver={handleDragOver}
                     >
@@ -425,8 +475,8 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                                         key={idx}
                                         draggable
                                         onDragStart={(e) => handleDragStart(e, idx, 'inventory')}
-                                        onClick={() => setViewItem(item)}
-                                        className="bg-white p-2 rounded border border-parchment-300 shadow-sm flex items-start cursor-pointer hover:bg-parchment-50 transition-colors"
+                                        onClick={() => handleItemClick(item, idx, 'inventory')}
+                                        className="p-2 rounded border shadow-sm flex items-start transition-all cursor-grab bg-white border-parchment-300 hover:bg-parchment-50"
                                     >
                                         <div className={`w-10 h-10 shrink-0 bg-gray-100 rounded border mr-3 flex items-center justify-center ${RARITY_TEXT_COLORS[item.rarity].replace('text-', 'border-')}`}>
                                              {item.image ? (
@@ -435,9 +485,18 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                                                 <Backpack className={`w-5 h-5 ${RARITY_TEXT_COLORS[item.rarity]}`} />
                                              )}
                                         </div>
-                                        <div>
-                                            <div className={`font-bold text-sm ${RARITY_TEXT_COLORS[item.rarity]}`}>{getItemName(item)}</div>
+                                        <div className="flex-1">
+                                            <div className="flex justify-between">
+                                                <div className={`font-bold text-sm ${RARITY_TEXT_COLORS[item.rarity]}`}>{getItemName(item)}</div>
+                                            </div>
                                             <p className="text-xs text-gray-600 italic line-clamp-1">{getItemDesc(item)}</p>
+                                            {item.uses !== undefined && (
+                                                <div className="mt-1">
+                                                    <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full border border-blue-200">
+                                                        {item.uses}/{item.maxUses} Uses
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 ))
@@ -499,11 +558,6 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                     </button>
                   );
                 })}
-                {player.companions.length === 0 && (
-                   <div className="text-center py-8 text-parchment-500 italic border-2 border-dashed border-parchment-300 rounded">
-                     {t.stats.travelAlone}
-                   </div>
-                )}
               </div>
             </div>
           )}
@@ -519,7 +573,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                 </button>
 
                 <div className="flex flex-col items-center flex-1 justify-center">
-                    <div className={`w-32 h-32 rounded-lg bg-black/10 flex items-center justify-center border-4 mb-6 shadow-xl ${RARITY_TEXT_COLORS[viewItem.rarity].replace('text-', 'border-')}`}>
+                    <div className={`w-32 h-32 rounded-lg bg-black/10 flex items-center justify-center border-4 mb-6 shadow-xl ${RARITY_TEXT_COLORS[viewItem.rarity].replace('text-', 'border-')} ${isAnimatingDestroy ? 'slide-out-blurred-top' : ''}`}>
                         {viewItem.image ? (
                             <img src={viewItem.image} className="w-full h-full object-contain rounded" alt={getItemName(viewItem)} />
                         ) : (
@@ -535,6 +589,21 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                     <p className="text-center text-parchment-800 italic text-lg max-w-md mb-8 border-y-2 border-parchment-300 py-4">
                         "{getItemDesc(viewItem)}"
                     </p>
+
+                    {/* Drink Button for Potions */}
+                    {viewItem.uses !== undefined && viewItem.uses > 0 && onConsumeItem && (
+                        <button 
+                            onClick={handleDrink}
+                            disabled={isAnimatingDestroy}
+                            className="mb-6 bg-pink-700 hover:bg-pink-600 text-white px-8 py-3 rounded-full font-serif font-bold text-lg shadow-lg border-2 border-pink-500 flex items-center transition-transform transform active:scale-95 hover:scale-105"
+                        >
+                            <Zap className="w-5 h-5 mr-2 text-yellow-300" />
+                            {t.buttons.drink} 
+                            <span className="ml-2 text-xs bg-black/30 px-2 py-0.5 rounded">
+                                ({viewItem.uses})
+                            </span>
+                        </button>
+                    )}
 
                     {viewItem.tags && viewItem.tags.length > 0 && (
                          <div className="w-full max-w-sm bg-white/50 p-4 rounded-lg border border-parchment-300">

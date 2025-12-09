@@ -1,3 +1,4 @@
+
 import { Tome } from '../types';
 import { ENCOUNTERS } from '../data/encounters';
 
@@ -26,6 +27,11 @@ export const tome5: Tome = {
       divisionMaxDividend: 100,
       baseCost: 10,
       costIncrement: 3,
+    },
+    alchimie: {
+      numeratorMax: 20,
+      denominatorMax: 15,
+      ops: ['reduce', 'add', 'sub', 'mult']
     },
     boss: {
       timerDuration: 10,

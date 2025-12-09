@@ -1,4 +1,9 @@
 
+
+
+
+
+
 import { StatusEffect, EffectType } from '../types';
 
 const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V"];
@@ -56,6 +61,16 @@ const EFFECT_DEFINITIONS: EffectBase[] = [
     descTemplate_fr: '+{val}% Puissance d\'Attaque',
     isPercentage: true
   },
+  {
+    baseId: 'guardian',
+    name: 'Guardian',
+    name_fr: 'Gardien',
+    type: EffectType.DEFENSE_BONUS,
+    baseValue: 1,
+    descTemplate: '+{val} Defense',
+    descTemplate_fr: '+{val} Défense',
+    isPercentage: false
+  },
 
   // --- MONSTER EFFECTS ---
   {
@@ -96,6 +111,38 @@ const EFFECT_DEFINITIONS: EffectBase[] = [
     baseValue: 0.20,
     descTemplate: '+{val}% Gold Reward',
     descTemplate_fr: '+{val}% Récompense Or',
+    isPercentage: true
+  },
+
+  // --- POTION EFFECTS ---
+  {
+    baseId: 'regen',
+    name: 'Regeneration',
+    name_fr: 'Régénération',
+    type: EffectType.HEAL_TURN,
+    baseValue: 2,
+    descTemplate: '+{val} HP / Turn',
+    descTemplate_fr: '+{val} PV / Tour',
+    isPercentage: false
+  },
+  {
+    baseId: 'heal',
+    name: 'Healing',
+    name_fr: 'Guérison',
+    type: EffectType.INSTANT_HEAL,
+    baseValue: 20,
+    descTemplate: 'Heals {val} HP',
+    descTemplate_fr: 'Soigne {val} PV',
+    isPercentage: false
+  },
+  {
+    baseId: 'weaken',
+    name: 'Toxin',
+    name_fr: 'Toxine',
+    type: EffectType.WEAKEN_ENEMY,
+    baseValue: 0.10,
+    descTemplate: '-{val}% Enemy Atk',
+    descTemplate_fr: '-{val}% Atk Ennemie',
     isPercentage: true
   }
 ];

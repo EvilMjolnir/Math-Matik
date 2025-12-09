@@ -1,12 +1,13 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item, StorageMode } from './types';
+import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item, StorageMode, EffectType } from './types';
 import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS } from './constants';
 import { ALL_TOMES } from './tomes';
 import Movement from './views/Movement';
 import Combat from './views/Combat';
 import Recherche from './views/Recherche';
+import Alchimie from './views/Alchimie';
 import Options from './views/Options';
 import AdminPanel from './views/AdminPanel';
 import Home from './views/Home';
@@ -17,6 +18,7 @@ import { LocalizationProvider, useLocalization } from './localization';
 import * as localStore from './services/storageService';
 import * as cloudStore from './services/storageService_Live';
 import { getAggregatedStats } from './services/statusService';
+import { STATUS_EFFECTS } from './data/statusEffects';
 
 const GameContent: React.FC = () => {
   const { t, lang } = useLocalization();
@@ -72,6 +74,8 @@ const GameContent: React.FC = () => {
       ...loadedPlayer,
       equipped: loadedPlayer.equipped || [],
       agility: loadedPlayer.agility !== undefined ? loadedPlayer.agility : Math.floor((loadedPlayer.level || 1) / 3), // Backfill agility based on level if missing
+      defense: loadedPlayer.defense !== undefined ? loadedPlayer.defense : Math.floor((loadedPlayer.level || 1) / 4), // Backfill defense based on level
+      nums: loadedPlayer.nums !== undefined ? loadedPlayer.nums : 0, // Backfill nums
     };
     setStorageMode(mode);
     setPlayer(modernizedPlayer);
@@ -170,6 +174,8 @@ const GameContent: React.FC = () => {
         const attackIncrease = levelDiff * 1;
         // Agility increases by 1 every 3 levels (Level 3, 6, 9...)
         const newAgility = Math.floor(newLevel / 3);
+        // Defense increases by 1 every 4 levels (Level 4, 8, 12...)
+        const newDefense = Math.floor(newLevel / 4);
 
         return {
           ...prev,
@@ -179,6 +185,7 @@ const GameContent: React.FC = () => {
           currentHp: prev.currentHp, // HP stays the same, no healing
           attack: (prev.attack || 5) + attackIncrease,
           agility: newAgility,
+          defense: newDefense
         };
       }
 
@@ -205,6 +212,13 @@ const GameContent: React.FC = () => {
       researchPlayCount: prev.researchPlayCount + 1
     }));
   };
+
+  const spendNems = (amount: number) => {
+      setPlayer(prev => ({
+          ...prev,
+          nums: Math.max(0, prev.nums - amount)
+      }));
+  };
   
   const handleAddItem = (item: Item) => {
       setPlayer(prev => ({
@@ -226,11 +240,91 @@ const GameContent: React.FC = () => {
     checkPendingLevelUp();
   };
 
+  // Helper to consume potion charges after an encounter
+  const consumePotions = () => {
+      setPlayer(prev => {
+          const newEquipped = [...(prev.equipped || [])];
+          let updated = false;
+          
+          for (let i = 0; i < newEquipped.length; i++) {
+              const item = newEquipped[i];
+              // Check if item exists and has 'uses' (is a potion)
+              if (item && typeof item.uses === 'number') {
+                  updated = true;
+                  const newUses = item.uses - 1;
+                  if (newUses <= 0) {
+                      newEquipped[i] = undefined as any; // Remove
+                  } else {
+                      newEquipped[i] = { ...item, uses: newUses };
+                  }
+              }
+          }
+
+          if (updated) {
+              return { ...prev, equipped: newEquipped };
+          }
+          return prev;
+      });
+  };
+
+  // Triggered manually from Inventory
+  const handleConsumeItem = (index: number, source: 'inventory' | 'equipped') => {
+      setPlayer(prev => {
+          // Identify source array
+          const items = source === 'inventory' ? [...(prev.inventory || [])] : [...(prev.equipped || [])];
+          const item = items[index];
+
+          if (!item || typeof item.uses !== 'number') return prev;
+
+          // Apply Effects
+          let healedAmount = 0;
+          if (item.tags) {
+              item.tags.forEach(tagId => {
+                  const effect = STATUS_EFFECTS[tagId];
+                  if (effect && effect.type === EffectType.INSTANT_HEAL) {
+                      healedAmount += effect.value;
+                  }
+              });
+          }
+
+          let newHp = prev.currentHp;
+          if (healedAmount > 0) {
+              newHp = Math.min(prev.maxHp, prev.currentHp + healedAmount);
+          }
+
+          // Decrement Uses
+          const newUses = item.uses - 1;
+          
+          if (newUses <= 0) {
+              // Remove Item
+              if (source === 'inventory') {
+                  items.splice(index, 1);
+              } else {
+                  items[index] = undefined as any;
+              }
+          } else {
+              // Update Item
+              items[index] = { ...item, uses: newUses };
+          }
+
+          if (source === 'inventory') {
+              return { ...prev, inventory: items, currentHp: newHp };
+          } else {
+              return { ...prev, equipped: items, currentHp: newHp };
+          }
+      });
+  };
+
   const takeDamage = (amount: number) => {
-    setPlayer(prev => ({
-        ...prev,
-        currentHp: Math.max(0, prev.currentHp - amount)
-    }));
+    setPlayer(prev => {
+        const stats = getAggregatedStats(prev);
+        // Min damage 1 to prevent invincibility
+        const effectiveDamage = Math.max(1, amount - stats.totalDefense);
+        return {
+            ...prev,
+            currentHp: Math.max(0, prev.currentHp - effectiveDamage)
+        }
+    });
   };
 
   const handleTomeProgress = (baseSteps: number, bypassEncounters: boolean = false) => {
@@ -333,9 +427,15 @@ const GameContent: React.FC = () => {
     if (encounterToTrigger) {
         setActiveEncounter(encounterToTrigger);
     }
+
+    // If progress was made, this counts as a "minigame play" for potion consumption
+    if (stopDist > currentDist) {
+        consumePotions();
+    }
   };
 
   const handleEncounterComplete = () => {
+    consumePotions(); // Consume potion charges after encounter
     setActiveEncounter(null);
     setCurrentView(GameView.HOME);
 
@@ -390,6 +490,7 @@ const GameContent: React.FC = () => {
       movement: { ...DEFAULT_CONFIG.movement, ...tome.config.movement },
       combat: { ...DEFAULT_CONFIG.combat, ...tome.config.combat },
       recherche: { ...DEFAULT_CONFIG.recherche, ...tome.config.recherche },
+      alchimie: { ...DEFAULT_CONFIG.alchimie, ...tome.config.alchimie },
       boss: { ...defaultBoss, ...tomeBoss }
     };
   };
@@ -451,6 +552,16 @@ const GameContent: React.FC = () => {
             {...commonProps} 
           />
         );
+      case GameView.ALCHIMIE:
+        return (
+            <Alchimie 
+                config={activeConfig.alchimie}
+                onAddItem={handleAddItem}
+                playerNems={player.nums}
+                onSpendNems={spendNems}
+                {...commonProps}
+            />
+        );
       case GameView.OPTIONS:
         return (
           <Options 
@@ -494,6 +605,7 @@ const GameContent: React.FC = () => {
                 onLogout={handleLogout}
                 onUpdateInventory={updateInventoryLoadout}
                 onProgressTome={handleTomeProgress}
+                onConsumeItem={handleConsumeItem}
             />
         );
     }

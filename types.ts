@@ -1,11 +1,10 @@
 
-
-
 export enum GameView {
   HOME = 'HOME',
   MOVEMENT = 'MOVEMENT',
   COMBAT = 'COMBAT',
   RECHERCHE = 'RECHERCHE',
+  ALCHIMIE = 'ALCHIMIE',
   OPTIONS = 'OPTIONS',
   ADMIN = 'ADMIN',
 }
@@ -28,6 +27,12 @@ export enum EffectType {
   GOLD_MULTIPLIER = 'GOLD_MULTIPLIER', // e.g. 1.1 for +10%
   MOVEMENT_BONUS = 'MOVEMENT_BONUS',   // Flat add to steps
   COMBAT_SCORE_BONUS = 'COMBAT_SCORE_BONUS', // Flat add to combat score (now Attack Bonus)
+  DEFENSE_BONUS = 'DEFENSE_BONUS',     // Flat add to Defense
+  
+  // Potion Specific
+  HEAL_TURN = 'HEAL_TURN',             // Regenerate HP per turn/action
+  WEAKEN_ENEMY = 'WEAKEN_ENEMY',       // Reduce Enemy Attack
+  INSTANT_HEAL = 'INSTANT_HEAL',       // Flat Heal (on equip? or per turn?) -> We'll treat as Regen for simplicity in this engine or One-time
   
   // Enemy Specific Effects
   ENEMY_HP_BONUS = 'ENEMY_HP_BONUS',   // Renamed from ENEMY_THRESHOLD_BONUS (Increases HP/Score needed)
@@ -46,6 +51,8 @@ export interface StatusEffect {
   description_fr?: string;
 }
 
+export type FractionOp = 'add' | 'sub' | 'mult' | 'reduce' | 'compare';
+
 export interface GameConfig {
   movement: {
     minVal: number;
@@ -61,6 +68,11 @@ export interface GameConfig {
     baseCost: number;
     costIncrement: number;
   };
+  alchimie: {
+    numeratorMax: number;
+    denominatorMax: number;
+    ops: FractionOp[];
+  };
   boss?: {
     timerDuration: number; // Seconds before boss attacks
     actionsPerTurn: number; // How many correct answers to trigger a player attack
@@ -70,7 +82,8 @@ export interface GameConfig {
 export interface MathProblem {
   question: string;
   answer: number | string;
-  type?: 'number' | 'operator'; 
+  type?: 'number' | 'operator' | 'fraction';
+  fractionAnswer?: { num: number; den: number }; // For fraction problems
 }
 
 export interface Item {
@@ -81,6 +94,8 @@ export interface Item {
   rarity: Rarity;
   image?: string; // URL to specific item image
   tags?: string[]; // IDs mapping to statusEffects
+  uses?: number; // Current remaining uses (for potions)
+  maxUses?: number; // Total capacity (for potions)
 }
 
 export interface Card {
@@ -150,6 +165,7 @@ export interface PlayerStats {
   attack: number; // Base attack stat
   agility: number; // Agility stat (moves +1 per segment)
   gold: number;
+  nums: number; // New currency (Nems)
   inventory: Item[]; 
   equipped: Item[]; // Items currently in active slots
   itemBonuses: string[]; // Deprecated, kept for backward compatibility if needed, or used for display text

@@ -1,8 +1,6 @@
 
 
 
-
-
 export interface Translation {
   titles: {
     movement: string;
@@ -13,6 +11,7 @@ export interface Translation {
     profile: string;
     scratchpad: string;
     dangerZone: string;
+    alchimie: string;
   };
   buttons: {
     back: string;
@@ -28,6 +27,12 @@ export interface Translation {
     resetProfile: string;
     summon: string;
     dismiss: string;
+    melt: string;
+    craft: string;
+    meltItems: string;
+    exitMirror: string;
+    confirm: string;
+    drink: string;
   };
   tomes: {
     selectQuest: string;
@@ -68,10 +73,12 @@ export interface Translation {
     xp: string;
     hp: string;
     gold: string;
+    nums: string;
     level: string;
     loading: string;
     cost: string;
     notEnoughGold: string;
+    notEnoughNems: string;
     reward: string;
   };
   home: {
@@ -85,6 +92,7 @@ export interface Translation {
     menuDescMovement: string;
     menuDescCombat: string;
     menuDescRecherche: string;
+    menuDescAlchimie: string;
   };
   recherche: {
     exitWarning: string;
@@ -95,6 +103,22 @@ export interface Translation {
     lock: string;
     locks: string;
     lockSealed: string;
+  };
+  alchimie: {
+    selectMode: string;
+    normal: string;
+    flip: string;
+    pick: string;
+    brewing: string;
+    solveToCraft: string;
+    uses: string;
+    potionCreated: string;
+    descNormal: string;
+    descFlip: string;
+    descPick: string;
+    draftFlip2: string;
+    draftFlip1: string;
+    draftPick: string;
   };
   auth: {
     username: string;
@@ -126,12 +150,16 @@ export interface Translation {
     clickDetails: string;
     activeCompanion: string;
     agility: string;
+    blackMirror: string;
+    meltingMode: string;
+    meltConfirm: string;
   };
   bonuses: {
     xp: string;
     gold: string;
     movement: string;
     combat: string;
+    defense: string;
     none: string;
   };
   equipment: {
@@ -160,5 +188,6 @@ export interface Translation {
     statHp: string;
     statAttack: string;
     statAgility: string;
+    statDefense: string;
   };
 }

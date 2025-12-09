@@ -5,6 +5,7 @@ import PlayerStatsWidget from '../components/PlayerStatsWidget';
 import ActiveQuestPanel from '../components/ActiveQuestPanel';
 import GameMenu from '../components/GameMenu';
 import PlayerProfileModal from '../components/PlayerProfileModal';
+import BlackMirrorModal from '../components/BlackMirrorModal';
 import { ShieldCheck, Footprints, FastForward } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuOpenSound } from '../services/audioService';
@@ -24,6 +25,7 @@ interface HomeProps {
   onLogout: () => void;
   onUpdateInventory: (inventory: Item[], equipped: Item[]) => void;
   onProgressTome: (steps: number, bypassEncounters?: boolean) => void;
+  onConsumeItem: (index: number, source: 'inventory' | 'equipped') => void;
 }
 
 const Home: React.FC<HomeProps> = ({ 
@@ -40,11 +42,15 @@ const Home: React.FC<HomeProps> = ({
   isAdmin, 
   onLogout, 
   onUpdateInventory,
-  onProgressTome
+  onProgressTome,
+  onConsumeItem
 }) => {
   // We use this state to track WHICH tab is open. If null, modal is closed.
   const [activeProfileTab, setActiveProfileTab] = useState<'stats' | 'inventory' | 'companions' | null>(null);
   
+  // Track Black Mirror Modal visibility
+  const [showBlackMirror, setShowBlackMirror] = useState(false);
+
   // Track if the quest bar is currently filling up. If so, we delay the "Encounter" lock.
   const [isPanelAnimating, setIsPanelAnimating] = useState(false);
 
@@ -62,6 +68,12 @@ const Home: React.FC<HomeProps> = ({
   const handleOpenProfile = (tab: 'stats' | 'inventory' | 'companions') => {
     playMenuOpenSound();
     setActiveProfileTab(tab);
+  };
+
+  const handleOpenBlackMirror = () => {
+      playMenuOpenSound();
+      setActiveProfileTab(null); // Close profile
+      setShowBlackMirror(true);
   };
 
   const handleAdminAddSteps = () => {
@@ -240,6 +252,16 @@ const Home: React.FC<HomeProps> = ({
         isOpen={activeProfileTab !== null} 
         initialTab={activeProfileTab || 'stats'}
         onClose={() => setActiveProfileTab(null)}
+        onUpdateProfile={onUpdatePlayerProfile}
+        onUpdateInventory={onUpdateInventory}
+        onOpenBlackMirror={handleOpenBlackMirror}
+        onConsumeItem={onConsumeItem}
+      />
+
+      <BlackMirrorModal
+        player={player}
+        isOpen={showBlackMirror}
+        onClose={() => setShowBlackMirror(false)}
         onUpdateProfile={onUpdatePlayerProfile}
         onUpdateInventory={onUpdateInventory}
       />

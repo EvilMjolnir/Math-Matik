@@ -1,11 +1,6 @@
 
 
 
-
-
-
-
-
 import { Translation } from './types';
 
 export const UI_SOURCE = {
@@ -13,6 +8,7 @@ export const UI_SOURCE = {
     movement: { en: "Movement", fr: "Mouvement" },
     combat: { en: "Combat", fr: "Combat" },
     recherche: { en: "Research", fr: "Recherche" },
+    alchimie: { en: "Alchemy", fr: "Alchimie" },
     options: { en: "Grimoire of Settings", fr: "Grimoire des Paramètres" },
     home: { en: "Math et Matik", fr: "Math et Matik" },
     profile: { en: "Hero Profile", fr: "Profil du Héros" },
@@ -33,6 +29,12 @@ export const UI_SOURCE = {
     resetProfile: { en: "Reset Progress (Keep Account)", fr: "Réinitialiser Progression (Garder Compte)" },
     summon: { en: "Summon", fr: "Invoquer" },
     dismiss: { en: "Dismiss", fr: "Renvoyer" },
+    melt: { en: "Melt Item", fr: "Fondre l'Objet" },
+    craft: { en: "Craft", fr: "Fabriquer" },
+    meltItems: { en: "Melt Items!", fr: "Fondre !" },
+    exitMirror: { en: "Exit Mirror", fr: "Sortir" },
+    confirm: { en: "Confirm?", fr: "Confirmer ?" },
+    drink: { en: "Drink", fr: "Boire" },
   },
   tomes: {
     selectQuest: { en: "Select Your Quest", fr: "Choisissez votre Quête" },
@@ -72,10 +74,12 @@ export const UI_SOURCE = {
     xp: { en: "XP", fr: "XP" },
     hp: { en: "HP", fr: "PV" },
     gold: { en: "Gold", fr: "Or" },
+    nums: { en: "Nems", fr: "Nems" },
     level: { en: "Lvl", fr: "Niv" },
     loading: { en: "Loading...", fr: "Chargement..." },
     cost: { en: "Cost", fr: "Coût" },
     notEnoughGold: { en: "Not enough Gold", fr: "Pas assez d'or" },
+    notEnoughNems: { en: "Not enough Nems", fr: "Pas assez de Nems" },
     reward: { en: "Reward", fr: "Récompense" },
   },
   home: {
@@ -89,6 +93,7 @@ export const UI_SOURCE = {
     menuDescMovement: { en: "Journey through the lands by solving equations.", fr: "Voyagez à travers les terres en résolvant des équations." },
     menuDescCombat: { en: "Fight enemies or test your speed.", fr: "Combattez des ennemis ou testez votre vitesse." },
     menuDescRecherche: { en: "Unlock ancient tomes to find magical items.", fr: "Déverrouillez des tomes anciens pour trouver des objets magiques." },
+    menuDescAlchimie: { en: "Craft potions using Nems and Fraction math.", fr: "Créez des potions avec des Nems et des Fractions." },
   },
   recherche: {
     exitWarning: { en: "You have paid the entry fee. If you leave now, your gold will be lost. Are you sure?", fr: "Vous avez payé les frais d'entrée. Si vous partez maintenant, votre or sera perdu. Êtes-vous sûr ?" },
@@ -99,6 +104,22 @@ export const UI_SOURCE = {
     lock: { en: "Lock", fr: "Serrure" },
     locks: { en: "Locks", fr: "Serrures" },
     lockSealed: { en: "The ancient lock remains sealed.", fr: "L'ancienne serrure reste scellée." },
+  },
+  alchimie: {
+    selectMode: { en: "Select Method", fr: "Choisir Méthode" },
+    normal: { en: "Normal", fr: "Normal" },
+    flip: { en: "Clairvoyance", fr: "Clairvoyance" },
+    pick: { en: "Omniscience", fr: "Omniscience" },
+    brewing: { en: "Brewing...", fr: "Préparation..." },
+    solveToCraft: { en: "Solve to Craft", fr: "Résoudre pour Créer" },
+    uses: { en: "Uses", fr: "Usages" },
+    potionCreated: { en: "Potion Created!", fr: "Potion Créée !" },
+    descNormal: { en: "Pick 1 from 3 Hidden", fr: "1 au choix parmi 3 cachées" },
+    descFlip: { en: "Reveal 2, Pick 1", fr: "Révélez 2, Choisissez 1" },
+    descPick: { en: "Reveal All, Pick 1", fr: "Tout Révéler, Choisir 1" },
+    draftFlip2: { en: "Flip 2 cards, then pick 1", fr: "Retournez 2 cartes, puis choisissez 1" },
+    draftFlip1: { en: "Flip 1 to select", fr: "Retournez 1 pour choisir" },
+    draftPick: { en: "Pick any card", fr: "Choisissez une carte" },
   },
   auth: {
     username: { en: "Username", fr: "Nom" },
@@ -130,12 +151,16 @@ export const UI_SOURCE = {
     clickDetails: { en: "Click to view details", fr: "Cliquez pour voir les détails" },
     activeCompanion: { en: "Active Companion", fr: "Compagnon Actif" },
     agility: { en: "Agility", fr: "Agilité" },
+    blackMirror: { en: "Black Mirror of Dee", fr: "Miroir Noir de Dee" },
+    meltingMode: { en: "MELTING MODE", fr: "MODE FUSION" },
+    meltConfirm: { en: "Melt this item for {amount} Nems?", fr: "Fondre cet objet pour {amount} Nems ?" },
   },
   bonuses: {
     xp: { en: "+{value}% XP Gain", fr: "+{value}% Gain d'XP" },
     gold: { en: "+{value}% Gold Gain", fr: "+{value}% Gain d'Or" },
     movement: { en: "+{value}% Travel Speed", fr: "+{value}% Vitesse de Voyage" },
     combat: { en: "+{value}% Attack Power", fr: "+{value}% Puissance d'Attaque" },
+    defense: { en: "+{value} Defense", fr: "+{value} Défense" },
     none: { en: "No active magical effects.", fr: "Aucun effet magique actif." },
   },
   equipment: {
@@ -164,6 +189,7 @@ export const UI_SOURCE = {
     statHp: { en: "+10 Max HP", fr: "+10 PV Max" },
     statAttack: { en: "+1 Attack Power", fr: "+1 Puissance d'Attaque" },
     statAgility: { en: "+1 Agility", fr: "+1 Agilité" },
+    statDefense: { en: "+1 Defense", fr: "+1 Défense" },
   }
 };
 
@@ -173,6 +199,7 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       movement: UI_SOURCE.titles.movement[lang],
       combat: UI_SOURCE.titles.combat[lang],
       recherche: UI_SOURCE.titles.recherche[lang],
+      alchimie: UI_SOURCE.titles.alchimie[lang],
       options: UI_SOURCE.titles.options[lang],
       home: UI_SOURCE.titles.home[lang],
       profile: UI_SOURCE.titles.profile[lang],
@@ -193,6 +220,12 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       resetProfile: UI_SOURCE.buttons.resetProfile[lang],
       summon: UI_SOURCE.buttons.summon[lang],
       dismiss: UI_SOURCE.buttons.dismiss[lang],
+      melt: UI_SOURCE.buttons.melt[lang],
+      craft: UI_SOURCE.buttons.craft[lang],
+      meltItems: UI_SOURCE.buttons.meltItems[lang],
+      exitMirror: UI_SOURCE.buttons.exitMirror[lang],
+      confirm: UI_SOURCE.buttons.confirm[lang],
+      drink: UI_SOURCE.buttons.drink[lang],
     },
     tomes: {
       selectQuest: UI_SOURCE.tomes.selectQuest[lang],
@@ -232,10 +265,12 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       xp: UI_SOURCE.common.xp[lang],
       hp: UI_SOURCE.common.hp[lang],
       gold: UI_SOURCE.common.gold[lang],
+      nums: UI_SOURCE.common.nums[lang],
       level: UI_SOURCE.common.level[lang],
       loading: UI_SOURCE.common.loading[lang],
       cost: UI_SOURCE.common.cost[lang],
       notEnoughGold: UI_SOURCE.common.notEnoughGold[lang],
+      notEnoughNems: UI_SOURCE.common.notEnoughNems[lang],
       reward: UI_SOURCE.common.reward[lang],
     },
     home: {
@@ -249,6 +284,7 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       menuDescMovement: UI_SOURCE.home.menuDescMovement[lang],
       menuDescCombat: UI_SOURCE.home.menuDescCombat[lang],
       menuDescRecherche: UI_SOURCE.home.menuDescRecherche[lang],
+      menuDescAlchimie: UI_SOURCE.home.menuDescAlchimie[lang],
     },
     recherche: {
       exitWarning: UI_SOURCE.recherche.exitWarning[lang],
@@ -259,6 +295,22 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       lock: UI_SOURCE.recherche.lock[lang],
       locks: UI_SOURCE.recherche.locks[lang],
       lockSealed: UI_SOURCE.recherche.lockSealed[lang],
+    },
+    alchimie: {
+      selectMode: UI_SOURCE.alchimie.selectMode[lang],
+      normal: UI_SOURCE.alchimie.normal[lang],
+      flip: UI_SOURCE.alchimie.flip[lang],
+      pick: UI_SOURCE.alchimie.pick[lang],
+      brewing: UI_SOURCE.alchimie.brewing[lang],
+      solveToCraft: UI_SOURCE.alchimie.solveToCraft[lang],
+      uses: UI_SOURCE.alchimie.uses[lang],
+      potionCreated: UI_SOURCE.alchimie.potionCreated[lang],
+      descNormal: UI_SOURCE.alchimie.descNormal[lang],
+      descFlip: UI_SOURCE.alchimie.descFlip[lang],
+      descPick: UI_SOURCE.alchimie.descPick[lang],
+      draftFlip2: UI_SOURCE.alchimie.draftFlip2[lang],
+      draftFlip1: UI_SOURCE.alchimie.draftFlip1[lang],
+      draftPick: UI_SOURCE.alchimie.draftPick[lang],
     },
     auth: {
       username: UI_SOURCE.auth.username[lang],
@@ -290,12 +342,16 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       clickDetails: UI_SOURCE.profile.clickDetails[lang],
       activeCompanion: UI_SOURCE.profile.activeCompanion[lang],
       agility: UI_SOURCE.profile.agility[lang],
+      blackMirror: UI_SOURCE.profile.blackMirror[lang],
+      meltingMode: UI_SOURCE.profile.meltingMode[lang],
+      meltConfirm: UI_SOURCE.profile.meltConfirm[lang],
     },
     bonuses: {
       xp: UI_SOURCE.bonuses.xp[lang],
       gold: UI_SOURCE.bonuses.gold[lang],
       movement: UI_SOURCE.bonuses.movement[lang],
       combat: UI_SOURCE.bonuses.combat[lang],
+      defense: UI_SOURCE.bonuses.defense[lang],
       none: UI_SOURCE.bonuses.none[lang],
     },
     equipment: {
@@ -324,6 +380,7 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       statHp: UI_SOURCE.levelUp.statHp[lang],
       statAttack: UI_SOURCE.levelUp.statAttack[lang],
       statAgility: UI_SOURCE.levelUp.statAgility[lang],
+      statDefense: UI_SOURCE.levelUp.statDefense[lang],
     }
   };
 };

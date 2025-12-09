@@ -1,5 +1,4 @@
 
-
 import { GameConfig, Rarity, PlayerStats } from './types';
 import { STARTING_COMPANIONS } from './data/companions';
 
@@ -18,6 +17,11 @@ export const DEFAULT_CONFIG: GameConfig = {
     baseCost: 5,
     costIncrement: 2,
   },
+  alchimie: {
+    numeratorMax: 10,
+    denominatorMax: 10,
+    ops: ['reduce', 'add', 'sub', 'compare']
+  },
   boss: {
     timerDuration: 15,
     actionsPerTurn: 5
@@ -34,6 +38,7 @@ export const DEFAULT_PLAYER: PlayerStats = {
   attack: 5, 
   agility: 0,
   gold: 5, // Start with a little gold to try mechanics
+  nums: 0,
   inventory: [],
   equipped: [], // New equipment slots
   itemBonuses: [], // Deprecated
@@ -64,7 +69,12 @@ export const XP_TABLE = [
   2040, // Level 17
   2295, // Level 18
   2565, // Level 19
-  2850  // Level 20
+  2850, // Level 20
+  3150, // Level 21
+  3465, // Level 22
+  3795, // Level 23
+  4140, // Level 24
+  4500  // Level 25
 ];
 
 export const RARITY_COLORS: Record<Rarity, string> = {

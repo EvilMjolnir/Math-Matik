@@ -1,5 +1,5 @@
 
-import { MathProblem } from '../types';
+import { MathProblem, GameConfig } from '../types';
 
 export const generateAdditionSubtraction = (min: number, max: number): MathProblem => {
   const isAddition = Math.random() > 0.5;
@@ -100,4 +100,106 @@ export const generateBossProblem = (difficulty: number): MathProblem => {
       type: 'operator'
     };
   }
+};
+
+// --- FRACTION HELPERS ---
+
+const gcd = (a: number, b: number): number => {
+  return b === 0 ? a : gcd(b, a % b);
+};
+
+export const generateFractionProblem = (config: GameConfig['alchimie']): MathProblem => {
+  // Use config to determine allowed types and max values
+  const { numeratorMax, denominatorMax, ops } = config;
+  
+  // Pick random allowed op
+  const type = ops[Math.floor(Math.random() * ops.length)];
+  
+  // Helpers
+  const randDen = () => Math.floor(Math.random() * (denominatorMax - 1)) + 2; // Min 2
+  const randNum = (max: number) => Math.floor(Math.random() * max) + 1;
+  
+  if (type === 'reduce') {
+    // a/b = ?/?
+    const den = randDen(); 
+    const num = randNum(den - 1); // < den
+    const factor = Math.floor(Math.random() * 3) + 2; // multiplier 2 to 4
+    
+    const bigNum = num * factor;
+    const bigDen = den * factor;
+    
+    // Ensure it's reducible
+    const divisor = gcd(bigNum, bigDen);
+    const finalNum = bigNum / divisor;
+    const finalDen = bigDen / divisor;
+
+    return {
+      question: `${bigNum}/${bigDen} = ?`,
+      answer: `${finalNum}/${finalDen}`,
+      type: 'fraction',
+      fractionAnswer: { num: finalNum, den: finalDen }
+    };
+  }
+  
+  if (type === 'add' || type === 'sub') {
+    // Simple common denominator or easy cross
+    const den = randDen();
+    const num1 = randNum(den * 2);
+    const num2 = randNum(den * 2);
+    
+    if (type === 'add') {
+      const resNum = num1 + num2;
+      const divisor = gcd(resNum, den);
+      return {
+        question: `${num1}/${den} + ${num2}/${den} = ?`,
+        answer: `${resNum/divisor}/${den/divisor}`,
+        type: 'fraction',
+        fractionAnswer: { num: resNum/divisor, den: den/divisor }
+      };
+    } else {
+      // Subtraction (ensure positive)
+      const n1 = Math.max(num1, num2);
+      const n2 = Math.min(num1, num2);
+      const resNum = n1 - n2;
+      const divisor = gcd(resNum, den);
+      return {
+        question: `${n1}/${den} - ${n2}/${den} = ?`,
+        answer: `${resNum/divisor}/${den/divisor}`,
+        type: 'fraction',
+        fractionAnswer: { num: resNum/divisor, den: den/divisor }
+      };
+    }
+  }
+
+  if (type === 'mult') {
+    // Fraction * Whole Number
+    const den = randDen();
+    const num = 1; 
+    
+    const whole = Math.floor(Math.random() * 3 + 1) * den; // Multiples of den so it cancels out cleanly
+    
+    const res = (num * whole) / den;
+    
+    return {
+      question: `${num}/${den} × ${whole} = ?`,
+      answer: res, // Whole number answer
+      type: 'number'
+    };
+  }
+  
+  // Default fallback if logic slips or 'compare' selected but not impl yet
+  // Impl compare: > < =
+  if (type === 'compare') {
+      // Just generate two simple fractions
+      const den = randDen();
+      const num1 = randNum(den);
+      const num2 = randNum(den);
+      // Make sure they aren't equal for simplicity unless we want =
+      // Actually let's assume answer is 1 (left bigger) or 2 (right bigger) for keypad input? 
+      // Current system expects exact number or fraction. 
+      // Let's fallback to reduction for now to be safe until UI supports < > =
+      return generateFractionProblem({...config, ops: ['reduce']});
+  }
+
+  return generateFractionProblem({...config, ops: ['reduce']});
 };

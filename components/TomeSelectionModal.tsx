@@ -34,7 +34,7 @@ const TomeSelectionModal: React.FC<TomeSelectionModalProps> = ({ tomes, activeTo
         </div>
 
         <div className="flex flex-1 overflow-hidden">
-          {/* Infinite Mode Sidebar */}
+          {/* Infinite Mode Sidebar - Temporarily Disabled
           <div className="w-1/4 min-w-[200px] border-r-2 border-parchment-400 bg-parchment-200 p-4 flex flex-col">
             <button
                 onClick={() => {
@@ -62,6 +62,7 @@ const TomeSelectionModal: React.FC<TomeSelectionModalProps> = ({ tomes, activeTo
                 )}
             </button>
           </div>
+          */}
 
           {/* Tome Grid */}
           <div className="flex-1 p-8 overflow-y-auto custom-scrollbar">

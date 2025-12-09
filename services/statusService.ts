@@ -1,5 +1,7 @@
 
 
+
+
 import { PlayerStats, EffectType, Encounter, StatusEffect } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 
@@ -19,6 +21,7 @@ export interface AggregatedStats {
   movementMultiplier: number; // Base 1.0
   attackMultiplier: number; // Base 0.0 (Additive percentage)
   totalAttack: number;
+  totalDefense: number;
   effectDetails: ActiveEffectDetail[];
 }
 
@@ -36,6 +39,7 @@ export const getAggregatedStats = (player: PlayerStats): AggregatedStats => {
     movementMultiplier: 1.0,
     attackMultiplier: 0.0,
     totalAttack: player.attack || 1,
+    totalDefense: player.defense || 0,
     effectDetails: []
   };
 
@@ -53,6 +57,9 @@ export const getAggregatedStats = (player: PlayerStats): AggregatedStats => {
             break;
         case EffectType.COMBAT_SCORE_BONUS:
             stats.attackMultiplier += effect.value;
+            break;
+        case EffectType.DEFENSE_BONUS:
+            stats.totalDefense += effect.value;
             break;
       }
 

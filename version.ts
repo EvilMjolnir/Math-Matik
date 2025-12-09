@@ -1,16 +1,20 @@
 
 //Versioning semantic : Major.minor.patch
-export const APP_VERSION = "1.21.18";
+export const APP_VERSION = "1.23.0";
 
 /*
   Changelog (Last 15 changes):
-  1. Added sound effects for Combat hits, Player damage, Level up fanfare, and Item Loot reveal.
-  2. Added delay for combat victory to allow sound/animation to finish.
-  3. Added epic transition sound for Boss encounters.
-  4. Added victory trumpet sound for won encounters.
-  5. Added texture overlay to Rare and Magic loot cards.
-  6. Fixed issue where sound would continue playing after modal close (added fade-out).
-  7. Updated ActiveQuestPanel to include a Boss Node Segment at the end of progress bar.
-  8. Fixed step counter initialization to correctly reset to 0 on new game/tome switch.
-  9. Removed step progression reward from Recherche minigame.
+  1. New Minigame "Alchimie": Craft potions by solving fraction problems (Reduce, Add, Subtract, Multiply).
+  2. Added "Black Mirror of Dee" Modal: Melt unused items into "Nems" (new currency).
+  3. Implemented Potion System: Consumable items with limited uses and specific effects.
+  4. Added new Status Effects: INSTANT_HEAL, HEAL_TURN (Regen), WEAKEN_ENEMY.
+  5. Added "Drink" action to Inventory for consuming potions.
+  6. Added Granular Difficulty Configuration for Alchimie per Tome.
+  7. Implemented Defense Stat system (Base Defense +1 every 4 levels).
+  8. Added 'Guardian' item suffix granting flat Defense bonuses.
+  9. Updated Damage Calculation: Incoming Damage is now reduced by Total Defense (Min 1).
+  10. Extended Player Level cap and XP Table to Level 25.
+  11. Added Defense display to Player Widget, Profile, and Item Overlays.
+  12. Added DEFENSE_BONUS effect type to the engine.
+
 */

@@ -1,4 +1,6 @@
 
+
+
 import React, { useState, useEffect } from 'react';
 import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType, Item, StorageMode, EffectType } from '../types';
 import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud, Sword, TestTube, X, Gift, Sparkles, Star, Footprints, Shield, Skull, ZoomIn, Music } from 'lucide-react';
@@ -227,6 +229,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
         case EffectType.ENEMY_DAMAGE_BONUS: return <Sword className="w-5 h-5 text-red-600" />;
         case EffectType.ENEMY_GOLD_REWARD_BONUS: return <Coins className="w-5 h-5 text-amber-600" />;
         case EffectType.ENEMY_XP_REWARD_BONUS: return <Star className="w-5 h-5 text-yellow-600" />;
+        case EffectType.DEFENSE_BONUS: return <Shield className="w-5 h-5 text-blue-400" />;
         default: return <Sparkles className="w-5 h-5 text-purple-500" />;
     }
   };
