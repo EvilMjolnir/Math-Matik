@@ -1,14 +1,12 @@
 
 import React from 'react';
 import { HomeLayoutProps, GameView } from '../types';
-import PlayerStatsWidget from '../components/PlayerStatsWidget';
 import ActiveQuestPanel from '../components/ActiveQuestPanel';
 import GameMenu from '../components/GameMenu';
 import { ShieldCheck, Footprints, FastForward } from 'lucide-react';
 import { playMenuOpenSound } from '../services/audioService';
 
 const HomeMobile: React.FC<HomeLayoutProps> = ({
-  player,
   activeTome,
   activeEncounter,
   visibleEncounter,
@@ -24,7 +22,6 @@ const HomeMobile: React.FC<HomeLayoutProps> = ({
   onViewChange,
   onOpenTomes,
   onStartRecherche,
-  onLogout,
   onOpenProfile,
   onAdminJumpToBoss,
   onAdminAddSteps,
