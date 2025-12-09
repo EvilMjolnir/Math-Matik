@@ -77,6 +77,14 @@ export const XP_TABLE = [
   4500  // Level 25
 ];
 
+// Cost to upgrade TO the next level (Index 0 is cost from Lvl 1 to 2)
+export const COMPANION_LEVEL_COSTS = [
+  150,   // To Level 2
+  450,   // To Level 3
+  1200,  // To Level 4
+  3000   // To Level 5
+];
+
 export const RARITY_COLORS: Record<Rarity, string> = {
   [Rarity.COMMON]: 'bg-gray-500 border-gray-700',
   [Rarity.RARE]: 'bg-green-600 border-green-800',

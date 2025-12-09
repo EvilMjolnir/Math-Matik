@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { PlayerStats, Item, EffectType, Companion } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS } from '../constants';
@@ -16,6 +17,7 @@ interface PlayerProfileModalProps {
   onUpdateInventory: (inventory: Item[], equipped: Item[]) => void;
   onOpenBlackMirror: () => void;
   onConsumeItem?: (index: number, source: 'inventory' | 'equipped') => void;
+  onLevelUpCompanion?: (id: string) => void;
   initialTab?: 'stats' | 'inventory' | 'companions';
 }
 
@@ -27,6 +29,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
   onUpdateInventory,
   onOpenBlackMirror,
   onConsumeItem,
+  onLevelUpCompanion,
   initialTab = 'stats'
 }) => {
   const { t, lang } = useLocalization();
@@ -636,6 +639,8 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
              isActive={viewCompanion?.id === player.activeCompanionId}
              onClose={() => setViewCompanion(null)}
              onToggleActive={handleToggleCompanion}
+             playerGold={player.gold}
+             onLevelUp={onLevelUpCompanion}
           />
 
         </div>

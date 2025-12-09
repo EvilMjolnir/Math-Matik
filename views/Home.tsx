@@ -26,6 +26,7 @@ interface HomeProps {
   onUpdateInventory: (inventory: Item[], equipped: Item[]) => void;
   onProgressTome: (steps: number, bypassEncounters?: boolean) => void;
   onConsumeItem: (index: number, source: 'inventory' | 'equipped') => void;
+  onLevelUpCompanion: (id: string) => void;
 }
 
 const Home: React.FC<HomeProps> = ({ 
@@ -43,7 +44,8 @@ const Home: React.FC<HomeProps> = ({
   onLogout, 
   onUpdateInventory,
   onProgressTome,
-  onConsumeItem
+  onConsumeItem,
+  onLevelUpCompanion
 }) => {
   // We use this state to track WHICH tab is open. If null, modal is closed.
   const [activeProfileTab, setActiveProfileTab] = useState<'stats' | 'inventory' | 'companions' | null>(null);
@@ -74,6 +76,11 @@ const Home: React.FC<HomeProps> = ({
       playMenuOpenSound();
       setActiveProfileTab(null); // Close profile
       setShowBlackMirror(true);
+  };
+
+  const handleCloseBlackMirror = () => {
+      setShowBlackMirror(false);
+      setActiveProfileTab('inventory');
   };
 
   const handleAdminAddSteps = () => {
@@ -256,12 +263,13 @@ const Home: React.FC<HomeProps> = ({
         onUpdateInventory={onUpdateInventory}
         onOpenBlackMirror={handleOpenBlackMirror}
         onConsumeItem={onConsumeItem}
+        onLevelUpCompanion={onLevelUpCompanion}
       />
 
       <BlackMirrorModal
         player={player}
         isOpen={showBlackMirror}
-        onClose={() => setShowBlackMirror(false)}
+        onClose={handleCloseBlackMirror}
         onUpdateProfile={onUpdatePlayerProfile}
         onUpdateInventory={onUpdateInventory}
       />

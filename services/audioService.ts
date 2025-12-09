@@ -9,18 +9,20 @@ const DAMAGE_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/so
 const BOSS_INTRO_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/epic-transition.mp3';
 const VICTORY_TRUMPET_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/victory_trumpet.mp3';
 const FLIP_CARD_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/flipcard.mp3';
+const GLASS_BREAK_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/glass_break.mp3';
 
 let currentLongSound: HTMLAudioElement | null = null;
 
-const playSound = (url: string, volume: number = 0.5, isLong: boolean = false, pitchVariance: number = 0) => {
+const playSound = (url: string, volume: number = 0.5, isLong: boolean = false, pitchVariance: number = 0, speed: number = 1.0) => {
   const audio = new Audio(url);
   audio.volume = volume;
+  audio.playbackRate = speed;
   
   // Apply pitch variation if requested (changes playback rate which affects pitch)
   if (pitchVariance > 0) {
     // Generates a random rate between (1 - variance) and (1 + variance)
     // e.g. 0.1 variance => random between 0.9 and 1.1
-    const rate = 1 + (Math.random() * (pitchVariance * 2) - pitchVariance);
+    const rate = speed + (Math.random() * (pitchVariance * 2) - pitchVariance);
     audio.playbackRate = rate;
     
     // For browser compatibility to ensure pitch changes with rate
@@ -78,7 +80,8 @@ export const playItemRevealSound = () => playSound(ITEM_REVEAL_SOUND, 0.6, true)
 export const playEpicRevealSound = () => playSound(EPIC_REVEAL_SOUND, 0.6, true);
 export const playBossIntroSound = () => playSound(BOSS_INTRO_SOUND, 0.6, true);
 export const playVictoryTrumpetSound = () => playSound(VICTORY_TRUMPET_SOUND, 0.6, true);
-export const playFlipCardSound = () => playSound(FLIP_CARD_SOUND, 0.5);
+export const playFlipCardSound = (speed: number = 1.0) => playSound(FLIP_CARD_SOUND, 0.5, false, 0, speed);
+export const playGlassBreakSound = () => playSound(GLASS_BREAK_SOUND, 0.6, false, 0.1);
 
 // Export map for Admin Panel
 export const ALL_SOUNDS = [
@@ -92,4 +95,5 @@ export const ALL_SOUNDS = [
     { name: "Level Up", fn: playLevelUpSound },
     { name: "Victory", fn: playVictoryTrumpetSound },
     { name: "Boss Intro", fn: playBossIntroSound },
+    { name: "Glass Break", fn: playGlassBreakSound },
 ];

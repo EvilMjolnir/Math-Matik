@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { MinigameProps, Rarity, Item, MathProblem, EffectType, GameConfig } from '../types';
 import { generateFractionProblem } from '../services/mathService';
@@ -5,9 +6,9 @@ import { STATUS_EFFECTS } from '../data/statusEffects';
 import Keypad from '../components/Keypad';
 import LootRewardCard from '../components/LootRewardCard';
 import ItemDetailOverlay from '../components/ItemDetailOverlay';
-import { ChevronLeft, FlaskConical, Sigma, Sparkles, Eye, Star, Coins, Footprints, Sword, Shield, Heart, Hand } from 'lucide-react';
+import { ChevronLeft, FlaskConical, Sigma, Sparkles, Eye, Star, Coins, Footprints, Sword, Shield, Heart, Hand, AlertTriangle } from 'lucide-react';
 import { useLocalization } from '../localization';
-import { playMenuBackSound, playItemRevealSound } from '../services/audioService';
+import { playMenuBackSound, playFlipCardSound, playDamageSound, playGlassBreakSound } from '../services/audioService';
 
 interface AlchimieProps extends MinigameProps {
   onAddItem: (item: Item) => void;
@@ -72,7 +73,7 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
   const [userInputNum, setUserInputNum] = useState('');
   const [userInputDen, setUserInputDen] = useState('');
   const [activeInput, setActiveInput] = useState<'num' | 'den' | 'whole'>('whole'); 
-  const [feedback, setFeedback] = useState<'none' | 'correct' | 'wrong'>('none');
+  const [feedback, setFeedback] = useState<'none' | 'correct' | 'wrong' | 'unstable'>('none');
   const [craftedItem, setCraftedItem] = useState<Item | null>(null);
 
   const getEffectIcon = (type: EffectType) => {
@@ -87,6 +88,13 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
         case EffectType.WEAKEN_ENEMY: return <Shield className="w-3 h-3 text-purple-400" />;
         default: return <Sparkles className="w-3 h-3 text-purple-400" />;
     }
+  };
+
+  const getOperationText = (question: string) => {
+      if (question.includes('+')) return t.alchimie.opAdd;
+      if (question.includes('-')) return t.alchimie.opSub;
+      if (question.includes('×')) return t.alchimie.opMult;
+      return t.alchimie.opReduce;
   };
 
   // Generate random potion based on RNG
@@ -215,7 +223,7 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
           const newFlipped = [...flippedCards];
           newFlipped[index] = true;
           setFlippedCards(newFlipped);
-          playItemRevealSound();
+          playFlipCardSound(1.2); // Play 20% faster
       }
   };
 
@@ -295,7 +303,52 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
           }, 800);
       } else {
           setFeedback('wrong');
-          setTimeout(() => setFeedback('none'), 800);
+          
+          let isShattering = false;
+          if (selectedPotion) {
+             const uses = selectedPotion.uses || 1;
+             // Logic mirrors penalty logic: 5->3, 3->1, 1->0
+             if (uses <= 1) isShattering = true;
+          }
+
+          if (isShattering) {
+              playGlassBreakSound();
+          } else {
+              playDamageSound();
+          }
+          
+          setTimeout(() => {
+              if (!selectedPotion) return;
+
+              let newUses = selectedPotion.uses || 1;
+              let hasShattered = false;
+
+              // Penalty Logic
+              // 5 (Large) -> 3 (Medium)
+              // 3 (Medium) -> 1 (Small)
+              // 1 (Small) -> 0 (Shatter)
+              
+              if (newUses >= 5) newUses = 3;
+              else if (newUses >= 3) newUses = 1;
+              else {
+                  newUses = 0;
+                  hasShattered = true;
+              }
+
+              if (hasShattered) {
+                  // FAIL STATE
+                  setCraftedItem(null); 
+                  setPhase('result');
+              } else {
+                  // DOWNGRADE STATE
+                  setSelectedPotion({...selectedPotion, uses: newUses});
+                  setFeedback('unstable');
+                  setTimeout(() => {
+                      setFeedback('none');
+                      resetInput(problems[currentProblemIndex]);
+                  }, 1000);
+              }
+          }, 1000);
       }
   };
 
@@ -413,9 +466,9 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
 
   if (phase === 'draft') {
       return (
-          <div className="flex flex-col h-full max-w-5xl mx-auto p-4 animate-fadeIn">
+          <div className="flex flex-col h-full max-w-7xl mx-auto p-4 animate-fadeIn">
               <h2 className="text-3xl font-serif font-bold text-center text-parchment-200 mb-8">{t.alchimie.selectMode}</h2>
-              <div className="flex-1 flex items-center justify-center gap-6">
+              <div className="flex-1 flex items-center justify-center gap-8">
                   {draftCards.map((card, idx) => {
                       const style = RARITY_STYLES[card.rarity];
                       const isFlipped = flippedCards[idx];
@@ -425,7 +478,7 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
                         <button 
                             onClick={() => handleCardInteraction(idx)}
                             className={`
-                                relative w-64 h-96 rounded-xl transition-all duration-500 transform preserve-3d cursor-pointer hover:-translate-y-2
+                                relative w-80 h-[30rem] rounded-xl transition-all duration-500 transform preserve-3d cursor-pointer hover:-translate-y-2
                                 ${isFlipped ? 'rotate-y-180' : ''}
                             `}
                         >
@@ -451,19 +504,24 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
                                     {/* Top Image Frame */}
                                     <div className="w-full h-[45%] bg-black/30 border-b border-white/10 flex items-center justify-center p-4 relative z-10">
                                         <div 
-                                            className="w-full h-full rounded border-2 bg-black/50 flex items-center justify-center overflow-hidden"
+                                            className="w-full h-full rounded border-2 bg-black/50 flex items-center justify-center overflow-hidden relative"
                                             style={{ borderColor: style.border }}
                                         >
                                             <img src={card.image} className="w-full h-full object-contain" alt={card.name} />
+                                            {/* Usage Overlay */}
+                                            {card.uses && card.uses > 1 && (
+                                              <div className="absolute bottom-1 right-1 bg-black/80 text-white text-xs font-bold px-2 py-0.5 rounded border border-white/20 shadow-md">
+                                                {card.uses}x
+                                              </div>
+                                            )}
                                         </div>
                                     </div>
 
                                     {/* Content */}
                                     <div className="flex-1 flex flex-col items-center p-4 w-full relative z-10">
                                         <h3 className={`font-bold font-serif text-xl text-center mb-1 ${style.text}`}>{card.name}</h3>
-                                        <span className="px-2 py-0.5 bg-black/60 text-white text-[10px] rounded-full uppercase font-bold mb-3 border border-white/10">{card.rarity}</span>
                                         
-                                        <p className="text-xs text-center text-gray-300 italic mb-auto">"{card.description}"</p>
+                                        <p className="text-xs text-center text-gray-300 italic mb-auto mt-4">"{card.description}"</p>
                                         
                                         {/* Effects Display */}
                                         {card.tags && card.tags.length > 0 && (
@@ -480,12 +538,6 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
                                                 })}
                                             </div>
                                         )}
-
-                                        <div className="w-full pt-1 border-t border-white/10 flex justify-center mt-auto">
-                                            <div className="text-sm font-bold text-white bg-blue-900/50 px-3 py-1 rounded border border-blue-500/50">
-                                                {t.alchimie.uses}: {card.uses}
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -532,20 +584,49 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
                   </div>
               </div>
 
+              {/* Current Potion Status */}
+              {selectedPotion && (
+                  <div className="flex justify-center mb-4">
+                      <div className="bg-black/40 px-4 py-2 rounded-full border border-purple-500 flex items-center">
+                          <span className={`text-sm font-bold ${RARITY_STYLES[selectedPotion.rarity].text} mr-3`}>
+                              {selectedPotion.name}
+                          </span>
+                          <span className="text-xs text-white bg-purple-900 px-2 py-0.5 rounded-full">
+                              {selectedPotion.uses} Uses
+                          </span>
+                      </div>
+                  </div>
+              )}
+
               <div className="flex-1 flex flex-col items-center justify-center gap-6 w-full">
                   
                   {/* Problem Frame */}
-                  <div className="w-full p-8 rounded-xl border-4 bg-parchment-100 border-parchment-400 shadow-xl flex items-center justify-center min-h-[180px]">
-                      <div className="text-6xl font-serif font-bold text-parchment-900 text-center tracking-tight">
-                          {problem.question}
-                      </div>
+                  <div className={`
+                        w-full p-8 rounded-xl border-4 shadow-xl flex flex-col items-center justify-center min-h-[220px] transition-colors duration-300
+                        ${feedback === 'unstable' ? 'bg-orange-100 border-orange-500' : 'bg-parchment-100 border-parchment-400'}
+                    `}>
+                      {feedback === 'unstable' ? (
+                          <div className="flex flex-col items-center animate-shake">
+                              <AlertTriangle className="w-16 h-16 text-orange-600 mb-2" />
+                              <div className="text-2xl font-bold text-orange-700">{t.alchimie.unstable}</div>
+                          </div>
+                      ) : (
+                          <>
+                            <h3 className="text-lg font-bold uppercase tracking-widest text-parchment-600 mb-4 border-b-2 border-parchment-300 pb-1 w-full text-center">
+                                {getOperationText(problem.question)}
+                            </h3>
+                            <div className="text-6xl font-serif font-bold text-parchment-900 text-center tracking-tight">
+                                {problem.question}
+                            </div>
+                          </>
+                      )}
                   </div>
 
                   {/* Answer Input Frame */}
                   <div 
                     className={`
                         w-full p-6 rounded-xl border-4 bg-slate-800 shadow-inner flex justify-center transition-all duration-300
-                        ${feedback === 'correct' ? 'border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.3)]' : feedback === 'wrong' ? 'border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]' : 'border-slate-600'}
+                        ${feedback === 'correct' ? 'border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.3)]' : feedback === 'wrong' ? 'border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]' : feedback === 'unstable' ? 'border-orange-500 opacity-50' : 'border-slate-600'}
                     `}
                   >
                       {renderFractionInput()}
@@ -568,7 +649,8 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
       <LootRewardCard 
         item={craftedItem}
         onBack={() => { playMenuBackSound(); onBack(); }}
-        solvedCorrectly={true}
+        solvedCorrectly={!!craftedItem}
+        failMessage={t.alchimie.shattered}
       />
   );
 };

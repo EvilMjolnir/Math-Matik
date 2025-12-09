@@ -1,6 +1,3 @@
-
-
-
 import { Translation } from './types';
 
 export const UI_SOURCE = {
@@ -120,6 +117,12 @@ export const UI_SOURCE = {
     draftFlip2: { en: "Flip 2 cards, then pick 1", fr: "Retournez 2 cartes, puis choisissez 1" },
     draftFlip1: { en: "Flip 1 to select", fr: "Retournez 1 pour choisir" },
     draftPick: { en: "Pick any card", fr: "Choisissez une carte" },
+    opReduce: { en: "Reduce the Fraction", fr: "Réduire la Fraction" },
+    opAdd: { en: "Addition", fr: "Addition" },
+    opSub: { en: "Subtraction", fr: "Soustraction" },
+    opMult: { en: "Multiplication", fr: "Multiplication" },
+    shattered: { en: "The potion exploded!", fr: "La potion a explosé !" },
+    unstable: { en: "Unstable! Potency reduced.", fr: "Instable ! Puissance réduite." },
   },
   auth: {
     username: { en: "Username", fr: "Nom" },
@@ -311,6 +314,12 @@ export const getTranslation = (lang: 'en' | 'fr'): Translation => {
       draftFlip2: UI_SOURCE.alchimie.draftFlip2[lang],
       draftFlip1: UI_SOURCE.alchimie.draftFlip1[lang],
       draftPick: UI_SOURCE.alchimie.draftPick[lang],
+      opReduce: UI_SOURCE.alchimie.opReduce[lang],
+      opAdd: UI_SOURCE.alchimie.opAdd[lang],
+      opSub: UI_SOURCE.alchimie.opSub[lang],
+      opMult: UI_SOURCE.alchimie.opMult[lang],
+      shattered: UI_SOURCE.alchimie.shattered[lang],
+      unstable: UI_SOURCE.alchimie.unstable[lang],
     },
     auth: {
       username: UI_SOURCE.auth.username[lang],

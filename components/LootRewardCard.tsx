@@ -1,6 +1,4 @@
 
-
-
 import React, { useEffect } from 'react';
 import { Item, Rarity } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
@@ -12,6 +10,7 @@ interface LootRewardCardProps {
   item: Item | null;
   onBack: () => void;
   solvedCorrectly: boolean;
+  failMessage?: string;
 }
 
 const TEXTURE_URL = "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/texture_5.jpg";
@@ -45,7 +44,7 @@ const RARITY_STYLES: Record<Rarity, { border: string; bg: string; text: string }
   },
 };
 
-const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCorrectly }) => {
+const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCorrectly, failMessage }) => {
   const { t, lang } = useLocalization();
 
   // Play flip sound on mount (when card appears)
@@ -126,7 +125,7 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
                <div className="h-[40%] w-full flex items-center justify-center p-6 bg-black/20 relative z-10 border-b border-white/10 shrink-0">
                    {/* The Square Frame */}
                    <div 
-                      className="aspect-square h-full rounded-lg border-4 bg-black/50 flex items-center justify-center overflow-hidden shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]"
+                      className="aspect-square h-full rounded-lg border-4 bg-black/50 flex items-center justify-center overflow-hidden shadow-[inset_0_0_20px_rgba(0,0,0,0.5)] relative"
                       style={{ borderColor: activeStyle.border }}
                    >
                         {item.image ? (
@@ -134,11 +133,20 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
                         ) : (
                             <Gift className={`w-1/2 h-1/2 ${textColorClass}`} />
                         )}
+                        
+                        {/* Usage Overlay */}
+                        {item.uses && item.uses > 1 && (
+                            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-lg font-bold px-3 py-1 rounded-lg border border-white/20 shadow-md backdrop-blur-sm">
+                                {item.uses}x
+                            </div>
+                        )}
                    </div>
 
-                    <div className="absolute top-3 right-3 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest bg-black/60 border border-white/10 text-white shadow backdrop-blur-sm">
-                        {item.rarity}
-                    </div>
+                    {(!item.uses) && (
+                        <div className="absolute top-3 right-3 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest bg-black/60 border border-white/10 text-white shadow backdrop-blur-sm">
+                            {item.rarity}
+                        </div>
+                    )}
                </div>
 
                {/* 
@@ -197,7 +205,9 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
             <div className="flex flex-col items-center justify-center h-full p-6 text-center z-10 relative">
                <AlertTriangle className="w-20 h-20 text-red-500 mb-6 animate-pulse" />
                <h2 className="text-3xl font-serif font-bold mb-4">{t.combat.defeat}</h2>
-               <p className="text-red-200 text-lg leading-relaxed">{t.recherche.lockSealed}</p>
+               <p className="text-red-200 text-lg leading-relaxed">
+                   {failMessage || t.recherche.lockSealed}
+               </p>
             </div>
           )}
         </div>

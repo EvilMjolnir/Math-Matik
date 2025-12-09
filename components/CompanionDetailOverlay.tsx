@@ -1,10 +1,10 @@
 
-
 import React from 'react';
 import { Companion, EffectType } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
+import { COMPANION_LEVEL_COSTS } from '../constants';
 import { useLocalization } from '../localization';
-import { X, Star, Coins, Footprints, Sword, Sparkles, UserPlus, UserMinus, User, Shield } from 'lucide-react';
+import { X, Star, Coins, Footprints, Sword, Sparkles, UserPlus, UserMinus, User, Shield, ChevronUp } from 'lucide-react';
 import { playMenuBackSound, playMenuOpenSound } from '../services/audioService';
 
 interface CompanionDetailOverlayProps {
@@ -12,9 +12,11 @@ interface CompanionDetailOverlayProps {
   isActive: boolean;
   onClose: () => void;
   onToggleActive: (id: string) => void;
+  playerGold?: number;
+  onLevelUp?: (id: string) => void;
 }
 
-const CompanionDetailOverlay: React.FC<CompanionDetailOverlayProps> = ({ companion, isActive, onClose, onToggleActive }) => {
+const CompanionDetailOverlay: React.FC<CompanionDetailOverlayProps> = ({ companion, isActive, onClose, onToggleActive, playerGold = 0, onLevelUp }) => {
   const { t, lang } = useLocalization();
 
   if (!companion) return null;
@@ -39,6 +41,10 @@ const CompanionDetailOverlay: React.FC<CompanionDetailOverlayProps> = ({ compani
     onClose();
   };
 
+  const cost = COMPANION_LEVEL_COSTS[companion.level - 1]; // level 1 uses index 0 (cost to level 2)
+  const canAfford = playerGold >= cost;
+  const isMaxLevel = companion.level >= 5;
+
   return (
     <div className="fixed inset-0 bg-parchment-100/95 backdrop-blur-sm z-50 flex flex-col p-6 animate-fadeIn items-center justify-center">
         <button 
@@ -49,11 +55,11 @@ const CompanionDetailOverlay: React.FC<CompanionDetailOverlayProps> = ({ compani
         </button>
 
         <div className="flex flex-col items-center flex-1 justify-center max-w-lg w-full">
-            <div className={`w-32 h-32 rounded-full bg-parchment-300 flex items-center justify-center border-4 mb-6 shadow-xl ${isActive ? 'border-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.5)]' : 'border-parchment-600'}`}>
+            <div className={`w-64 h-64 rounded-full bg-parchment-300 flex items-center justify-center border-4 mb-6 shadow-xl ${isActive ? 'border-amber-500 shadow-[0_0_20px_rgba(245,158,11,0.5)]' : 'border-parchment-600'}`}>
                 {companion.image ? (
                     <img src={companion.image} className="w-full h-full object-cover rounded-full" alt={getCompanionName(companion)} />
                 ) : (
-                    <User className="w-16 h-16 text-parchment-600" />
+                    <User className="w-32 h-32 text-parchment-600" />
                 )}
             </div>
             
@@ -68,10 +74,30 @@ const CompanionDetailOverlay: React.FC<CompanionDetailOverlayProps> = ({ compani
 
             {companion.tags && companion.tags.length > 0 && (
                 <div className="w-full max-w-sm bg-white/50 p-4 rounded-lg border border-parchment-300 shadow-sm mb-8">
-                    <h4 className="font-bold text-parchment-900 mb-3 border-b border-parchment-300 pb-1 flex items-center">
-                        <Sparkles className="w-4 h-4 mr-2 text-purple-600"/> 
-                        {t.profile.effects}
-                    </h4>
+                    <div className="flex justify-between items-center mb-3 border-b border-parchment-300 pb-1">
+                        <h4 className="font-bold text-parchment-900 flex items-center">
+                            <Sparkles className="w-4 h-4 mr-2 text-purple-600"/> 
+                            {t.profile.effects}
+                        </h4>
+                        {!isMaxLevel && onLevelUp && (
+                            <button
+                                onClick={() => canAfford && onLevelUp(companion.id)}
+                                disabled={!canAfford}
+                                className={`
+                                    flex items-center text-xs font-bold px-2 py-1 rounded-full transition-all border
+                                    ${canAfford 
+                                        ? 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200' 
+                                        : 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed'
+                                    }
+                                `}
+                            >
+                                <ChevronUp className="w-3 h-3 mr-1" />
+                                <Coins className="w-3 h-3 mr-1 text-amber-500" />
+                                {cost}
+                            </button>
+                        )}
+                    </div>
+                    
                     <div className="space-y-2">
                     {companion.tags.map(tag => {
                         const effect = STATUS_EFFECTS[tag];

@@ -1,6 +1,3 @@
-
-
-
 export interface Translation {
   titles: {
     movement: string;
@@ -119,6 +116,12 @@ export interface Translation {
     draftFlip2: string;
     draftFlip1: string;
     draftPick: string;
+    opReduce: string;
+    opAdd: string;
+    opSub: string;
+    opMult: string;
+    shattered: string;
+    unstable: string;
   };
   auth: {
     username: string;

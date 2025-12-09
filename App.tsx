@@ -1,8 +1,7 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item, StorageMode, EffectType } from './types';
-import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS } from './constants';
+import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS, COMPANION_LEVEL_COSTS } from './constants';
 import { ALL_TOMES } from './tomes';
 import Movement from './views/Movement';
 import Combat from './views/Combat';
@@ -19,6 +18,7 @@ import * as localStore from './services/storageService';
 import * as cloudStore from './services/storageService_Live';
 import { getAggregatedStats } from './services/statusService';
 import { STATUS_EFFECTS } from './data/statusEffects';
+import { playLevelUpSound } from './services/audioService';
 
 const GameContent: React.FC = () => {
   const { t, lang } = useLocalization();
@@ -225,6 +225,55 @@ const GameContent: React.FC = () => {
           ...prev,
           inventory: [...(prev.inventory || []), item]
       }));
+  };
+
+  const handleLevelUpCompanion = (companionId: string) => {
+      setPlayer(prev => {
+          if (!prev.companions) return prev;
+          
+          const compIndex = prev.companions.findIndex(c => c.id === companionId);
+          if (compIndex === -1) return prev;
+          
+          const companion = prev.companions[compIndex];
+          const currentLevel = companion.level;
+          const cost = COMPANION_LEVEL_COSTS[currentLevel - 1]; // Index 0 is cost for lvl 2
+          
+          if (!cost || prev.gold < cost) return prev; // Cannot afford or max level
+
+          // Upgrade Logic
+          const nextLevel = currentLevel + 1;
+          const newTags = (companion.tags || []).map(tag => {
+              // Try to find the base ID and increment suffix
+              // Assumes tags are like "scholar_1", "fighter_2" etc.
+              const match = tag.match(/^([a-z]+)_(\d)$/);
+              if (match) {
+                  const base = match[1];
+                  const newTagId = `${base}_${nextLevel}`;
+                  // Only update if the next tag exists in definitions
+                  if (STATUS_EFFECTS[newTagId]) {
+                      return newTagId;
+                  }
+              }
+              return tag;
+          });
+
+          const updatedCompanion = {
+              ...companion,
+              level: nextLevel,
+              tags: newTags
+          };
+
+          const newCompanions = [...prev.companions];
+          newCompanions[compIndex] = updatedCompanion;
+
+          playLevelUpSound();
+
+          return {
+              ...prev,
+              gold: prev.gold - cost,
+              companions: newCompanions
+          };
+      });
   };
 
   const checkPendingLevelUp = () => {
@@ -606,6 +655,7 @@ const GameContent: React.FC = () => {
                 onUpdateInventory={updateInventoryLoadout}
                 onProgressTome={handleTomeProgress}
                 onConsumeItem={handleConsumeItem}
+                onLevelUpCompanion={handleLevelUpCompanion}
             />
         );
     }
