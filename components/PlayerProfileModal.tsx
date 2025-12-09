@@ -1,12 +1,9 @@
-
-
-
 import React, { useState, useEffect } from 'react';
 import { PlayerStats, Item, EffectType, Companion } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS } from '../constants';
 import { getAggregatedStats } from '../services/statusService';
 import { STATUS_EFFECTS } from '../data/statusEffects';
-import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Star, Backpack, Sparkles, Lock, Footprints, Sword, Mail, Link, Info, Sigma, Flame, ExternalLink, Zap } from 'lucide-react';
+import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Star, Backpack, Sparkles, Lock, Footprints, Sword, Link, Info, Sigma, Flame, ExternalLink, Zap } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound, playMenuOpenSound, playItemRevealSound } from '../services/audioService';
 import CompanionDetailOverlay from './CompanionDetailOverlay';

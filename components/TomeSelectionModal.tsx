@@ -1,8 +1,6 @@
-
-
 import React from 'react';
 import { Tome } from '../types';
-import { Book, Lock, CheckCircle, Infinity } from 'lucide-react';
+import { Book, Lock, CheckCircle } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuOpenSound, playMenuBackSound } from '../services/audioService';
 

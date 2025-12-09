@@ -1,18 +1,13 @@
-
-
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { MinigameProps, Rarity, Item, MathProblem, EffectType, GameConfig } from '../types';
 import { generateFractionProblem } from '../services/mathService';
 import { STATUS_EFFECTS } from '../data/statusEffects';
-import { RARITY_TEXT_COLORS } from '../constants';
 import Keypad from '../components/Keypad';
 import LootRewardCard from '../components/LootRewardCard';
 import ItemDetailOverlay from '../components/ItemDetailOverlay';
-import { ChevronLeft, FlaskConical, Sigma, Check, X, RotateCcw, Sparkles, Eye, Zap, Star, Coins, Footprints, Sword, Shield, Heart, Hand } from 'lucide-react';
+import { ChevronLeft, FlaskConical, Sigma, Sparkles, Eye, Star, Coins, Footprints, Sword, Shield, Heart, Hand } from 'lucide-react';
 import { useLocalization } from '../localization';
-import { playMenuBackSound, playMenuOpenSound, playItemRevealSound } from '../services/audioService';
-import Modal from '../components/Modal';
+import { playMenuBackSound, playItemRevealSound } from '../services/audioService';
 
 interface AlchimieProps extends MinigameProps {
   onAddItem: (item: Item) => void;

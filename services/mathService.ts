@@ -1,4 +1,3 @@
-
 import { MathProblem, GameConfig } from '../types';
 
 export const generateAdditionSubtraction = (min: number, max: number): MathProblem => {
@@ -110,7 +109,7 @@ const gcd = (a: number, b: number): number => {
 
 export const generateFractionProblem = (config: GameConfig['alchimie']): MathProblem => {
   // Use config to determine allowed types and max values
-  const { numeratorMax, denominatorMax, ops } = config;
+  const { denominatorMax, ops } = config;
   
   // Pick random allowed op
   const type = ops[Math.floor(Math.random() * ops.length)];
@@ -191,13 +190,11 @@ export const generateFractionProblem = (config: GameConfig['alchimie']): MathPro
   // Impl compare: > < =
   if (type === 'compare') {
       // Just generate two simple fractions
-      const den = randDen();
-      const num1 = randNum(den);
-      const num2 = randNum(den);
-      // Make sure they aren't equal for simplicity unless we want =
-      // Actually let's assume answer is 1 (left bigger) or 2 (right bigger) for keypad input? 
-      // Current system expects exact number or fraction. 
-      // Let's fallback to reduction for now to be safe until UI supports < > =
+      // const den = randDen();
+      // const num1 = randNum(den);
+      // const num2 = randNum(den);
+      
+      // Comparison logic not yet implemented for UI, fallback to reduction
       return generateFractionProblem({...config, ops: ['reduce']});
   }
 

@@ -16,5 +16,7 @@ export const APP_VERSION = "1.23.0";
   10. Extended Player Level cap and XP Table to Level 25.
   11. Added Defense display to Player Widget, Profile, and Item Overlays.
   12. Added DEFENSE_BONUS effect type to the engine.
-
+  13. Created detailed Level Progression and Boss Benchmark design documentation.
+  14. Defined Min/Normal/Max stat tiers for balance analysis.
+  15. Added sound effects for Combat hits, Player damage, Level up fanfare, and Item Loot reveal.
 */
