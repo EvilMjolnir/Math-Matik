@@ -28,11 +28,11 @@ export const loadUserProfile = async (identifier: string, passwordAttempt: strin
   const db = getDB();
   
   // Try finding by username (key)
-  let user = db[identifier];
+  let user: PlayerStats | undefined = db[identifier];
 
   // If not found, try finding by email
   if (!user) {
-    user = Object.values(db).find(u => u.email === identifier) as PlayerStats | undefined;
+    user = Object.values(db).find(u => u.email === identifier);
   }
 
   if (!user) {
