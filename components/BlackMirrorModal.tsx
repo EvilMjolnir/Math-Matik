@@ -4,7 +4,7 @@ import { PlayerStats, Item } from '../types';
 import { RARITY_TEXT_COLORS } from '../constants';
 import { X, Flame, Sigma, Backpack, Check, AlertTriangle } from 'lucide-react';
 import { useLocalization } from '../localization';
-import { playMenuBackSound, playDamageSound } from '../services/audioService';
+import { playMenuBackSound, playMeltingSound } from '../services/audioService';
 
 interface BlackMirrorModalProps {
   player: PlayerStats;
@@ -70,7 +70,7 @@ const BlackMirrorModal: React.FC<BlackMirrorModalProps> = ({
           }
       });
 
-      playDamageSound(); 
+      playMeltingSound(); 
       
       // Filter out melted items
       const newInv = (player.inventory || []).filter((_, idx) => !selectedIndices.includes(idx));

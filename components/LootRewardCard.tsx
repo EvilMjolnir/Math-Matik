@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { Item, Rarity } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
@@ -11,6 +10,7 @@ interface LootRewardCardProps {
   onBack: () => void;
   solvedCorrectly: boolean;
   failMessage?: string;
+  failImage?: string;
 }
 
 const TEXTURE_URL = "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/texture_5.jpg";
@@ -44,7 +44,7 @@ const RARITY_STYLES: Record<Rarity, { border: string; bg: string; text: string }
   },
 };
 
-const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCorrectly, failMessage }) => {
+const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCorrectly, failMessage, failImage }) => {
   const { t, lang } = useLocalization();
 
   // Play flip sound on mount (when card appears)
@@ -203,7 +203,13 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
             </>
           ) : (
             <div className="flex flex-col items-center justify-center h-full p-6 text-center z-10 relative">
-               <AlertTriangle className="w-20 h-20 text-red-500 mb-6 animate-pulse" />
+               {failImage ? (
+                   <div className="w-56 h-56 mb-6 rounded-lg border-4 border-red-900/50 bg-black/30 flex items-center justify-center shadow-lg overflow-hidden">
+                       <img src={failImage} alt="Failed" className="w-full h-full object-contain" />
+                   </div>
+               ) : (
+                   <AlertTriangle className="w-20 h-20 text-red-500 mb-6 animate-pulse" />
+               )}
                <h2 className="text-3xl font-serif font-bold mb-4">{t.combat.defeat}</h2>
                <p className="text-red-200 text-lg leading-relaxed">
                    {failMessage || t.recherche.lockSealed}

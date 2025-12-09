@@ -288,7 +288,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                       type="text" 
                       value={tempName}
                       onChange={(e) => setTempName(e.target.value)}
-                      className="flex-1 bg-parchment-100 border border-parchment-500 px-2 py-1 text-base font-serif font-bold rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      className="flex-1 bg-parchment-100 border border-parchment-500 px-2 py-1 text-base font-serif font-bold rounded focus:outline-none focus:ring-2 focus:ring-amber-500 text-parchment-900"
                       maxLength={20}
                       placeholder={t.profile.heroName}
                      />
@@ -299,7 +299,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                         type="text" 
                         value={tempPhoto}
                         onChange={(e) => setTempPhoto(e.target.value)}
-                        className="flex-1 bg-parchment-100 border border-parchment-500 px-2 py-1 text-sm font-sans rounded focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        className="flex-1 bg-parchment-100 border border-parchment-500 px-2 py-1 text-sm font-sans rounded focus:outline-none focus:ring-2 focus:ring-amber-500 text-parchment-900"
                         placeholder={t.profile.photoUrl}
                       />
                    </div>

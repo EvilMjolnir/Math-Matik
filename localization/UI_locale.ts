@@ -1,3 +1,4 @@
+
 import { Translation } from './types';
 
 export const UI_SOURCE = {
@@ -125,7 +126,8 @@ export const UI_SOURCE = {
     unstable: { en: "Unstable! Potency reduced.", fr: "Instable ! Puissance réduite." },
   },
   auth: {
-    username: { en: "Username", fr: "Nom" },
+    username: { en: "Username or Email", fr: "Nom ou Email" },
+    email: { en: "Email", fr: "Email" },
     password: { en: "Password", fr: "Code Secret" },
     enterRealm: { en: "Enter Realm", fr: "Entrer au Royaume" },
     createProfile: { en: "Create Profile", fr: "Créer un Profil" },
@@ -139,7 +141,8 @@ export const UI_SOURCE = {
     cloud: { en: "Cloud (Global)", fr: "Cloud (Global)" },
     local: { en: "Local (Device)", fr: "Local (Appareil)" },
     placeholders: {
-      hero: { en: "Hero Name", fr: "Nom du Personnage" },
+      hero: { en: "Hero Name or Email", fr: "Nom ou Email" },
+      email: { en: "name@example.com", fr: "nom@exemple.com" },
       code: { en: "Secret Code", fr: "Code Secret" }
     }
   },
@@ -196,200 +199,20 @@ export const UI_SOURCE = {
   }
 };
 
+const extract = (source: any, lang: 'en' | 'fr'): any => {
+  if (typeof source !== 'object' || source === null) {
+    return source;
+  }
+  if ('en' in source && 'fr' in source) {
+    return source[lang];
+  }
+  const result: any = {};
+  for (const key in source) {
+    result[key] = extract(source[key], lang);
+  }
+  return result;
+};
+
 export const getTranslation = (lang: 'en' | 'fr'): Translation => {
-  return {
-    titles: {
-      movement: UI_SOURCE.titles.movement[lang],
-      combat: UI_SOURCE.titles.combat[lang],
-      recherche: UI_SOURCE.titles.recherche[lang],
-      alchimie: UI_SOURCE.titles.alchimie[lang],
-      options: UI_SOURCE.titles.options[lang],
-      home: UI_SOURCE.titles.home[lang],
-      profile: UI_SOURCE.titles.profile[lang],
-      scratchpad: UI_SOURCE.titles.scratchpad[lang],
-      dangerZone: UI_SOURCE.titles.dangerZone[lang],
-    },
-    buttons: {
-      back: UI_SOURCE.buttons.back[lang],
-      close: UI_SOURCE.buttons.close[lang],
-      select: UI_SOURCE.buttons.select[lang],
-      details: UI_SOURCE.buttons.details[lang],
-      returnCamp: UI_SOURCE.buttons.returnCamp[lang],
-      playFor: UI_SOURCE.buttons.playFor[lang],
-      confirmLeave: UI_SOURCE.buttons.confirmLeave[lang],
-      stay: UI_SOURCE.buttons.stay[lang],
-      clear: UI_SOURCE.buttons.clear[lang],
-      deleteAccount: UI_SOURCE.buttons.deleteAccount[lang],
-      resetProfile: UI_SOURCE.buttons.resetProfile[lang],
-      summon: UI_SOURCE.buttons.summon[lang],
-      dismiss: UI_SOURCE.buttons.dismiss[lang],
-      melt: UI_SOURCE.buttons.melt[lang],
-      craft: UI_SOURCE.buttons.craft[lang],
-      meltItems: UI_SOURCE.buttons.meltItems[lang],
-      exitMirror: UI_SOURCE.buttons.exitMirror[lang],
-      confirm: UI_SOURCE.buttons.confirm[lang],
-      drink: UI_SOURCE.buttons.drink[lang],
-    },
-    tomes: {
-      selectQuest: UI_SOURCE.tomes.selectQuest[lang],
-      infiniteMode: UI_SOURCE.tomes.infiniteMode[lang],
-      infiniteDesc: UI_SOURCE.tomes.infiniteDesc[lang],
-      active: UI_SOURCE.tomes.active[lang],
-      progress: UI_SOURCE.tomes.progress[lang],
-      steps: UI_SOURCE.tomes.steps[lang],
-      locked: UI_SOURCE.tomes.locked[lang],
-    },
-    combat: {
-      target: UI_SOURCE.combat.target[lang],
-      score: UI_SOURCE.combat.score[lang],
-      time: UI_SOURCE.combat.time[lang],
-      battleReport: UI_SOURCE.combat.battleReport[lang],
-      finalScore: UI_SOURCE.combat.finalScore[lang],
-      victory: UI_SOURCE.combat.victory[lang],
-      defeat: UI_SOURCE.combat.defeat[lang],
-      monsterHP: UI_SOURCE.combat.monsterHP[lang],
-      hpLost: UI_SOURCE.combat.hpLost[lang],
-      encounterStart: UI_SOURCE.combat.encounterStart[lang],
-      trainingMode: UI_SOURCE.combat.trainingMode[lang],
-      question: UI_SOURCE.combat.question[lang],
-      pendingDamage: UI_SOURCE.combat.pendingDamage[lang],
-      attackPower: UI_SOURCE.combat.attackPower[lang],
-      attack: UI_SOURCE.combat.attack[lang],
-      damageDealt: UI_SOURCE.combat.damageDealt[lang],
-      tryAgain: UI_SOURCE.combat.tryAgain[lang],
-      continue: UI_SOURCE.combat.continue[lang],
-      charge: UI_SOURCE.combat.charge[lang],
-    },
-    movement: {
-      steps: UI_SOURCE.movement.steps[lang],
-      pathCompleted: UI_SOURCE.movement.pathCompleted[lang],
-    },
-    common: {
-      xp: UI_SOURCE.common.xp[lang],
-      hp: UI_SOURCE.common.hp[lang],
-      gold: UI_SOURCE.common.gold[lang],
-      nums: UI_SOURCE.common.nums[lang],
-      level: UI_SOURCE.common.level[lang],
-      loading: UI_SOURCE.common.loading[lang],
-      cost: UI_SOURCE.common.cost[lang],
-      notEnoughGold: UI_SOURCE.common.notEnoughGold[lang],
-      notEnoughNems: UI_SOURCE.common.notEnoughNems[lang],
-      reward: UI_SOURCE.common.reward[lang],
-    },
-    home: {
-      subtitle: UI_SOURCE.home.subtitle[lang],
-      currentQuest: UI_SOURCE.home.currentQuest[lang],
-      infiniteMode: UI_SOURCE.home.infiniteMode[lang],
-      infiniteDesc: UI_SOURCE.home.infiniteDesc[lang],
-      selectChallenge: UI_SOURCE.home.selectChallenge[lang],
-      encounterActive: UI_SOURCE.home.encounterActive[lang],
-      encounterDesc: UI_SOURCE.home.encounterDesc[lang],
-      menuDescMovement: UI_SOURCE.home.menuDescMovement[lang],
-      menuDescCombat: UI_SOURCE.home.menuDescCombat[lang],
-      menuDescRecherche: UI_SOURCE.home.menuDescRecherche[lang],
-      menuDescAlchimie: UI_SOURCE.home.menuDescAlchimie[lang],
-    },
-    recherche: {
-      exitWarning: UI_SOURCE.recherche.exitWarning[lang],
-      entryFee: UI_SOURCE.recherche.entryFee[lang],
-      entryFeeTitle: UI_SOURCE.recherche.entryFeeTitle[lang],
-      deciphering: UI_SOURCE.recherche.deciphering[lang],
-      toUnlock: UI_SOURCE.recherche.toUnlock[lang],
-      lock: UI_SOURCE.recherche.lock[lang],
-      locks: UI_SOURCE.recherche.locks[lang],
-      lockSealed: UI_SOURCE.recherche.lockSealed[lang],
-    },
-    alchimie: {
-      selectMode: UI_SOURCE.alchimie.selectMode[lang],
-      normal: UI_SOURCE.alchimie.normal[lang],
-      flip: UI_SOURCE.alchimie.flip[lang],
-      pick: UI_SOURCE.alchimie.pick[lang],
-      brewing: UI_SOURCE.alchimie.brewing[lang],
-      solveToCraft: UI_SOURCE.alchimie.solveToCraft[lang],
-      uses: UI_SOURCE.alchimie.uses[lang],
-      potionCreated: UI_SOURCE.alchimie.potionCreated[lang],
-      descNormal: UI_SOURCE.alchimie.descNormal[lang],
-      descFlip: UI_SOURCE.alchimie.descFlip[lang],
-      descPick: UI_SOURCE.alchimie.descPick[lang],
-      draftFlip2: UI_SOURCE.alchimie.draftFlip2[lang],
-      draftFlip1: UI_SOURCE.alchimie.draftFlip1[lang],
-      draftPick: UI_SOURCE.alchimie.draftPick[lang],
-      opReduce: UI_SOURCE.alchimie.opReduce[lang],
-      opAdd: UI_SOURCE.alchimie.opAdd[lang],
-      opSub: UI_SOURCE.alchimie.opSub[lang],
-      opMult: UI_SOURCE.alchimie.opMult[lang],
-      shattered: UI_SOURCE.alchimie.shattered[lang],
-      unstable: UI_SOURCE.alchimie.unstable[lang],
-    },
-    auth: {
-      username: UI_SOURCE.auth.username[lang],
-      password: UI_SOURCE.auth.password[lang],
-      enterRealm: UI_SOURCE.auth.enterRealm[lang],
-      createProfile: UI_SOURCE.auth.createProfile[lang],
-      playGuest: UI_SOURCE.auth.playGuest[lang],
-      guestWarning: UI_SOURCE.auth.guestWarning[lang],
-      createNew: UI_SOURCE.auth.createNew[lang],
-      backLogin: UI_SOURCE.auth.backLogin[lang],
-      secure: UI_SOURCE.auth.secure[lang],
-      welcome: UI_SOURCE.auth.welcome[lang],
-      storageMode: UI_SOURCE.auth.storageMode[lang],
-      cloud: UI_SOURCE.auth.cloud[lang],
-      local: UI_SOURCE.auth.local[lang],
-      placeholders: {
-        hero: UI_SOURCE.auth.placeholders.hero[lang],
-        code: UI_SOURCE.auth.placeholders.code[lang],
-      }
-    },
-    profile: {
-      save: UI_SOURCE.profile.save[lang],
-      heroName: UI_SOURCE.profile.heroName[lang],
-      photoUrl: UI_SOURCE.profile.photoUrl[lang],
-      companions: UI_SOURCE.profile.companions[lang],
-      empty: UI_SOURCE.profile.empty[lang],
-      effects: UI_SOURCE.profile.effects[lang],
-      noEffects: UI_SOURCE.profile.noEffects[lang],
-      clickDetails: UI_SOURCE.profile.clickDetails[lang],
-      activeCompanion: UI_SOURCE.profile.activeCompanion[lang],
-      agility: UI_SOURCE.profile.agility[lang],
-      blackMirror: UI_SOURCE.profile.blackMirror[lang],
-      meltingMode: UI_SOURCE.profile.meltingMode[lang],
-      meltConfirm: UI_SOURCE.profile.meltConfirm[lang],
-    },
-    bonuses: {
-      xp: UI_SOURCE.bonuses.xp[lang],
-      gold: UI_SOURCE.bonuses.gold[lang],
-      movement: UI_SOURCE.bonuses.movement[lang],
-      combat: UI_SOURCE.bonuses.combat[lang],
-      defense: UI_SOURCE.bonuses.defense[lang],
-      none: UI_SOURCE.bonuses.none[lang],
-    },
-    equipment: {
-      title: UI_SOURCE.equipment.title[lang],
-      backpack: UI_SOURCE.equipment.backpack[lang],
-      dragHint: UI_SOURCE.equipment.dragHint[lang],
-      locked: UI_SOURCE.equipment.locked[lang],
-      reqLevel: UI_SOURCE.equipment.reqLevel[lang],
-    },
-    stats: {
-      vitalStats: UI_SOURCE.stats.vitalStats[lang],
-      totalXp: UI_SOURCE.stats.totalXp[lang],
-      nextLevel: UI_SOURCE.stats.nextLevel[lang],
-      defense: UI_SOURCE.stats.defense[lang],
-      activeEffects: UI_SOURCE.stats.activeEffects[lang],
-      travelAlone: UI_SOURCE.stats.travelAlone[lang],
-    },
-    options: {
-      gameplayTab: UI_SOURCE.options.gameplayTab[lang],
-      dataTab: UI_SOURCE.options.dataTab[lang],
-    },
-    levelUp: {
-      title: UI_SOURCE.levelUp.title[lang],
-      action: UI_SOURCE.levelUp.action[lang],
-      message: UI_SOURCE.levelUp.message[lang],
-      statHp: UI_SOURCE.levelUp.statHp[lang],
-      statAttack: UI_SOURCE.levelUp.statAttack[lang],
-      statAgility: UI_SOURCE.levelUp.statAgility[lang],
-      statDefense: UI_SOURCE.levelUp.statDefense[lang],
-    }
-  };
+  return extract(UI_SOURCE, lang);
 };

@@ -1,3 +1,4 @@
+
 export interface Translation {
   titles: {
     movement: string;
@@ -125,6 +126,7 @@ export interface Translation {
   };
   auth: {
     username: string;
+    email: string;
     password: string;
     enterRealm: string;
     createProfile: string;
@@ -139,6 +141,7 @@ export interface Translation {
     local: string;
     placeholders: {
       hero: string;
+      email: string;
       code: string;
     }
   };

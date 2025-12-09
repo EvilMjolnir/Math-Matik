@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { PlayerStats, StorageMode } from '../types';
 import { DEFAULT_PLAYER } from '../constants';
@@ -105,13 +106,15 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin, currentStorageMode, on
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-parchment-900 font-bold mb-1 font-serif">{t.auth.username}</label>
+            <label className="block text-parchment-900 font-bold mb-1 font-serif">
+              {currentStorageMode === StorageMode.LOCAL ? t.profile.heroName : t.auth.email}
+            </label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full p-3 bg-parchment-100 border-2 border-parchment-400 rounded focus:border-amber-600 focus:outline-none text-parchment-900 font-bold"
-              placeholder={t.auth.placeholders.hero}
+              placeholder={currentStorageMode === StorageMode.LOCAL ? t.profile.heroName : t.auth.placeholders.email}
               disabled={isLoading}
             />
           </div>

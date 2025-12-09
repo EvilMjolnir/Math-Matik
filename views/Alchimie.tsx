@@ -26,6 +26,7 @@ const POTION_SIZES = {
 };
 
 const CARD_BACK_URL = "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/card_back.png";
+const FAILED_POTION_IMG = "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/potions/failed_craft.png";
 
 // Styles matching LootRewardCard
 const RARITY_STYLES: Record<Rarity, { border: string; bg: string; text: string }> = {
@@ -651,6 +652,7 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
         onBack={() => { playMenuBackSound(); onBack(); }}
         solvedCorrectly={!!craftedItem}
         failMessage={t.alchimie.shattered}
+        failImage={FAILED_POTION_IMG}
       />
   );
 };

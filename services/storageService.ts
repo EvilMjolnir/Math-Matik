@@ -24,9 +24,16 @@ export const saveUserProfile = async (player: PlayerStats): Promise<void> => {
   return Promise.resolve();
 };
 
-export const loadUserProfile = async (username: string, passwordAttempt: string): Promise<{ success: boolean; data?: PlayerStats; message?: string }> => {
+export const loadUserProfile = async (identifier: string, passwordAttempt: string): Promise<{ success: boolean; data?: PlayerStats; message?: string }> => {
   const db = getDB();
-  const user = db[username];
+  
+  // Try finding by username (key)
+  let user = db[identifier];
+
+  // If not found, try finding by email
+  if (!user) {
+    user = Object.values(db).find(u => u.email === identifier) as PlayerStats | undefined;
+  }
 
   if (!user) {
     return Promise.resolve({ success: false, message: "User not found." });

@@ -1,4 +1,3 @@
-
 // @ts-nocheck
 // TypeScript errors are expected in Google AI Studio due to import map usage
 // This file works correctly at runtime in both AI Studio and Vercel
@@ -18,6 +17,7 @@ import {
   getDocs, 
   collection, 
   query, 
+  where,
   orderBy, 
   limit, 
   deleteDoc 
@@ -49,13 +49,48 @@ export const saveUserProfile = async (player: PlayerStats): Promise<void> => {
     }
 
     try {
-        await setDoc(doc(db, "users", player.uid), player, { merge: true });
+        // Firestore cannot handle 'undefined'. We strip them out.
+        const safePlayer = JSON.parse(JSON.stringify(player));
+        await setDoc(doc(db, "users", player.uid), safePlayer, { merge: true });
+
+        // Sync Firebase Auth Display Name if changed
+        const currentUser = auth.currentUser;
+        if (currentUser && player.username && currentUser.displayName !== player.username) {
+             await updateProfile(currentUser, { displayName: player.username });
+        }
     } catch (e) {
         console.error("Error saving profile to Firestore:", e);
     }
 };
 
-export const loadUserProfile = async (email: string, passwordAttempt: string): Promise<{ success: boolean; data?: PlayerStats; message?: string }> => {
+export const loadUserProfile = async (identifier: string, passwordAttempt: string): Promise<{ success: boolean; data?: PlayerStats; message?: string }> => {
+    let email = identifier;
+
+    // If it looks like a username (no @), try to resolve email from Firestore
+    if (!identifier.includes('@')) {
+        try {
+            const usersCollection = collection(db, "users");
+            const q = query(usersCollection, where("username", "==", identifier), limit(1));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const userData = querySnapshot.docs[0].data() as PlayerStats;
+                if (userData.email) {
+                    email = userData.email;
+                } else {
+                    return { success: false, message: "Account found but missing email record." };
+                }
+            } else {
+                return { success: false, message: "User not found." };
+            }
+        } catch (e) {
+            console.error("Username lookup failed:", e);
+            // Fallthrough to try generic login or fail? 
+            // If lookup failed (e.g. permission), we can't do username login.
+            return { success: false, message: "Login failed: Unable to verify username." };
+        }
+    }
+
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, passwordAttempt);
         const user = userCredential.user;
@@ -80,7 +115,10 @@ export const loadUserProfile = async (email: string, passwordAttempt: string): P
                 email: email,
                 photoURL: user.photoURL || ''
             };
-            await setDoc(userDocRef, newPlayer);
+            // Sanitize undefined fields
+            const safePlayer = JSON.parse(JSON.stringify(newPlayer));
+            
+            await setDoc(userDocRef, safePlayer);
             return { success: true, data: newPlayer };
         }
     } catch (error: any) {
@@ -112,8 +150,11 @@ export const createUserProfile = async (email: string, password: string): Promis
             await updateProfile(auth.currentUser, { displayName: username });
         }
         
+        // Sanitize DEFAULT_PLAYER's undefined fields (like activeCompanionId)
+        const safePlayer = JSON.parse(JSON.stringify(newPlayer));
+        
         const userDocRef = doc(db, "users", user.uid);
-        await setDoc(userDocRef, newPlayer, { merge: true });
+        await setDoc(userDocRef, safePlayer, { merge: true });
 
         return { success: true, data: newPlayer };
 
