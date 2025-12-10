@@ -4,13 +4,12 @@ import { GameConfig, MathProblem, Rarity, Item, Card, MinigameProps } from '../t
 import { generateDivision } from '../services/mathService';
 import { generateLootItem } from '../services/lootService';
 import Keypad from '../components/Keypad';
-import ScratchpadModal from '../components/ScratchpadModal';
 import LootRewardCard from '../components/LootRewardCard';
 import { RARITY_COLORS, RARITY_TEXT_COLORS } from '../constants';
-import { ChevronLeft, Search, Loader2, Coins, AlertTriangle, CheckCircle, XCircle, Lock, PencilLine, ShieldCheck, Key } from 'lucide-react';
+import { ChevronLeft, Search, Loader2, Coins, AlertTriangle, CheckCircle, XCircle, Lock, ShieldCheck, Key } from 'lucide-react';
 import { useLocalization } from '../localization';
 import Modal from '../components/Modal';
-import { playMenuOpenSound, playMenuBackSound, fadeOutCurrentSound } from '../services/audioService';
+import { playMenuOpenSound, playMenuBackSound, fadeOutCurrentSound, playCorrectSound, playWrongSound } from '../services/audioService';
 
 interface RechercheProps extends MinigameProps {
   config: GameConfig['recherche'];
@@ -58,7 +57,6 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddIte
   const [isLoadingItem, setIsLoadingItem] = useState(false);
   const [solvedCorrectly, setSolvedCorrectly] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(false);
-  const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
 
   useEffect(() => {
     const newCards = Array.from({ length: 3 }).map((_, i) => ({
@@ -125,6 +123,11 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddIte
     
     // Visual Feedback Phase
     setFeedback(isCorrect ? 'correct' : 'wrong');
+    if (isCorrect) {
+        playCorrectSound();
+    } else {
+        playWrongSound();
+    }
 
     // Logic Delay
     setTimeout(async () => {
@@ -320,23 +323,6 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddIte
                   {userInput}
                 </div>
               </div>
-
-               {/* Scratchpad Button */}
-               <button 
-                onClick={() => setIsScratchpadOpen(true)}
-                className="absolute -right-16 top-1/2 transform -translate-y-1/2 p-3 bg-amber-600 text-white rounded-full shadow-lg border-2 border-amber-800 hover:bg-amber-700 hover:scale-110 transition-all z-10 hidden md:flex"
-                title={t.titles.scratchpad}
-              >
-                <PencilLine className="w-6 h-6" />
-              </button>
-               {/* Mobile Position */}
-               <button 
-                onClick={() => setIsScratchpadOpen(true)}
-                className="md:hidden absolute -right-2 -bottom-2 p-3 bg-amber-600 text-white rounded-full shadow-lg border-2 border-amber-800 z-10"
-                title={t.titles.scratchpad}
-              >
-                <PencilLine className="w-5 h-5" />
-              </button>
             </div>
            )}
         </div>
@@ -365,11 +351,6 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddIte
             disabled={feedback !== 'none'} 
           />
         </div>
-
-        <ScratchpadModal 
-          isOpen={isScratchpadOpen} 
-          onClose={() => setIsScratchpadOpen(false)} 
-        />
       </div>
     );
   }

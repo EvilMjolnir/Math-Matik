@@ -10,8 +10,8 @@ export const UI_SOURCE = {
     options: { en: "Grimoire of Settings", fr: "Grimoire des Paramètres" },
     home: { en: "Math et Matik", fr: "Math et Matik" },
     profile: { en: "Hero Profile", fr: "Profil du Héros" },
-    scratchpad: { en: "Scratchpad", fr: "Brouillon" },
     dangerZone: { en: "Danger Zone", fr: "Zone de Danger" },
+    scratchpad: { en: "Scratchpad", fr: "Brouillon" },
   },
   buttons: {
     back: { en: "Back", fr: "Retour" },

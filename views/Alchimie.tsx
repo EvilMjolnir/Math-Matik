@@ -8,7 +8,7 @@ import LootRewardCard from '../components/LootRewardCard';
 import ItemDetailOverlay from '../components/ItemDetailOverlay';
 import { ChevronLeft, FlaskConical, Sigma, Sparkles, Eye, Star, Coins, Footprints, Sword, Shield, Heart, Hand, AlertTriangle } from 'lucide-react';
 import { useLocalization } from '../localization';
-import { playMenuBackSound, playFlipCardSound, playDamageSound, playGlassBreakSound } from '../services/audioService';
+import { playMenuBackSound, playFlipCardSound, playDamageSound, playGlassBreakSound, playCorrectSound, playWrongSound } from '../services/audioService';
 
 interface AlchimieProps extends MinigameProps {
   onAddItem: (item: Item) => void;
@@ -293,6 +293,7 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
       }
 
       if (isCorrect) {
+          playCorrectSound();
           setFeedback('correct');
           setTimeout(() => {
               if (currentProblemIndex < problems.length - 1) {
@@ -304,6 +305,7 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
           }, 800);
       } else {
           setFeedback('wrong');
+          playWrongSound();
           
           let isShattering = false;
           if (selectedPotion) {

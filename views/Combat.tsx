@@ -5,13 +5,12 @@ import { generateMultiplication, generateBossProblem } from '../services/mathSer
 import { getEnemyStats, getAggregatedStats } from '../services/statusService';
 import Keypad from '../components/Keypad';
 import Modal from '../components/Modal';
-import ScratchpadModal from '../components/ScratchpadModal';
 import EncounterIntroCard from '../components/EncounterIntroCard';
 import CombatPlayerPanel from '../components/CombatPlayerPanel';
 import CombatEnemyPanel from '../components/CombatEnemyPanel';
 import { useLocalization } from '../localization';
-import { ChevronLeft, Timer, Skull, Trophy, PencilLine, Check, X, ShieldCheck } from 'lucide-react';
-import { playMenuBackSound, playHitSound, playDamageSound, playVictoryTrumpetSound, fadeOutCurrentSound } from '../services/audioService';
+import { ChevronLeft, Timer, Skull, Trophy, Check, X, ShieldCheck } from 'lucide-react';
+import { playMenuBackSound, playHitSound, playDamageSound, playVictoryTrumpetSound, fadeOutCurrentSound, playCorrectSound, playWrongSound } from '../services/audioService';
 
 interface CombatProps extends MinigameProps {
   config: GameConfig['combat'];
@@ -43,7 +42,6 @@ const Combat: React.FC<CombatProps> = ({
   const [userInput, setUserInput] = useState('');
   const [feedback, setFeedback] = useState<'none' | 'correct' | 'wrong'>('none');
   const [isVictory, setIsVictory] = useState(false);
-  const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
   const [sessionDamageTaken, setSessionDamageTaken] = useState(0);
   
   // -- Normal Combat State --
@@ -184,6 +182,7 @@ const Combat: React.FC<CombatProps> = ({
 
   const handleTimeExpireNormal = () => {
     setFeedback('wrong');
+    playWrongSound();
     // In encounter mode, time expire = wrong answer
     if (encounter) {
       if (onTakeDamage) onTakeDamage(effectiveAttack);
@@ -295,6 +294,7 @@ const Combat: React.FC<CombatProps> = ({
   // --- Unified Answer Handlers (Used by Validation & Admin) ---
 
   const handleCorrectAnswerBoss = () => {
+      playCorrectSound();
       setFeedback('correct');
       // Add time bonus (capped at max)
       setBossTimer(prev => Math.min(activeBossConfig.timerDuration, prev + 2));
@@ -318,6 +318,7 @@ const Combat: React.FC<CombatProps> = ({
   };
 
   const handleWrongAnswerBoss = () => {
+      playWrongSound();
       setFeedback('wrong');
       // Penalty: Remove time
       setBossTimer(prev => Math.max(1, prev - 3));
@@ -330,6 +331,7 @@ const Combat: React.FC<CombatProps> = ({
   };
 
   const handleCorrectAnswerNormal = () => {
+    playCorrectSound();
     setFeedback('correct');
     // Calculate score / damage
     
@@ -365,6 +367,7 @@ const Combat: React.FC<CombatProps> = ({
   };
 
   const handleWrongAnswerNormal = () => {
+    playWrongSound();
     setFeedback('wrong');
     
     if (encounter) {
@@ -568,13 +571,6 @@ const Combat: React.FC<CombatProps> = ({
                     {userInput}
                 </div>
                 </div>
-                <button 
-                    onClick={() => setIsScratchpadOpen(true)}
-                    className="absolute -right-2 top-0 p-2 bg-amber-600 text-white rounded-full shadow-lg border-2 border-amber-800 hover:bg-amber-700 hover:scale-110 transition-all"
-                    title={t.titles.scratchpad}
-                >
-                    <PencilLine className="w-5 h-5" />
-                </button>
             </div>
            )}
 
@@ -651,9 +647,17 @@ const Combat: React.FC<CombatProps> = ({
         <div className="space-y-4 flex flex-col items-center w-full">
           {isVictory ? (
             <Trophy className="w-20 h-20 text-yellow-500 mb-2 drop-shadow-md" />
+          ) : (isBossMode ? (
+             <div className="w-64 h-64 mb-4 rounded-full overflow-hidden border-4 border-red-500 shadow-lg bg-black/50">
+                <img 
+                  src="https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/failed_boss.png" 
+                  alt="Defeated by Boss" 
+                  className="w-full h-full object-cover" 
+                />
+             </div>
           ) : (
             <Skull className="w-20 h-20 text-red-500 mb-2 drop-shadow-md" />
-          )}
+          ))}
           
           <p className="text-4xl font-serif font-bold tracking-wider">
             {isVictory ? t.combat.victory : t.combat.defeat}
@@ -695,11 +699,6 @@ const Combat: React.FC<CombatProps> = ({
           )}
         </div>
       </Modal>
-
-      <ScratchpadModal 
-        isOpen={isScratchpadOpen} 
-        onClose={() => setIsScratchpadOpen(false)} 
-      />
     </div>
   );
 };

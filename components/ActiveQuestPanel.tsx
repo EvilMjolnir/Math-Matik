@@ -14,6 +14,14 @@ interface ActiveQuestPanelProps {
   onAnimationComplete?: () => void;
 }
 
+const TOME_BG_IMAGES: Record<string, string> = {
+  'tome_1': 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/tome1%28noCharacter%29.png',
+  'tome_2': 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/tome2%28noCharacter%29.png',
+  'tome_3': 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/tome3%28hood%29.png',
+  'tome_4': 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/tome4%28noCharacter%29.png',
+  'tome_5': 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/tome5%28noCharacter%29.png',
+};
+
 const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ 
   activeEncounter, 
   activeTome, 
@@ -173,17 +181,32 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({
   const maxBarDistance = activeTome ? activeTome.totalDistance : 1;
   const progressPercent = activeTome ? Math.min(100, (displayDistance / maxBarDistance) * 100) : 0;
 
+  const bgImage = activeTome ? (TOME_BG_IMAGES[activeTome.id] || activeTome.image) : undefined;
+
   return (
     <div className="relative w-full mb-16">
-      <div className={`w-full p-6 backdrop-blur-sm min-h-[120px] flex flex-col justify-center transition-all duration-500 overflow-hidden
+      <div className={`w-full p-6 backdrop-blur-sm min-h-[180px] flex flex-col justify-center transition-all duration-500 overflow-hidden relative
         ${showEncounter 
           ? 'rounded-lg border-2 bg-red-900/80 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.4)]' 
-          : 'border-bevel'
+          : (activeTome ? 'rounded-xl border-4 border-parchment-600 shadow-xl' : 'border-bevel')
         }
         ${isCompleted ? 'blur-sm brightness-75' : ''}
       `}>
+        {/* Background Image and Overlay for Active Tome */}
+        {activeTome && !showEncounter && (
+           <>
+             <div 
+               className="absolute inset-0 bg-cover bg-center z-0"
+               style={{ 
+                 backgroundImage: bgImage ? `url('${bgImage}')` : undefined 
+               }}
+             />
+             <div className="absolute inset-0 bg-black/70 z-0" />
+           </>
+        )}
+
         {showEncounter ? (
-          <div className="flex flex-col items-center animate-pulse">
+          <div className="flex flex-col items-center animate-pulse relative z-10">
             <div className="flex items-center text-red-400 font-bold text-3xl mb-1">
               <Skull className="w-10 h-10 mr-2" />
               {t.home.encounterActive}
@@ -193,34 +216,22 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({
             {activeEncounter.type === 'miniboss' && <span className="text-amber-500 font-bold uppercase tracking-widest mt-2 border border-amber-500 px-2 py-1 rounded">MINI-BOSS</span>}
           </div>
         ) : activeTome ? (
-          <div className="flex flex-col md:flex-row items-center gap-6 w-full">
-            {activeTome.image && (
-              <div className="relative shrink-0">
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-lg border-4 border-amber-700 shadow-[0_0_15px_rgba(0,0,0,0.5)] overflow-hidden bg-black/50">
-                  <img src={activeTome.image} alt="Quest Location" className="w-full h-full object-cover" />
-                </div>
-                {/* Decorative corners */}
-                <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-amber-400"></div>
-                <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-amber-400"></div>
-                <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-amber-400"></div>
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-amber-400"></div>
-              </div>
-            )}
+          <div className="flex flex-col items-center gap-4 w-full relative z-10">
             <div className="flex-1 w-full">
               <div className="flex justify-between items-center mb-3">
-                <span className="text-parchment-300 font-serif flex items-center text-xl">
-                  <Map className="w-6 h-6 mr-2" />
+                <span className="text-parchment-100 font-serif flex items-center text-xl shadow-black drop-shadow-md">
+                  <Map className="w-6 h-6 mr-2 text-amber-500" />
                   {t.home.currentQuest}: <span className="text-amber-400 font-bold ml-2">{getTomeTitle(activeTome)}</span>
                 </span>
-                <span className="text-sm text-parchment-400 font-bold">{Math.floor(displayDistance)} / {activeTome.totalDistance}</span>
+                <span className="text-sm text-parchment-200 font-bold bg-black/40 px-2 py-1 rounded">{Math.floor(displayDistance)} / {activeTome.totalDistance}</span>
               </div>
               
               {/* Custom Segmented Progress Bar */}
               <div className="flex items-center w-full h-8 relative">
                   {/* Main Bar Track */}
-                  <div className="flex-1 h-5 bg-gray-900 rounded-l-full overflow-hidden border border-gray-700 relative mr-1">
+                  <div className="flex-1 h-5 bg-black/60 rounded-l-full overflow-hidden border border-gray-500 relative mr-1">
                       <div 
-                        className="h-full bg-gradient-to-r from-blue-700 to-blue-500 transition-all duration-75"
+                        className="h-full bg-gradient-to-r from-blue-700 to-cyan-500 transition-all duration-75"
                         style={{ width: `${progressPercent}%` }}
                       />
                   </div>
@@ -237,7 +248,7 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({
                   </div>
               </div>
 
-              <p className="text-base text-parchment-500 mt-2 italic">{getTomeDesc(activeTome)}</p>
+              <p className="text-base text-parchment-300 mt-2 italic shadow-black drop-shadow-sm">{getTomeDesc(activeTome)}</p>
             </div>
           </div>
         ) : (

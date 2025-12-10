@@ -7,9 +7,9 @@ export interface Translation {
     options: string;
     home: string;
     profile: string;
-    scratchpad: string;
     dangerZone: string;
     alchimie: string;
+    scratchpad: string;
   };
   buttons: {
     back: string;

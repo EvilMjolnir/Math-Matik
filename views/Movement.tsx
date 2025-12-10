@@ -4,10 +4,9 @@ import { GameConfig, MathProblem, MinigameProps } from '../types';
 import { generateAdditionSubtraction } from '../services/mathService';
 import Keypad from '../components/Keypad';
 import Modal from '../components/Modal';
-import ScratchpadModal from '../components/ScratchpadModal';
-import { ChevronLeft, Footprints, PencilLine, ShieldCheck, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { ChevronLeft, Footprints, ShieldCheck, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useLocalization } from '../localization';
-import { playMenuBackSound } from '../services/audioService';
+import { playMenuBackSound, playCorrectSound, playWrongSound } from '../services/audioService';
 
 interface MovementProps extends MinigameProps {
   config: GameConfig['movement'];
@@ -26,7 +25,6 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
   const [showSuccess, setShowSuccess] = useState(false);
   const [feedback, setFeedback] = useState<'none' | 'correct' | 'wrong'>('none');
   const [stepsTaken, setStepsTaken] = useState(0);
-  const [isScratchpadOpen, setIsScratchpadOpen] = useState(false);
 
   useEffect(() => {
     setSegmentResults(Array(config.targetSegments).fill('empty'));
@@ -59,6 +57,12 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
 
   const processResult = (isCorrect: boolean) => {
     if (currentSegmentIndex >= config.targetSegments) return;
+
+    if (isCorrect) {
+        playCorrectSound();
+    } else {
+        playWrongSound();
+    }
 
     const newStatus = isCorrect ? 'correct' : 'wrong';
 
@@ -144,23 +148,6 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
                 {userInput}
               </div>
             </div>
-
-            {/* Scratchpad Button */}
-            <button 
-              onClick={() => setIsScratchpadOpen(true)}
-              className="absolute -right-16 top-1/2 transform -translate-y-1/2 p-3 bg-amber-600 text-white rounded-full shadow-lg border-2 border-amber-800 hover:bg-amber-700 hover:scale-110 transition-all z-10 hidden md:flex"
-              title={t.titles.scratchpad}
-            >
-              <PencilLine className="w-6 h-6" />
-            </button>
-             {/* Mobile Position for Scratchpad Button */}
-             <button 
-              onClick={() => setIsScratchpadOpen(true)}
-              className="md:hidden absolute -right-2 -bottom-2 p-3 bg-amber-600 text-white rounded-full shadow-lg border-2 border-amber-800 z-10"
-              title={t.titles.scratchpad}
-            >
-              <PencilLine className="w-5 h-5" />
-            </button>
           </div>
         )}
       </div>
@@ -217,11 +204,6 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
           </div>
         </div>
       </Modal>
-
-      <ScratchpadModal 
-        isOpen={isScratchpadOpen} 
-        onClose={() => setIsScratchpadOpen(false)} 
-      />
     </div>
   );
 };

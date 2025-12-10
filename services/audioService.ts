@@ -12,6 +12,8 @@ const FLIP_CARD_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com
 const GLASS_BREAK_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/glass_break.mp3';
 const ACID_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/acideffect.mp3';
 const BUBBLES_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/bubbles.mp3';
+const CORRECT_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/OK.mp3';
+const WRONG_SOUND = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/Error.mp3';
 
 let currentLongSound: HTMLAudioElement | null = null;
 
@@ -84,6 +86,8 @@ export const playBossIntroSound = () => playSound(BOSS_INTRO_SOUND, 0.6, true);
 export const playVictoryTrumpetSound = () => playSound(VICTORY_TRUMPET_SOUND, 0.6, true);
 export const playFlipCardSound = (speed: number = 1.0) => playSound(FLIP_CARD_SOUND, 0.5, false, 0, speed);
 export const playGlassBreakSound = () => playSound(GLASS_BREAK_SOUND, 0.6, false, 0.1);
+export const playCorrectSound = () => playSound(CORRECT_SOUND, 0.6);
+export const playWrongSound = () => playSound(WRONG_SOUND, 0.6);
 
 export const playMeltingSound = () => {
   const playTrack = (url: string, maxRandomStart: number) => {
@@ -137,6 +141,8 @@ export const playMeltingSound = () => {
 export const ALL_SOUNDS = [
     { name: "Menu Open", fn: playMenuOpenSound },
     { name: "Menu Back", fn: playMenuBackSound },
+    { name: "Correct", fn: playCorrectSound },
+    { name: "Wrong", fn: playWrongSound },
     { name: "Hit (Var)", fn: playHitSound },
     { name: "Damage (Var)", fn: playDamageSound },
     { name: "Card Flip", fn: playFlipCardSound },
