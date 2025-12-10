@@ -45,6 +45,6 @@ export const tome3: Tome = {
     ENCOUNTERS.t3_prime_slime,
     ENCOUNTERS.t3_algebra_wraith,
     ENCOUNTERS.t3_logarithm_lizard,
-    ENCOUNTERS.t3_tangent_tree
+    ENCOUNTERS.t3_Ouroboros
   ]
 };

@@ -192,16 +192,17 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     xpReward: 32,
     timerDuration: 8
   },
-  t3_tangent_tree: {
-    id: 't3_tangent_tree',
-    name: 'Tangent Tree',
-    name_fr: 'Arbre Tangente',
-    description: 'It touches the ground at only one point. Find the slope of the curve to fell it!',
-    description_fr: 'Il ne touche le sol qu’en un seul point. Trouvez la pente de la courbe pour l’abattre !',
-    monsterHP: 50, // Increased from 33
-    attack: 23,
-    goldReward: 15,
-    xpReward: 37,
+  t3_Ouroboros: {
+    id: 't3_Ouroboros',
+    name: 'Ouroboros',
+    name_fr: 'Ouroboros',
+    description: 'An ancient serpent eternally consuming itself. Find the slope at the point where it bites its tail!',
+    description_fr: 'Un serpent ancien se consumant éternellement. Trouvez la pente au point où il mord sa queue !',
+    monsterHP: 75,
+    attack: 20,
+    goldReward: 50,
+    xpReward: 75,
+    type: 'boss',
     timerDuration: 8
   },
 
@@ -280,6 +281,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     goldReward: 30,
     xpReward: 55,
     tags: ['elite_3', 'wealthy_2'],
+    type: 'boss',
     timerDuration: 12
   },
 
@@ -371,6 +373,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     goldReward: 60,
     xpReward: 90,
     tags: ['elite_5', 'fierce_5'],
+    type: 'boss',
     timerDuration: 12
   }
 };

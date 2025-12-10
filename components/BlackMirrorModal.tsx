@@ -101,10 +101,10 @@ const BlackMirrorModal: React.FC<BlackMirrorModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4 animate-fadeIn">
-      <div className="relative w-full max-w-4xl bg-slate-900 rounded-xl shadow-[0_0_50px_rgba(147,51,234,0.3)] border-4 border-purple-900 flex flex-col max-h-[90vh] overflow-hidden text-slate-200">
+      <div className="relative w-full max-w-4xl bg-slate-900 rounded-xl shadow-[0_0_50px_rgba(147,51,234,0.3)] border-4 border-purple-900 flex flex-col h-[85vh] overflow-hidden text-slate-200">
         
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b border-purple-800 bg-slate-950">
+        <div className="flex justify-between items-center p-6 border-b border-purple-800 bg-slate-950 relative z-20">
           <div className="flex items-center">
              <div className="p-3 bg-purple-900/50 rounded-full border border-purple-500 mr-4 shadow-[0_0_15px_rgba(168,85,247,0.5)]">
                 <Flame className="w-8 h-8 text-purple-400 animate-pulse" />
@@ -129,62 +129,73 @@ const BlackMirrorModal: React.FC<BlackMirrorModalProps> = ({
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')]">
+        <div className="flex-1 relative overflow-hidden bg-slate-900/50">
+            {/* Texture Background */}
+            <div 
+                className="absolute inset-0 opacity-40 pointer-events-none mix-blend-overlay"
+                style={{ 
+                    backgroundImage: "url('https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/texture%20_4.jpg')",
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                }}
+            />
             
-            {player.inventory.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-slate-600">
-                    <Backpack className="w-16 h-16 mb-4 opacity-50" />
-                    <p className="text-xl font-serif">Your backpack is empty.</p>
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {player.inventory.map((item, idx) => {
-                        const isSelected = selectedIndices.includes(idx);
-                        const nemsVal = getNemsValue(item.rarity);
-                        
-                        return (
-                            <button
-                                key={idx}
-                                onClick={() => handleItemClick(idx)}
-                                className={`
-                                    relative p-3 rounded-lg border-2 flex flex-col items-center transition-all duration-200 group
-                                    ${isSelected 
-                                        ? 'bg-red-900/30 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)] scale-[1.02]' 
-                                        : 'bg-slate-800/50 border-slate-700 hover:bg-slate-800 hover:border-purple-500/50'
-                                    }
-                                `}
-                            >
-                                <div className={`w-16 h-16 mb-3 rounded-md flex items-center justify-center bg-black/40 border border-white/5 relative overflow-hidden`}>
-                                    {item.image ? (
-                                        <img src={item.image} className="w-full h-full object-contain" alt={item.name} />
-                                    ) : (
-                                        <Backpack className={`w-8 h-8 ${RARITY_TEXT_COLORS[item.rarity]}`} />
+            <div className="absolute inset-0 overflow-y-auto custom-scrollbar p-6 z-10">
+                {player.inventory.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full text-slate-600">
+                        <Backpack className="w-16 h-16 mb-4 opacity-50" />
+                        <p className="text-xl font-serif">Your backpack is empty.</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {player.inventory.map((item, idx) => {
+                            const isSelected = selectedIndices.includes(idx);
+                            const nemsVal = getNemsValue(item.rarity);
+                            
+                            return (
+                                <button
+                                    key={idx}
+                                    onClick={() => handleItemClick(idx)}
+                                    className={`
+                                        relative p-3 rounded-lg border-2 flex flex-col items-center transition-all duration-200 group
+                                        ${isSelected 
+                                            ? 'bg-red-900/30 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)] scale-[1.02]' 
+                                            : 'bg-slate-800/80 border-slate-700 hover:bg-slate-800 hover:border-purple-500/50'
+                                        }
+                                    `}
+                                >
+                                    <div className={`w-16 h-16 mb-3 rounded-md flex items-center justify-center bg-black/40 border border-white/5 relative overflow-hidden`}>
+                                        {item.image ? (
+                                            <img src={item.image} className="w-full h-full object-contain" alt={item.name} />
+                                        ) : (
+                                            <Backpack className={`w-8 h-8 ${RARITY_TEXT_COLORS[item.rarity]}`} />
+                                        )}
+                                        {/* Value Badge */}
+                                        <div className="absolute top-1 right-1 bg-black/80 text-[10px] text-cyan-300 px-1.5 rounded border border-cyan-900/50">
+                                            +{nemsVal}
+                                        </div>
+                                    </div>
+
+                                    <div className={`font-serif font-bold text-sm mb-1 text-center truncate w-full ${RARITY_TEXT_COLORS[item.rarity]}`}>
+                                        {getItemName(item)}
+                                    </div>
+                                    <div className="text-[10px] text-slate-500 uppercase tracking-widest">{item.rarity}</div>
+
+                                    {isSelected && (
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg pointer-events-none">
+                                            <Check className="w-12 h-12 text-red-500 drop-shadow-lg" />
+                                        </div>
                                     )}
-                                    {/* Value Badge */}
-                                    <div className="absolute top-1 right-1 bg-black/80 text-[10px] text-cyan-300 px-1.5 rounded border border-cyan-900/50">
-                                        +{nemsVal}
-                                    </div>
-                                </div>
-
-                                <div className={`font-serif font-bold text-sm mb-1 text-center truncate w-full ${RARITY_TEXT_COLORS[item.rarity]}`}>
-                                    {getItemName(item)}
-                                </div>
-                                <div className="text-[10px] text-slate-500 uppercase tracking-widest">{item.rarity}</div>
-
-                                {isSelected && (
-                                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg pointer-events-none">
-                                        <Check className="w-12 h-12 text-red-500 drop-shadow-lg" />
-                                    </div>
-                                )}
-                            </button>
-                        );
-                    })}
-                </div>
-            )}
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
         </div>
 
         {/* Footer Action Bar */}
-        <div className="p-6 bg-slate-950 border-t border-purple-900 flex justify-between items-center">
+        <div className="p-6 bg-slate-950 border-t border-purple-900 flex justify-between items-center relative z-20">
             <div className="text-slate-400 text-sm">
                 Selected: <span className="text-white font-bold">{selectedIndices.length}</span> items
             </div>

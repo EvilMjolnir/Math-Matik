@@ -14,6 +14,9 @@ interface EncounterIntroCardProps {
   onStart: () => void;
 }
 
+const REGULAR_BG = "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/1000_1500_cardTexture5.jpg";
+const BOSS_BG = "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/1000_1500_cardTexture6.jpg";
+
 const EncounterIntroCard: React.FC<EncounterIntroCardProps> = ({ encounter, enemyStats, isBossMode, onStart }) => {
   const { t, lang } = useLocalization();
 
@@ -76,7 +79,14 @@ const EncounterIntroCard: React.FC<EncounterIntroCardProps> = ({ encounter, enem
         )}
 
         {/* Background Texture */}
-        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/black-scales.png')] pointer-events-none"></div>
+        <div 
+            className="absolute inset-0 opacity-40 pointer-events-none mix-blend-overlay"
+            style={{
+                backgroundImage: `url('${isBossMode ? BOSS_BG : REGULAR_BG}')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+            }}
+        ></div>
 
         {/* 1. TOP: Name Header */}
         <div className={`w-full py-4 px-2 text-center relative z-20 ${headerStyles}`}>

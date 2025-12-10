@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { Item, Rarity } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
@@ -13,7 +14,21 @@ interface LootRewardCardProps {
   failImage?: string;
 }
 
-const TEXTURE_URL = "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/texture_5.jpg";
+const RARITY_TEXTURES: Partial<Record<Rarity, string>> = {
+  [Rarity.COMMON]: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/1000_1500_cardTexture4.jpg",
+  [Rarity.RARE]: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/texture_5.jpg",
+  [Rarity.MAGIC]: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/1000_1500_cardTexture2.jpg",
+  [Rarity.LEGENDARY]: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/1000_1500_cardTexture1.jpg",
+  [Rarity.MYTHIC]: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/1000_1500_cardTexture3.jpg",
+};
+
+// Background textures for the small item square frame
+const ITEM_BG_TEXTURES: Partial<Record<Rarity, string>> = {
+  [Rarity.RARE]: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/texture_3.jpg",
+  [Rarity.MAGIC]: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/blue_camo.jpg",
+  [Rarity.LEGENDARY]: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/swirl_1.jpg",
+  [Rarity.MYTHIC]: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/backgrounds/swirl_1.jpg",
+};
 
 // Define specific styles for border (standard) and background (darker tint)
 const RARITY_STYLES: Record<Rarity, { border: string; bg: string; text: string }> = {
@@ -81,7 +96,8 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
   };
 
   const isHolo = item && (item.rarity === Rarity.LEGENDARY || item.rarity === Rarity.MYTHIC);
-  const showTexture = item && (item.rarity === Rarity.RARE || item.rarity === Rarity.MAGIC);
+  const cardTexture = item ? RARITY_TEXTURES[item.rarity] : null;
+  const itemBgTexture = item ? ITEM_BG_TEXTURES[item.rarity] : null;
   
   // Safe access to styles, fallback to Common if rarity matches nothing
   const safeRarity = (item && RARITY_STYLES[item.rarity]) ? item.rarity : Rarity.COMMON;
@@ -105,12 +121,12 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
             </>
           )}
 
-          {/* Texture Overlay for Rare/Magic */}
-          {solvedCorrectly && showTexture && (
+          {/* Texture Overlay for specific rarities */}
+          {solvedCorrectly && cardTexture && (
              <div 
-               className="absolute inset-0 z-0 opacity-30 pointer-events-none mix-blend-overlay"
+               className="absolute inset-0 z-0 opacity-40 pointer-events-none mix-blend-overlay"
                style={{ 
-                 backgroundImage: `url('${TEXTURE_URL}')`,
+                 backgroundImage: `url('${cardTexture}')`,
                  backgroundSize: 'cover',
                  backgroundPosition: 'center'
                }}
@@ -128,15 +144,28 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
                       className="aspect-square h-full rounded-lg border-4 bg-black/50 flex items-center justify-center overflow-hidden shadow-[inset_0_0_20px_rgba(0,0,0,0.5)] relative"
                       style={{ borderColor: activeStyle.border }}
                    >
+                        {/* Specific Texture for Item Frame */}
+                        {itemBgTexture && (
+                            <div 
+                                className="absolute inset-0 opacity-40 z-0"
+                                style={{
+                                    backgroundImage: `url('${itemBgTexture}')`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    mixBlendMode: 'overlay'
+                                }}
+                            />
+                        )}
+
                         {item.image ? (
-                            <img src={item.image} alt={getItemName(item)} className="w-full h-full object-contain hover:scale-110 transition-transform duration-500" />
+                            <img src={item.image} alt={getItemName(item)} className="w-full h-full object-contain hover:scale-110 transition-transform duration-500 relative z-10" />
                         ) : (
-                            <Gift className={`w-1/2 h-1/2 ${textColorClass}`} />
+                            <Gift className={`w-1/2 h-1/2 ${textColorClass} relative z-10`} />
                         )}
                         
                         {/* Usage Overlay */}
                         {item.uses && item.uses > 1 && (
-                            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-lg font-bold px-3 py-1 rounded-lg border border-white/20 shadow-md backdrop-blur-sm">
+                            <div className="absolute bottom-2 right-2 bg-black/80 text-white text-lg font-bold px-3 py-1 rounded-lg border border-white/20 shadow-md backdrop-blur-sm z-20">
                                 {item.uses}x
                             </div>
                         )}

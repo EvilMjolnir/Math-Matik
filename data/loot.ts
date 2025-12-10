@@ -323,84 +323,95 @@ export const lootData = {
       "description": "Refracts light into pure logic.",
       "description_fr": "Réfracte la lumière en pure logique.",
       "tags": ["scholar_4", "navigator_3"], 
-      "image": "https://iili.io/fzRK4LX.md.png" 
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/newton_prism.png"
     },
     {
       "name": "Euclid's Compass",
       "name_fr": "Compas d'Euclide",
       "description": "Draws perfect circles in any dimension.",
       "description_fr": "Trace des cercles parfaits dans n'importe quelle dimension.",
-      "tags": ["navigator_4", "fighter_3"] 
+      "tags": ["navigator_4", "fighter_3"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/euclid_compass.png"
     },
     {
       "name": "Pascal's Triangle",
       "name_fr": "Triangle de Pascal",
       "description": "An artifact where every sum adds up to power.",
       "description_fr": "Un artefact où chaque somme ajoute de la puissance.",
-      "tags": ["fighter_4", "scholar_3"] 
+      "tags": ["fighter_4", "scholar_3"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/pascal_triangle.png"
     },
     {
       "name": "Turing's Tape",
       "name_fr": "Ruban de Turing",
       "description": "A scroll of infinite length and memory.",
       "description_fr": "Un parchemin d'une longueur et d'une mémoire infinies.",
-      "tags": ["scholar_4", "navigator_3"]
+      "tags": ["scholar_4", "navigator_3"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/turing_tape.png"
     },
     {
       "name": "Hilbert's Hotel Key",
       "name_fr": "Clé de l'Hôtel de Hilbert",
       "description": "Unlocks a room even when the building is full.",
       "description_fr": "Déverrouille une chambre même quand le bâtiment est plein.",
-      "tags": ["merchant_4", "navigator_3"] 
+      "tags": ["merchant_4", "navigator_3"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/hilbert_hotel_key.png"
     },
     {
       "name": "Riemann's Sphere",
       "name_fr": "Sphère de Riemann",
       "description": "Maps infinity to a single point.",
       "description_fr": "Cartographie l'infini en un seul point.",
-      "tags": ["navigator_4", "scholar_3"]
+      "tags": ["navigator_4", "scholar_3"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/riemann_sphere.png"
     },
     {
       "name": "Pythagoras's Chalice",
       "name_fr": "Calice de Pythagore",
       "description": "Spills its contents if filled with greed.",
       "description_fr": "Renverse son contenu s'il est rempli avec avidité.",
-      "tags": ["merchant_4", "fighter_2"]
+      "tags": ["merchant_4", "fighter_2"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/pythagoras_chalice.png"
     },
     {
       "name": "Euler's Identity",
       "name_fr": "Identité d'Euler",
       "description": "A scroll containing the most beautiful equation.",
       "description_fr": "Un parchemin contenant la plus belle équation.",
-      "tags": ["scholar_4", "merchant_3"]
+      "tags": ["scholar_4", "merchant_3"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/euler_identity.png"
     },
     {
       "name": "Descartes' Grid",
       "name_fr": "Grille de Descartes",
       "description": "Allows the user to pinpoint any location precisely.",
       "description_fr": "Permet à l'utilisateur de localiser n'importe quel endroit avec précision.",
-      "tags": ["navigator_4", "fighter_3"]
+      "tags": ["navigator_4", "fighter_3"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/descartes_grid.png"
     },
     {
       "name": "Fermat's Margin",
       "name_fr": "Marge de Fermat",
       "description": "Contains a proof too large to fit elsewhere.",
       "description_fr": "Contient une preuve trop large pour tenir ailleurs.",
-      "tags": ["scholar_3", "navigator_2"]
+      "tags": ["scholar_3", "navigator_2"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/fermat_margin.png"
     },
     {
       "name": "Gaussian Bell",
       "name_fr": "Cloche de Gauss",
       "description": "Rings with a perfectly distributed tone.",
       "description_fr": "Sonne avec un ton parfaitement distribué.",
-      "tags": ["merchant_4", "scholar_3"]
+      "tags": ["merchant_4", "scholar_3"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/gaussian_bell.png"
     },
     {
       "name": "Napier's Bones",
       "name_fr": "Bâtons de Napier",
       "description": "Ivory rods that calculate destruction.",
       "description_fr": "Tiges en ivoire qui calculent la destruction.",
-      "tags": ["fighter_4", "merchant_3"]
+      "tags": ["fighter_4", "merchant_3"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/napier_bone.png"
     }
   ],
   [Rarity.MYTHIC]: [
@@ -409,84 +420,96 @@ export const lootData = {
       "name_fr": "Le Nombre d'Or",
       "description": "The perfect balance of all things.",
       "description_fr": "L'équilibre parfait de toutes choses.",
-      "tags": ["scholar_5", "merchant_3"]
+      "tags": ["scholar_5", "merchant_3"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/golden_ratio.png"
     },
     {
       "name": "Crown of Calculus",
       "name_fr": "Couronne du Calcul",
       "description": "Bestows infinite knowledge of change.",
       "description_fr": "Accorde une connaissance infinie du changement.",
-      "tags": ["scholar_5", "navigator_4"]
+      "tags": ["scholar_5", "navigator_4"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/crown_calculus.png"
     },
     {
       "name": "The Singularity",
       "name_fr": "La Singularité",
       "description": "A point of infinite density and zero volume.",
       "description_fr": "Un point de densité infinie et de volume nul.",
-      "tags": ["fighter_5", "navigator_4"]
+      "tags": ["fighter_5", "navigator_4"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/singularity.png"
     },
     {
       "name": "Hypercube",
       "name_fr": "Hypercube",
       "description": "A four-dimensional tesseract trapped in 3D space.",
       "description_fr": "Un tesseract quadridimensionnel piégé dans un espace 3D.",
-      "tags": ["navigator_5", "scholar_4"]
+      "tags": ["navigator_5", "scholar_4"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/hypercube.png"
     },
     {
       "name": "The Axiom",
       "name_fr": "L'Axiome",
       "description": "An undeniable truth that shatters illusions.",
       "description_fr": "Une vérité indéniable qui brise les illusions.",
-      "tags": ["scholar_5", "merchant_5"]
+      "tags": ["scholar_5", "merchant_5"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/axiom.png"
     },
     {
       "name": "Aleph-Null Crystal",
       "name_fr": "Cristal Aleph-Zéro",
       "description": "Contains the smallest level of infinity.",
       "description_fr": "Contient le plus petit niveau d'infini.",
-      "tags": ["merchant_5", "scholar_5"]
+      "tags": ["merchant_5", "scholar_5"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/null_crystal.png"
     },
     {
       "name": "Chaos Theory Butterfly",
       "name_fr": "Papillon de la Théorie du Chaos",
       "description": "One flap of its wings causes a storm world away.",
       "description_fr": "Un battement de ses ailes provoque une tempête à l'autre bout du monde.",
-      "tags": ["fighter_5", "navigator_5"]
+      "tags": ["fighter_5", "navigator_5"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/chaos_butterfly.png"
     },
     {
       "name": "Schrödinger's Box",
       "name_fr": "Boîte de Schrödinger",
       "description": "The contents are both alive and dead until opened.",
       "description_fr": "Le contenu est à la fois vivant et mort jusqu'à l'ouverture.",
-      "tags": ["merchant_5", "scholar_4"]
+      "tags": ["merchant_5", "scholar_4"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/shrodinger_box.png"
     },
     {
       "name": "The Zero Point",
       "name_fr": "Le Point Zéro",
       "description": "The coordinate from which all reality originates.",
       "description_fr": "La coordonnée d'où provient toute réalité.",
-      "tags": ["navigator_5", "fighter_3"]
+      "tags": ["navigator_5", "fighter_3"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/zero_point.png"
     },
     {
       "name": "Event Horizon Lens",
       "name_fr": "Lentille de l'Horizon des Événements",
       "description": "Allows the user to see beyond the point of no return.",
       "description_fr": "Permet à l'utilisateur de voir au-delà du point de non-retour.",
-      "tags": ["navigator_5", "scholar_5"]
+      "tags": ["navigator_5", "scholar_5"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/eventHorizon_lens.png"
     },
     {
       "name": "Planck's Constant",
       "name_fr": "Constante de Planck",
       "description": "The fundamental unit of reality's grain.",
       "description_fr": "L'unité fondamentale du grain de la réalité.",
-      "tags": ["scholar_5", "merchant_3"]
+      "tags": ["scholar_5", "merchant_3"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/planck_constant.png"
     },
     {
       "name": "Godel's Loop",
       "name_fr": "Boucle de Gödel",
       "description": "A logical paradox that traps gods.",
       "description_fr": "Un paradoxe logique qui piège les dieux.",
-      "tags": ["fighter_5", "scholar_4"]
+      "tags": ["fighter_5", "scholar_4"],
+      "image": "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/items/godel_loop.png"
     }
   ]
 };
