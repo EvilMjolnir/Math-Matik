@@ -27,6 +27,9 @@ interface HomeProps {
   onProgressTome: (steps: number, bypassEncounters?: boolean) => void;
   onConsumeItem: (index: number, source: 'inventory' | 'equipped') => void;
   onLevelUpCompanion: (id: string) => void;
+  queuedEncounter: Encounter | null;
+  onActivateEncounter: () => void;
+  isLevelUpOpen: boolean;
 }
 
 const Home: React.FC<HomeProps> = ({ 
@@ -45,7 +48,10 @@ const Home: React.FC<HomeProps> = ({
   onUpdateInventory,
   onProgressTome,
   onConsumeItem,
-  onLevelUpCompanion
+  onLevelUpCompanion,
+  queuedEncounter,
+  onActivateEncounter,
+  isLevelUpOpen
 }) => {
   // We use this state to track WHICH tab is open. If null, modal is closed.
   const [activeProfileTab, setActiveProfileTab] = useState<'stats' | 'inventory' | 'companions' | null>(null);
@@ -101,6 +107,13 @@ const Home: React.FC<HomeProps> = ({
       }
   };
 
+  // Called by ActiveQuestPanel when animation finishes
+  const handleAnimationComplete = () => {
+      if (queuedEncounter) {
+          onActivateEncounter();
+      }
+  };
+
   const layoutProps: HomeLayoutProps = {
     player,
     activeTome,
@@ -115,6 +128,9 @@ const Home: React.FC<HomeProps> = ({
     canAffordRecherche,
     rechercheCost,
     isPanelAnimating,
+    queuedEncounter,
+    isAnimPaused: isLevelUpOpen,
+    onAnimationComplete: handleAnimationComplete,
     onViewChange,
     onOpenTomes,
     onStartRecherche,

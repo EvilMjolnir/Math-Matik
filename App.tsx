@@ -39,6 +39,9 @@ const GameContent: React.FC = () => {
   
   const [showTomeModal, setShowTomeModal] = useState(false);
   const [activeEncounter, setActiveEncounter] = useState<Encounter | null>(null);
+  
+  // New state to hold encounter pending animation
+  const [queuedEncounter, setQueuedEncounter] = useState<Encounter | null>(null);
 
   // Initialize Admin - Check both storages or just current?
   useEffect(() => {
@@ -131,6 +134,7 @@ const GameContent: React.FC = () => {
 
     // Reset view state
     setActiveEncounter(null);
+    setQueuedEncounter(null);
     setTomes(JSON.parse(JSON.stringify(ALL_TOMES))); // Reset tome progress locally
     alert(t.options.dataTab + ": Profile reset successful.");
   };
@@ -182,7 +186,7 @@ const GameContent: React.FC = () => {
           currentXp: newXp,
           level: newLevel,
           maxHp: prev.maxHp + hpIncrease,
-          currentHp: prev.currentHp, // HP stays the same, no healing
+          // currentHp remains same until modal is dismissed
           attack: (prev.attack || 5) + attackIncrease,
           agility: newAgility,
           defense: newDefense
@@ -284,6 +288,16 @@ const GameContent: React.FC = () => {
     }
   };
 
+  // Called when closing the Level Up Modal
+  const handleDismissLevelUp = () => {
+      setShowLevelUp(false);
+      // Restore HP fully upon level up dismissal
+      setPlayer(prev => ({
+          ...prev,
+          currentHp: prev.maxHp
+      }));
+  };
+
   const handleBackToHome = () => {
     setCurrentView(GameView.HOME);
     checkPendingLevelUp();
@@ -376,12 +390,56 @@ const GameContent: React.FC = () => {
     });
   };
 
+  const handlePlayerDefeat = () => {
+      // 1. Calculate Penalty and Update Player
+      setPlayer(prev => {
+          const goldPenalty = Math.floor(prev.gold * 0.1);
+          const newHp = Math.floor(prev.maxHp * 0.5); // Restore to 50%
+          
+          return {
+              ...prev,
+              gold: Math.max(0, prev.gold - goldPenalty),
+              currentHp: newHp
+          };
+      });
+
+      // 2. Handle Tome Progress
+      if (activeEncounter) {
+          setTomes(prevTomes => {
+              const newTomes = [...prevTomes];
+              const activeIndex = newTomes.findIndex(t => t.id === player.activeTomeId);
+              
+              if (activeIndex > -1) {
+                  const currentTome = newTomes[activeIndex];
+                  
+                  if (activeEncounter.type === 'boss') {
+                      // Boss Defeat: Reset the active tome's progress to 0
+                      newTomes[activeIndex] = {
+                          ...currentTome,
+                          currentDistance: 0
+                      };
+                  } else {
+                      // Normal Defeat: Push back 10 steps (clamped to 0) to prevent skipping
+                      newTomes[activeIndex] = {
+                          ...currentTome,
+                          currentDistance: Math.max(0, currentTome.currentDistance - 10)
+                      };
+                  }
+              }
+              return newTomes;
+          });
+      }
+
+      // 3. Clear Encounter and Return Home
+      setActiveEncounter(null);
+      setQueuedEncounter(null);
+      setCurrentView(GameView.HOME);
+  };
+
   const handleTomeProgress = (baseSteps: number, bypassEncounters: boolean = false) => {
     if (player.activeTomeId === 'infinite') return;
 
     // Apply Movement Bonuses
-    // Agility Bonus: +1 movement per successful segment per Agility point
-    // Multiplier Bonus: Percentage multiplier from items
     const agilityBonus = (player.agility || 0) * baseSteps;
     const totalBaseSteps = baseSteps + agilityBonus;
     
@@ -474,13 +532,23 @@ const GameContent: React.FC = () => {
     setTomes(newTomes);
     
     if (encounterToTrigger) {
-        setActiveEncounter(encounterToTrigger);
+        // IMPORTANT: We queue the encounter here instead of setting active immediately.
+        // This allows the animation to play out first.
+        setQueuedEncounter(encounterToTrigger);
     }
 
     // If progress was made, this counts as a "minigame play" for potion consumption
     if (stopDist > currentDist) {
         consumePotions();
     }
+  };
+
+  // Called by Home after animation completes
+  const handleActivateEncounter = () => {
+      if (queuedEncounter) {
+          setActiveEncounter(queuedEncounter);
+          setQueuedEncounter(null);
+      }
   };
 
   const handleEncounterComplete = () => {
@@ -514,6 +582,7 @@ const GameContent: React.FC = () => {
       researchPlayCount: 0 
     }));
     setActiveEncounter(null); 
+    setQueuedEncounter(null);
   };
   
   const handleTestEncounter = (encounter: Encounter, tomeId: string) => {
@@ -573,6 +642,7 @@ const GameContent: React.FC = () => {
       onProgressTome: handleTomeProgress,
       onTakeDamage: takeDamage,
       onAddGold: addGold,
+      onPlayerDefeat: handlePlayerDefeat,
       isAdmin: isAdmin,
     };
 
@@ -647,7 +717,6 @@ const GameContent: React.FC = () => {
                 activeEncounter={activeEncounter}
                 isInfinite={player.activeTomeId === 'infinite'}
                 lang={lang}
-                // onToggleLang removed, handled in Options
                 activeConfig={activeConfig}
                 onStartRecherche={handleStartRecherche}
                 isAdmin={isAdmin}
@@ -656,6 +725,9 @@ const GameContent: React.FC = () => {
                 onProgressTome={handleTomeProgress}
                 onConsumeItem={handleConsumeItem}
                 onLevelUpCompanion={handleLevelUpCompanion}
+                queuedEncounter={queuedEncounter}
+                onActivateEncounter={handleActivateEncounter}
+                isLevelUpOpen={showLevelUp}
             />
         );
     }
@@ -677,7 +749,7 @@ const GameContent: React.FC = () => {
       <LevelUpModal 
         isOpen={showLevelUp} 
         level={leveledUpTo} 
-        onClose={() => setShowLevelUp(false)}
+        onClose={handleDismissLevelUp}
         t={t}
       />
 

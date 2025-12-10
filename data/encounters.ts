@@ -142,7 +142,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     goldReward: 50,
     xpReward: 100,
     tags: ['fierce_4'], // +40% Dmg (was Deadly)
-    timerDuration: 7
+    timerDuration: 7,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/void_shade.png"
   },
   t3_wizard: {
     id: 't3_wizard',
@@ -154,7 +155,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 25,
     goldReward: 75,
     xpReward: 150,
-    timerDuration: 10
+    timerDuration: 10,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/mad_wizard.png"
   },
   t3_prime_slime: {
     id: 't3_prime_slime',
@@ -166,7 +168,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 18,
     goldReward: 10,
     xpReward: 25,
-    timerDuration: 8
+    timerDuration: 8,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/prime_slime.png"
   },
   t3_algebra_wraith: {
     id: 't3_algebra_wraith',
@@ -178,7 +181,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 20,
     goldReward: 12,
     xpReward: 30,
-    timerDuration: 8
+    timerDuration: 8,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/algebra_wraith.png"
   },
   t3_logarithm_lizard: {
     id: 't3_logarithm_lizard',
@@ -190,7 +194,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 21,
     goldReward: 13,
     xpReward: 32,
-    timerDuration: 8
+    timerDuration: 8,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/logarithm_lizard.png"
   },
   t3_Ouroboros: {
     id: 't3_Ouroboros',
@@ -203,7 +208,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     goldReward: 50,
     xpReward: 75,
     type: 'boss',
-    timerDuration: 8
+    timerDuration: 8,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/Ouroboros.png"
   },
 
   // --- Tome 4: Summit (Levels 7-8) ---
@@ -219,7 +225,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     goldReward: 16,
     xpReward: 40,
     tags: ['armored_3', 'fierce_2'],
-    timerDuration: 10
+    timerDuration: 10,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/trigonometry_troll.png"
   },
   t4_integration_imp: {
     id: 't4_integration_imp',
@@ -231,7 +238,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 26,
     goldReward: 17,
     xpReward: 42,
-    timerDuration: 10
+    timerDuration: 10,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/integration_imp.png"
   },
   t4_calculus_kraken: {
     id: 't4_calculus_kraken',
@@ -244,7 +252,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     goldReward: 20,
     xpReward: 45,
     tags: ['elite_2'],
-    timerDuration: 10
+    timerDuration: 10,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/calculus_kraken.png"
   },
   t4_probability_phantom: {
     id: 't4_probability_phantom',
@@ -256,7 +265,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 32,
     goldReward: 22,
     xpReward: 47,
-    timerDuration: 10
+    timerDuration: 10,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/probability_phantom.png"
   },
   t4_statistic_sphinx: {
     id: 't4_statistic_sphinx',
@@ -268,7 +278,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 35,
     goldReward: 25,
     xpReward: 50,
-    timerDuration: 10
+    timerDuration: 10,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/statistic_sphinx.png"
   },
   t4_matrix_minotaur: {
     id: 't4_matrix_minotaur',
@@ -282,7 +293,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     xpReward: 55,
     tags: ['elite_3', 'wealthy_2'],
     type: 'boss',
-    timerDuration: 12
+    timerDuration: 12,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/matrix_minotaur.png"
   },
 
   // --- Tome 5: Chaos (Levels 9-10) ---
@@ -298,7 +310,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     goldReward: 32,
     xpReward: 57,
     tags: ['armored_4'],
-    timerDuration: 12
+    timerDuration: 12,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/eigenvalue_elemental.png"
   },
   t5_permutation_puck: {
     id: 't5_permutation_puck',
@@ -310,7 +323,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 45, // Capped at 50
     goldReward: 35,
     xpReward: 60,
-    timerDuration: 12
+    timerDuration: 12,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/permutation_puck.png"
   },
   t5_limit_leviathan: {
     id: 't5_limit_leviathan',
@@ -323,7 +337,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     goldReward: 37,
     xpReward: 63,
     tags: ['fierce_3'],
-    timerDuration: 12
+    timerDuration: 12,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/limit_leviathan.png"
   },
   t5_set_theory_serpent: {
     id: 't5_set_theory_serpent',
@@ -335,7 +350,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 50, // Capped at 50 (was 50)
     goldReward: 40,
     xpReward: 70,
-    timerDuration: 12
+    timerDuration: 12,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/theory_serpent.png"
   },
   t5_series_sorcerer: {
     id: 't5_series_sorcerer',
@@ -348,7 +364,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     goldReward: 45,
     xpReward: 75,
     tags: ['elite_4'],
-    timerDuration: 12
+    timerDuration: 12,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/series_sorcerer.png"
   },
   t5_quadric_quest: {
     id: 't5_quadric_quest',
@@ -360,7 +377,8 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     attack: 50, // Capped at 50 (was 60)
     goldReward: 50,
     xpReward: 80,
-    timerDuration: 12
+    timerDuration: 12,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/quadric_quest.png"
   },
   t5_pi_phantom: {
     id: 't5_pi_phantom',
@@ -374,6 +392,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     xpReward: 90,
     tags: ['elite_5', 'fierce_5'],
     type: 'boss',
-    timerDuration: 12
+    timerDuration: 12,
+    image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/pi_phantom.png"
   }
 };

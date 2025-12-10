@@ -21,6 +21,8 @@ const HomeTablet: React.FC<HomeLayoutProps> = ({
   canAffordRecherche,
   rechercheCost,
   isPanelAnimating,
+  isAnimPaused,
+  onAnimationComplete,
   onViewChange,
   onOpenTomes,
   onStartRecherche,
@@ -62,6 +64,8 @@ const HomeTablet: React.FC<HomeLayoutProps> = ({
                     t={t}
                     lang={lang}
                     onAnimating={setIsPanelAnimating}
+                    isPaused={isAnimPaused}
+                    onAnimationComplete={onAnimationComplete}
                   />
                   
                   {isAdmin && activeTome && !isInfinite && !activeEncounter && (
@@ -158,7 +162,7 @@ const HomeTablet: React.FC<HomeLayoutProps> = ({
               <img 
                 src="https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/icon_inventory.png" 
                 alt="Inventory" 
-                className="w-20 h-20 object-contain group-hover:scale-110 transition-transform"
+                className="w-24 h-24 object-contain group-hover:scale-110 transition-transform"
               />
             </button>
             <button 
@@ -167,9 +171,9 @@ const HomeTablet: React.FC<HomeLayoutProps> = ({
               title="Companions"
             >
               <img 
-                src="https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/icon_friends.png" 
+                src="https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/icon_companion.png" 
                 alt="Friends" 
-                className="w-14 h-14 object-contain group-hover:scale-110 transition-transform"
+                className="w-20 h-20 object-contain group-hover:scale-110 transition-transform"
               />
             </button>
           </div>

@@ -19,6 +19,8 @@ const HomeMobile: React.FC<HomeLayoutProps> = ({
   canAffordRecherche,
   rechercheCost,
   isPanelAnimating,
+  isAnimPaused,
+  onAnimationComplete,
   onViewChange,
   onOpenTomes,
   onStartRecherche,
@@ -48,6 +50,8 @@ const HomeMobile: React.FC<HomeLayoutProps> = ({
                 t={t}
                 lang={lang}
                 onAnimating={setIsPanelAnimating}
+                isPaused={isAnimPaused}
+                onAnimationComplete={onAnimationComplete}
               />
               
               {isAdmin && activeTome && !isInfinite && !activeEncounter && (
@@ -152,7 +156,7 @@ const HomeMobile: React.FC<HomeLayoutProps> = ({
           <img 
             src="https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/icon_inventory.png" 
             alt="Inventory" 
-            className="w-16 h-16 object-contain"
+            className="w-20 h-20 object-contain"
           />
         </button>
         <button 
@@ -161,9 +165,9 @@ const HomeMobile: React.FC<HomeLayoutProps> = ({
           title="Companions"
         >
           <img 
-            src="https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/icon_friends.png" 
+            src="https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/icon_companion.png" 
             alt="Friends" 
-            className="w-12 h-12 object-contain"
+            className="w-16 h-16 object-contain"
           />
         </button>
       </div>

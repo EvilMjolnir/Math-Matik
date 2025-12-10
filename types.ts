@@ -186,6 +186,7 @@ export interface MinigameProps {
   onAddGold?: (amount: number) => void;
   onSpendGold?: (amount: number) => void;
   onProgressTome: (steps: number, bypassEncounters?: boolean) => void;
+  onPlayerDefeat: () => void; // New callback for 0 HP scenarios
   playerGold?: number;
   playCount?: number; 
   encounter?: Encounter;
@@ -213,6 +214,11 @@ export interface HomeLayoutProps {
   canAffordRecherche: boolean;
   rechercheCost: number;
   isPanelAnimating: boolean;
+  
+  // Animation Coordination
+  queuedEncounter: Encounter | null;
+  isAnimPaused: boolean;
+  onAnimationComplete: () => void;
 
   // Actions
   onViewChange: (view: GameView) => void;

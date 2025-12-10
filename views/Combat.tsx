@@ -29,6 +29,7 @@ const Combat: React.FC<CombatProps> = ({
   onAddXp, 
   onAddGold,
   onProgressTome, 
+  onPlayerDefeat,
   encounter, 
   onEncounterComplete,
   onTakeDamage,
@@ -121,6 +122,13 @@ const Combat: React.FC<CombatProps> = ({
       }
     }
   }, [config, encounter, isBossMode, effectiveMaxHp, normalMaxTime, activeBossConfig.timerDuration]);
+
+  // Monitor Player Health for immediate defeat
+  useEffect(() => {
+    if (playerStats && playerStats.currentHp <= 0 && gameState === 'playing') {
+       finishGameNormal(false);
+    }
+  }, [playerStats?.currentHp, gameState]);
 
   // --- Normal Mode Timer Logic ---
   useEffect(() => {
@@ -420,7 +428,10 @@ const Combat: React.FC<CombatProps> = ({
   const handleModalAction = () => {
     playMenuBackSound();
     fadeOutCurrentSound();
-    if (encounter && isVictory && onEncounterComplete) {
+    
+    if (!isVictory && encounter) {
+       onPlayerDefeat();
+    } else if (encounter && isVictory && onEncounterComplete) {
       onEncounterComplete();
     } else {
       onBack();
@@ -631,7 +642,7 @@ const Combat: React.FC<CombatProps> = ({
 
       <Modal 
         title={t.combat.battleReport}
-        actionLabel={isVictory ? (encounter ? t.combat.continue : t.buttons.back) : t.combat.tryAgain}
+        actionLabel={isVictory ? (encounter ? t.combat.continue : t.buttons.back) : t.buttons.returnCamp}
         onAction={handleModalAction} 
         isOpen={gameState === 'finished'}
         colorClass={isVictory ? "bg-parchment-200" : "bg-red-950 text-white border-red-500"}

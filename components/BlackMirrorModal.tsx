@@ -159,7 +159,7 @@ const BlackMirrorModal: React.FC<BlackMirrorModalProps> = ({
                                     className={`
                                         relative p-3 rounded-lg border-2 flex flex-col items-center transition-all duration-200 group
                                         ${isSelected 
-                                            ? 'bg-red-900/30 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.4)] scale-[1.02]' 
+                                            ? 'bg-purple-900/40 border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.4)] scale-[1.02]' 
                                             : 'bg-slate-800/80 border-slate-700 hover:bg-slate-800 hover:border-purple-500/50'
                                         }
                                     `}
@@ -182,8 +182,8 @@ const BlackMirrorModal: React.FC<BlackMirrorModalProps> = ({
                                     <div className="text-[10px] text-slate-500 uppercase tracking-widest">{item.rarity}</div>
 
                                     {isSelected && (
-                                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg pointer-events-none">
-                                            <Check className="w-12 h-12 text-red-500 drop-shadow-lg" />
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-lg pointer-events-none border-2 border-purple-500/50">
+                                            <Check className="w-12 h-12 text-purple-400 drop-shadow-lg" />
                                         </div>
                                     )}
                                 </button>
@@ -207,8 +207,8 @@ const BlackMirrorModal: React.FC<BlackMirrorModalProps> = ({
                     px-8 py-3 rounded-lg font-serif font-bold text-lg flex items-center transition-all shadow-lg
                     ${selectedIndices.length > 0 
                         ? (isConfirming 
-                            ? 'bg-red-600 text-white hover:bg-red-700 border border-red-500 animate-shake' 
-                            : 'bg-gradient-to-r from-red-700 to-orange-700 text-white hover:from-red-600 hover:to-orange-600 border border-orange-500')
+                            ? 'bg-gradient-to-r from-pink-600 to-purple-700 text-white hover:from-pink-500 hover:to-purple-600 border border-pink-400 animate-shake shadow-[0_0_20px_rgba(236,72,153,0.5)]' 
+                            : 'bg-gradient-to-r from-purple-800 to-pink-700 text-white hover:from-purple-700 hover:to-pink-600 border border-pink-600')
                         : 'bg-slate-800 text-slate-600 cursor-not-allowed border border-slate-700'
                     }
                 `}

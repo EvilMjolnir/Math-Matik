@@ -10,9 +10,19 @@ interface ActiveQuestPanelProps {
   t: Translation;
   lang: string;
   onAnimating?: (isAnimating: boolean) => void;
+  isPaused?: boolean;
+  onAnimationComplete?: () => void;
 }
 
-const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ activeEncounter, activeTome, t, lang, onAnimating }) => {
+const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ 
+  activeEncounter, 
+  activeTome, 
+  t, 
+  lang, 
+  onAnimating,
+  isPaused = false,
+  onAnimationComplete
+}) => {
   const getTomeTitle = (tome: Tome) => (lang === 'fr' && tome.title_fr) ? tome.title_fr : tome.title;
   const getTomeDesc = (tome: Tome) => (lang === 'fr' && tome.description_fr) ? tome.description_fr : tome.description;
 
@@ -51,6 +61,7 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ activeEncounter, ac
   // --- Effect 1: Notify Parent of Animation State ---
   useEffect(() => {
     if (onAnimating) {
+        // If paused, we are effectively not animating yet from the parent's perspective of blocking interactions
         onAnimating(isAnimating);
     }
     return () => {
@@ -61,6 +72,14 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ activeEncounter, ac
   // --- Effect 2: Handle Animation Loop & Sound ---
   useEffect(() => {
     if (!activeTome) return;
+
+    // If we reached target, notify complete
+    if (!isAnimating && onAnimationComplete) {
+       onAnimationComplete();
+       return;
+    }
+
+    if (isPaused) return; // Do not start animation if paused (e.g. Level Up modal open)
 
     // Only animate if the display (old) is less than the target (new)
     if (isAnimating && targetDistance > 0) {
@@ -124,6 +143,9 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ activeEncounter, ac
                   }
               }, 100);
           }
+
+          // Notify completion
+          if (onAnimationComplete) onAnimationComplete();
         }
       }, intervalTime);
 
@@ -137,7 +159,7 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({ activeEncounter, ac
             sessionStorage.setItem(storageKey, targetDistance.toString());
         }
     }
-  }, [targetDistance, isAnimating, storageKey, activeTome]); 
+  }, [targetDistance, isAnimating, storageKey, activeTome, isPaused]); 
 
   // Decide what to render: If animating, FORCE the progress view.
   const showEncounter = activeEncounter && !isAnimating;

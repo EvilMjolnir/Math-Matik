@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { GameConfig, MathProblem, Rarity, Item, Card, MinigameProps } from '../types';
 import { generateDivision } from '../services/mathService';
