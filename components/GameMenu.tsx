@@ -1,6 +1,4 @@
 
-
-
 import React from 'react';
 import { GameView } from '../types';
 import { Footprints, Sword, Search, Coins, FlaskConical } from 'lucide-react';
@@ -16,6 +14,7 @@ interface GameMenuProps {
   canAffordRecherche: boolean;
   activeEncounter: boolean;
   rechercheCost: number;
+  compact?: boolean;
 }
 
 const GameMenu: React.FC<GameMenuProps> = ({ 
@@ -26,42 +25,47 @@ const GameMenu: React.FC<GameMenuProps> = ({
   canCombat, 
   canAffordRecherche, 
   activeEncounter, 
-  rechercheCost 
+  rechercheCost,
+  compact = false
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
+    <div className={`grid grid-cols-1 ${compact ? 'gap-3' : 'md:grid-cols-2 lg:grid-cols-4 gap-6'} w-full`}>
       <MenuCard 
         title={t.titles.movement}
-        icon={<Footprints className="w-12 h-12" />} 
+        icon={<Footprints className={compact ? "w-8 h-8" : "w-12 h-12"} />} 
         description={t.home.menuDescMovement}
         onClick={() => { playMenuOpenSound(); onViewChange(GameView.MOVEMENT); }}
         color="hover:bg-green-900/90 hover:border-green-600"
         disabled={!canMove}
+        compact={compact}
       />
       <MenuCard 
         title={t.titles.combat} 
-        icon={<Sword className="w-12 h-12" />} 
+        icon={<Sword className={compact ? "w-8 h-8" : "w-12 h-12"} />} 
         description={t.home.menuDescCombat}
         onClick={() => { playMenuOpenSound(); onViewChange(GameView.COMBAT); }}
         color={activeEncounter ? "bg-red-900/90 border-red-500 animate-pulse hover:bg-red-900" : "hover:bg-red-900/90 hover:border-red-600"}
         disabled={!canCombat}
+        compact={compact}
       />
       <MenuCard 
         title={t.titles.recherche} 
-        icon={<Search className="w-12 h-12" />} 
+        icon={<Search className={compact ? "w-8 h-8" : "w-12 h-12"} />} 
         description={t.home.menuDescRecherche}
         onClick={() => { playMenuOpenSound(); onStartRecherche(rechercheCost); }}
         color="hover:bg-blue-900/90 hover:border-blue-600"
         disabled={!canMove || !canAffordRecherche}
         cost={rechercheCost}
+        compact={compact}
       />
       <MenuCard 
         title={t.titles.alchimie} 
-        icon={<FlaskConical className="w-12 h-12" />} 
+        icon={<FlaskConical className={compact ? "w-8 h-8" : "w-12 h-12"} />} 
         description={t.home.menuDescAlchimie}
         onClick={() => { playMenuOpenSound(); onViewChange(GameView.ALCHIMIE); }}
         color="hover:bg-purple-900/90 hover:border-purple-600"
         disabled={!canMove} // Available when not in encounter
+        compact={compact}
       />
     </div>
   );
@@ -75,14 +79,19 @@ interface MenuCardProps {
   color: string;
   disabled?: boolean;
   cost?: number;
+  compact?: boolean;
 }
 
-const MenuCard: React.FC<MenuCardProps> = ({ title, icon, description, onClick, color, disabled, cost }) => (
+const MenuCard: React.FC<MenuCardProps> = ({ title, icon, description, onClick, color, disabled, cost, compact }) => (
   <button 
     onClick={onClick}
     disabled={disabled}
     className={`
-      flex flex-col items-center justify-center p-6 rounded-xl border-4 transition-all duration-300 group relative overflow-hidden h-full min-h-[250px]
+      flex items-center justify-center rounded-xl border-4 transition-all duration-300 group relative overflow-hidden
+      ${compact 
+        ? 'flex-row h-24 px-6 w-full text-left' 
+        : 'flex-col h-full min-h-[250px] p-6 text-center'
+      }
       ${disabled 
         ? 'bg-gray-800/80 border-gray-700 opacity-70 cursor-not-allowed grayscale' 
         : `bg-parchment-900/85 border-parchment-600 ${color} hover:scale-105 hover:shadow-2xl`
@@ -101,11 +110,15 @@ const MenuCard: React.FC<MenuCardProps> = ({ title, icon, description, onClick, 
         {cost}
       </div>
     )}
-    <div className={`mb-4 transition-transform duration-300 ${disabled ? '' : 'group-hover:scale-110 group-hover:rotate-3'} text-parchment-200`}>
+    
+    <div className={`transition-transform duration-300 ${compact ? 'mr-4 shrink-0' : 'mb-4'} ${disabled ? '' : 'group-hover:scale-110 group-hover:rotate-3'} text-parchment-200`}>
       {icon}
     </div>
-    <h2 className="text-2xl font-serif font-bold text-parchment-100 mb-2">{title}</h2>
-    <p className="text-center text-parchment-300 text-sm font-serif">{description}</p>
+    
+    <div className="flex flex-col flex-1">
+      <h2 className={`${compact ? 'text-xl' : 'text-2xl'} font-serif font-bold text-parchment-100 mb-1`}>{title}</h2>
+      {!compact && <p className="text-parchment-300 text-sm font-serif">{description}</p>}
+    </div>
   </button>
 );
 

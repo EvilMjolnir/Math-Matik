@@ -7,6 +7,7 @@ import Modal from '../components/Modal';
 import { ChevronLeft, Footprints, ShieldCheck, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound, playCorrectSound, playWrongSound } from '../services/audioService';
+import { useDeviceType } from '../hooks/useDeviceType';
 
 interface MovementProps extends MinigameProps {
   config: GameConfig['movement'];
@@ -18,6 +19,7 @@ const XP_PER_CORRECT = 4;
 
 const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgressTome, isAdmin }) => {
   const { t } = useLocalization();
+  const deviceType = useDeviceType();
   const [problem, setProblem] = useState<MathProblem | null>(null);
   const [segmentResults, setSegmentResults] = useState<SegmentStatus[]>([]);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
@@ -175,7 +177,7 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
          </div>
       )}
 
-      <div className="mt-auto mb-12">
+      <div className={deviceType === 'tablet' ? "mt-auto mb-32" : "mt-auto mb-12"}>
         <Keypad 
           onInput={handleInput} 
           onDelete={handleDelete} 

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { PlayerStats, Item, EffectType, Companion } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS, DEFAULT_USER_IMAGE } from '../constants';
@@ -204,11 +205,10 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
   const renderSlot = (index: number) => {
     const item = player.equipped ? player.equipped[index] : null;
     let isLocked = false;
-    let unlockLevel = 0;
-
-    if (index === 3) { isLocked = player.level < 5; unlockLevel = 5; }
-    if (index === 4) { isLocked = player.level < 10; unlockLevel = 10; }
-    if (index === 5) { isLocked = player.level < 15; unlockLevel = 15; }
+    
+    if (index === 3) { isLocked = player.level < 5; }
+    if (index === 4) { isLocked = player.level < 10; }
+    if (index === 5) { isLocked = player.level < 15; }
 
     let borderClass = 'border-parchment-400';
     if (item) {
@@ -233,7 +233,6 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
             {isLocked ? (
                 <div className="flex flex-col items-center text-gray-500">
                     <Lock className="w-6 h-6 mb-1" />
-                    <span className="text-xs uppercase font-bold">{t.equipment.reqLevel} {unlockLevel}</span>
                 </div>
             ) : item ? (
                 <div 
@@ -289,10 +288,10 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
-      <div className="relative w-full max-w-6xl bg-parchment-200 rounded-lg shadow-2xl border-4 border-parchment-800 transition-colors duration-500 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-6xl bg-parchment-200 rounded-lg shadow-2xl border-4 border-parchment-800 transition-colors duration-500 flex flex-col h-[90vh]">
         
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b-2 rounded-t-lg bg-parchment-300/50 border-parchment-400">
+        <div className="flex justify-between items-center p-6 border-b-2 rounded-t-lg bg-parchment-300/50 border-parchment-400 shrink-0">
           <div className="flex items-center w-full">
              <div className={headerContainerClass}>
                 <img src={headerImgSrc} alt="Header Icon" className={imgClass} />
@@ -346,13 +345,26 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                )}
              </div>
           </div>
-          <button onClick={() => { playMenuBackSound(); onClose(); }} className="p-2 hover:bg-white/20 rounded-full transition-colors shrink-0 ml-4">
-            <X className="w-8 h-8" />
-          </button>
+          
+          <div className="flex items-center space-x-2">
+            {activeTab === 'inventory' && (
+                <button 
+                    onClick={onOpenBlackMirror}
+                    className="flex items-center px-3 py-2 rounded-full text-xs font-bold transition-all shadow-md bg-slate-900 text-purple-300 border border-purple-500 hover:bg-slate-800 hover:text-white mr-2"
+                    title={t.profile.blackMirror}
+                >
+                    <Flame className="w-4 h-4 md:mr-2 text-purple-500" />
+                    <span className="hidden md:inline">{t.profile.blackMirror}</span>
+                </button>
+            )}
+            <button onClick={() => { playMenuBackSound(); onClose(); }} className="p-2 hover:bg-white/20 rounded-full transition-colors shrink-0">
+                <X className="w-8 h-8" />
+            </button>
+          </div>
         </div>
 
         {/* Body */}
-        <div className="p-8 overflow-y-auto custom-scrollbar flex-1 bg-parchment-200 relative">
+        <div className="p-8 overflow-y-auto custom-scrollbar flex-1 bg-parchment-200 relative h-full">
           
           {/* STATS TAB */}
           {activeTab === 'stats' && (
@@ -450,25 +462,14 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
           {/* INVENTORY TAB */}
           {activeTab === 'inventory' && (
             <div className="flex flex-col h-full animate-fadeIn relative">
-                <div className="absolute top-0 right-0 z-10">
-                    <button 
-                        onClick={onOpenBlackMirror}
-                        className="flex items-center px-4 py-2 rounded-full text-xs font-bold transition-all shadow-md bg-slate-900 text-purple-300 border border-purple-500 hover:bg-slate-800 hover:text-white"
-                    >
-                        <Flame className="w-3 h-3 mr-2 text-purple-500" />
-                        {t.profile.blackMirror}
-                        <ExternalLink className="w-3 h-3 ml-2" />
-                    </button>
-                </div>
-
                 <div className="text-center text-sm mb-4 italic flex items-center justify-center text-parchment-600">
                     <Sparkles className="w-4 h-4 mr-2" />
                     {t.equipment.dragHint}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
-                    {/* Active Slots Section */}
-                    <div className="p-4 rounded border bg-parchment-300/30 border-parchment-400">
+                <div className="flex flex-col-reverse md:grid md:grid-cols-2 gap-4 h-full">
+                    {/* Active Slots Section (Bottom on Mobile, Left on Desktop) */}
+                    <div className="p-4 rounded border bg-parchment-300/30 border-parchment-400 shrink-0">
                         <h3 className="text-lg font-bold font-serif mb-3 text-parchment-900 border-b border-parchment-400 pb-1">
                             {t.equipment.title}
                         </h3>
@@ -477,9 +478,9 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                         </div>
                     </div>
 
-                    {/* Backpack Section */}
+                    {/* Backpack Section (Top on Mobile, Right on Desktop) */}
                     <div 
-                        className="p-4 rounded border flex flex-col h-full overflow-hidden bg-parchment-100 border-parchment-400"
+                        className="p-4 rounded border flex flex-col h-full overflow-hidden bg-parchment-100 border-parchment-400 flex-1"
                         onDrop={(e) => handleDrop(e, 0, 'inventory')}
                         onDragOver={handleDragOver}
                     >

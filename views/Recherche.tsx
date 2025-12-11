@@ -10,6 +10,7 @@ import { ChevronLeft, Search, Loader2, Coins, AlertTriangle, CheckCircle, XCircl
 import { useLocalization } from '../localization';
 import Modal from '../components/Modal';
 import { playMenuOpenSound, playMenuBackSound, fadeOutCurrentSound, playCorrectSound, playWrongSound } from '../services/audioService';
+import { useDeviceType } from '../hooks/useDeviceType';
 
 interface RechercheProps extends MinigameProps {
   config: GameConfig['recherche'];
@@ -36,6 +37,7 @@ const CHEST_IMAGES: Record<Rarity, string> = {
 
 const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddItem, playerGold = 0, lootWeights = [], isAdmin }) => {
   const { t } = useLocalization();
+  const deviceType = useDeviceType();
   const [phase, setPhase] = useState<'select' | 'solve' | 'result'>('select');
   const [cards, setCards] = useState<Card[]>([]);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
@@ -343,7 +345,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddIte
          </div>
         )}
 
-        <div className="mt-auto mb-12">
+        <div className={deviceType === 'tablet' ? "mt-auto mb-32" : "mt-auto mb-12"}>
           <Keypad 
             onInput={handleInput} 
             onDelete={handleDelete} 

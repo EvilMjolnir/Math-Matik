@@ -11,6 +11,7 @@ import CombatEnemyPanel from '../components/CombatEnemyPanel';
 import { useLocalization } from '../localization';
 import { ChevronLeft, Timer, Skull, Trophy, Check, X, ShieldCheck } from 'lucide-react';
 import { playMenuBackSound, playHitSound, playDamageSound, playVictoryTrumpetSound, fadeOutCurrentSound, playCorrectSound, playWrongSound } from '../services/audioService';
+import { useDeviceType } from '../hooks/useDeviceType';
 
 interface CombatProps extends MinigameProps {
   config: GameConfig['combat'];
@@ -36,6 +37,7 @@ const Combat: React.FC<CombatProps> = ({
   isAdmin
 }) => {
   const { t, lang } = useLocalization();
+  const deviceType = useDeviceType();
   
   // -- General State --
   const [gameState, setGameState] = useState<'intro' | 'playing' | 'finished'>('intro');
@@ -626,7 +628,7 @@ const Combat: React.FC<CombatProps> = ({
          </div>
       )}
 
-      <div className="mt-auto">
+      <div className={deviceType === 'tablet' ? "mt-auto mb-32" : "mt-auto"}>
         <Keypad 
           onInput={handleInput} 
           onDelete={handleDelete} 

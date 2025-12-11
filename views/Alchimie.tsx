@@ -9,6 +9,7 @@ import ItemDetailOverlay from '../components/ItemDetailOverlay';
 import { ChevronLeft, FlaskConical, Sigma, Sparkles, Eye, Star, Coins, Footprints, Sword, Heart, Hand, AlertTriangle, BicepsFlexed, Skull, Sprout } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound, playFlipCardSound, playDamageSound, playGlassBreakSound, playCorrectSound, playWrongSound } from '../services/audioService';
+import { useDeviceType } from '../hooks/useDeviceType';
 
 interface AlchimieProps extends MinigameProps {
   onAddItem: (item: Item) => void;
@@ -59,6 +60,7 @@ const RARITY_STYLES: Record<Rarity, { border: string; bg: string; text: string }
 
 const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerNems, onSpendNems, isAdmin, config }) => {
   const { t, lang } = useLocalization();
+  const deviceType = useDeviceType();
   const [phase, setPhase] = useState<AlchimiePhase>('select');
   const [selectedMode, setSelectedMode] = useState<number | null>(null); // 1, 3, or 5 nems
   
@@ -636,7 +638,7 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
                   </div>
               </div>
 
-              <div className="mt-auto mb-8">
+              <div className={deviceType === 'tablet' ? "mt-auto mb-32" : "mt-auto mb-8"}>
                   <Keypad 
                     onInput={handleKeypadInput}
                     onDelete={handleKeypadDelete}

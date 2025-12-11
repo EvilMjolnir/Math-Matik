@@ -33,10 +33,19 @@ const HomeTablet: React.FC<HomeLayoutProps> = ({
   setIsPanelAnimating
 }) => {
   return (
-    <div className="h-full flex flex-col justify-center">
+    <div className="w-full h-full overflow-hidden bg-parchment-900">
+      <div 
+        className="h-full flex flex-col justify-center"
+        style={{ 
+            transform: 'scale(0.8)', 
+            width: '125%', 
+            height: '125%', 
+            transformOrigin: 'top left' 
+        }}
+      >
       <div className="flex flex-row h-full w-full">
         
-        {/* Tablet Sidebar - Similar to Desktop but maybe scaled or narrower */}
+        {/* Tablet Sidebar */}
         <div className="h-full z-20 flex-shrink-0">
            <PlayerStatsWidget 
               player={player} 
@@ -178,6 +187,7 @@ const HomeTablet: React.FC<HomeLayoutProps> = ({
             </button>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

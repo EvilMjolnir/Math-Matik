@@ -3,10 +3,12 @@ import React from 'react';
 import { HomeLayoutProps, GameView } from '../types';
 import ActiveQuestPanel from '../components/ActiveQuestPanel';
 import GameMenu from '../components/GameMenu';
-import { ShieldCheck, Footprints, FastForward } from 'lucide-react';
+import { ShieldCheck, FastForward } from 'lucide-react';
 import { playMenuOpenSound } from '../services/audioService';
+import { DEFAULT_USER_IMAGE } from '../constants';
 
 const HomeMobile: React.FC<HomeLayoutProps> = ({
+  player,
   activeTome,
   activeEncounter,
   visibleEncounter,
@@ -30,20 +32,27 @@ const HomeMobile: React.FC<HomeLayoutProps> = ({
   setIsPanelAnimating
 }) => {
   return (
-    <div className="h-full flex flex-col items-center relative">
-      {/* Mobile-specific: Widget is hidden, accessed via button */}
-      
+    <div className="w-full h-full overflow-hidden bg-parchment-900">
+      <div 
+        className="h-full flex flex-col items-center relative"
+        style={{ 
+            transform: 'scale(0.8)', 
+            width: '125%', 
+            height: '125%', 
+            transformOrigin: 'top left' 
+        }}
+      >
       {/* Scrollable Main Content */}
       <div className="w-full h-full overflow-y-auto custom-scrollbar flex flex-col items-center py-8 px-4 pb-24">
          <div className="w-full max-w-md flex flex-col">
             <div className="text-center mt-2 mb-4 flex-shrink-0 z-10 w-full">
-                <h1 className="text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-parchment-200 to-amber-500 mb-2 drop-shadow-md">
+                <h1 className="text-4xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-parchment-200 to-amber-500 mb-0 drop-shadow-md">
                 {t.titles.home}
                 </h1>
                 <p className="text-xl text-parchment-400 tracking-widest font-serif uppercase">{t.home.subtitle}</p>
             </div>
 
-            <div className="relative mb-6">
+            <div className="relative mb-0">
               <ActiveQuestPanel 
                 activeEncounter={visibleEncounter}
                 activeTome={activeTome}
@@ -52,6 +61,7 @@ const HomeMobile: React.FC<HomeLayoutProps> = ({
                 onAnimating={setIsPanelAnimating}
                 isPaused={isAnimPaused}
                 onAnimationComplete={onAnimationComplete}
+                compact={true}
               />
               
               {isAdmin && activeTome && !isInfinite && !activeEncounter && (
@@ -87,23 +97,28 @@ const HomeMobile: React.FC<HomeLayoutProps> = ({
               canAffordRecherche={canAffordRecherche}
               activeEncounter={!!visibleEncounter}
               rechercheCost={rechercheCost}
+              compact={true}
             />
          </div>
       </div>
 
       {/* Floating UI Elements */}
       
-      {/* Mobile Profile Toggle */}
+      {/* Mobile Profile Toggle (Top Left) - Changed to User Icon */}
       <button 
         onClick={() => onOpenProfile('stats')}
-        className="absolute top-4 left-4 p-3 bg-parchment-800 rounded-full border-2 border-parchment-600 shadow-lg z-30"
+        className="absolute top-4 left-4 w-12 h-12 rounded-full border-2 border-parchment-600 shadow-lg z-30 overflow-hidden bg-parchment-800"
       >
-        <Footprints className="w-6 h-6 text-parchment-200" />
+        <img 
+            src={player.photoURL || DEFAULT_USER_IMAGE} 
+            alt="Profile" 
+            className="w-full h-full object-cover" 
+        />
       </button>
 
-      {/* Top Right Controls */}
-      <div className="absolute top-4 right-4 flex flex-col items-end space-y-4 z-30">
-         <div className="flex space-x-2">
+      {/* Bottom Right Controls (Moved from Top Right) */}
+      <div className="absolute bottom-6 right-6 flex flex-col items-end space-y-4 z-30">
+         <div className="flex space-x-2 items-end">
               <button 
                   onClick={() => { playMenuOpenSound(); onOpenTomes(); }}
                   className={`
@@ -170,6 +185,7 @@ const HomeMobile: React.FC<HomeLayoutProps> = ({
             className="w-16 h-16 object-contain"
           />
         </button>
+      </div>
       </div>
     </div>
   );

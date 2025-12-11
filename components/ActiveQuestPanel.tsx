@@ -12,6 +12,7 @@ interface ActiveQuestPanelProps {
   onAnimating?: (isAnimating: boolean) => void;
   isPaused?: boolean;
   onAnimationComplete?: () => void;
+  compact?: boolean;
 }
 
 const TOME_BG_IMAGES: Record<string, string> = {
@@ -29,7 +30,8 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({
   lang, 
   onAnimating,
   isPaused = false,
-  onAnimationComplete
+  onAnimationComplete,
+  compact = false
 }) => {
   const getTomeTitle = (tome: Tome) => (lang === 'fr' && tome.title_fr) ? tome.title_fr : tome.title;
   const getTomeDesc = (tome: Tome) => (lang === 'fr' && tome.description_fr) ? tome.description_fr : tome.description;
@@ -221,9 +223,14 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({
               <div className="flex justify-between items-center mb-3">
                 <span className="text-parchment-100 font-serif flex items-center text-xl shadow-black drop-shadow-md">
                   <Map className="w-6 h-6 mr-2 text-amber-500" />
-                  {t.home.currentQuest}: <span className="text-amber-400 font-bold ml-2">{getTomeTitle(activeTome)}</span>
+                  {/* In compact mode, we omit "Current Quest" label text, keeping just Icon + Tome Name */}
+                  {!compact && <span className="mr-2">{t.home.currentQuest}:</span>} 
+                  <span className="text-amber-400 font-bold">{getTomeTitle(activeTome)}</span>
                 </span>
-                <span className="text-sm text-parchment-200 font-bold bg-black/40 px-2 py-1 rounded">{Math.floor(displayDistance)} / {activeTome.totalDistance}</span>
+                {/* In compact mode, steps are moved inside bar */}
+                {!compact && (
+                    <span className="text-sm text-parchment-200 font-bold bg-black/40 px-2 py-1 rounded">{Math.floor(displayDistance)} / {activeTome.totalDistance}</span>
+                )}
               </div>
               
               {/* Custom Segmented Progress Bar */}
@@ -231,9 +238,18 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({
                   {/* Main Bar Track */}
                   <div className="flex-1 h-5 bg-black/60 rounded-l-full overflow-hidden border border-gray-500 relative mr-1">
                       <div 
-                        className="h-full bg-gradient-to-r from-blue-700 to-cyan-500 transition-all duration-75"
+                        className="h-full bg-gradient-to-r from-blue-700 to-cyan-500 transition-all duration-75 absolute top-0 left-0 bottom-0"
                         style={{ width: `${progressPercent}%` }}
                       />
+                      
+                      {/* Compact Steps Text Overlay */}
+                      {compact && (
+                          <div className="absolute inset-0 flex items-center justify-center z-10">
+                              <span className="text-xs font-bold text-parchment-100 drop-shadow-md tracking-wider">
+                                {Math.floor(displayDistance)} / {activeTome.totalDistance}
+                              </span>
+                          </div>
+                      )}
                   </div>
 
                   {/* Boss Node Segment */}
