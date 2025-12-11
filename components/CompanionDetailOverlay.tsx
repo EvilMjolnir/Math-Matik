@@ -1,9 +1,10 @@
+
 import React from 'react';
 import { Companion, EffectType } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 import { COMPANION_LEVEL_COSTS } from '../constants';
 import { useLocalization } from '../localization';
-import { X, Star, Coins, Footprints, Sword, Sparkles, UserPlus, UserMinus, User, Shield, ChevronUp, BicepsFlexed } from 'lucide-react';
+import { X, Star, Coins, Footprints, Sword, Sparkles, UserPlus, UserMinus, User, ChevronUp, BicepsFlexed } from 'lucide-react';
 import { playMenuBackSound, playMenuOpenSound } from '../services/audioService';
 
 interface CompanionDetailOverlayProps {

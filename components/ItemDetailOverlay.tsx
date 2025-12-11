@@ -1,9 +1,10 @@
+
 import React from 'react';
 import { Item, EffectType } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 import { RARITY_TEXT_COLORS } from '../constants';
 import { useLocalization } from '../localization';
-import { X, Backpack, Star, Coins, Footprints, Sword, Sparkles, Shield, BicepsFlexed, Skull, Sprout } from 'lucide-react';
+import { X, Backpack, Star, Coins, Footprints, Sword, Sparkles, BicepsFlexed, Skull, Sprout } from 'lucide-react';
 import { playMenuBackSound } from '../services/audioService';
 
 interface ItemDetailOverlayProps {

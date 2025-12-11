@@ -1,7 +1,8 @@
+
 import React, { useEffect } from 'react';
 import { Item, Rarity } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
-import { Gift, Coins, Star, Footprints, Sword, Sparkles, AlertTriangle, Shield, BicepsFlexed, Skull, Sprout } from 'lucide-react';
+import { Gift, Coins, Star, Footprints, Sword, Sparkles, AlertTriangle, BicepsFlexed, Skull, Sprout } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound, playItemRevealSound, playEpicRevealSound, playFlipCardSound, fadeOutCurrentSound } from '../services/audioService';
 

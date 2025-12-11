@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { PlayerStats } from '../types';
-import { User, Heart, Zap, Sword } from 'lucide-react';
+import { Heart, Zap, Sword } from 'lucide-react';
 import { Translation } from '../localization/types';
 import { DEFAULT_USER_IMAGE } from '../constants';
 

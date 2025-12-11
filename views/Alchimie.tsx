@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { MinigameProps, Rarity, Item, MathProblem, EffectType, GameConfig } from '../types';
 import { generateFractionProblem } from '../services/mathService';
@@ -5,7 +6,7 @@ import { STATUS_EFFECTS } from '../data/statusEffects';
 import Keypad from '../components/Keypad';
 import LootRewardCard from '../components/LootRewardCard';
 import ItemDetailOverlay from '../components/ItemDetailOverlay';
-import { ChevronLeft, FlaskConical, Sigma, Sparkles, Eye, Star, Coins, Footprints, Sword, Shield, Heart, Hand, AlertTriangle, BicepsFlexed, Skull, Sprout } from 'lucide-react';
+import { ChevronLeft, FlaskConical, Sigma, Sparkles, Eye, Star, Coins, Footprints, Sword, Heart, Hand, AlertTriangle, BicepsFlexed, Skull, Sprout } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound, playFlipCardSound, playDamageSound, playGlassBreakSound, playCorrectSound, playWrongSound } from '../services/audioService';
 

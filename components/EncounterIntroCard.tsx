@@ -1,6 +1,7 @@
+
 import React, { useEffect } from 'react';
 import { Encounter, EffectType } from '../types';
-import { Skull, Zap, Sword, Shield, Coins, Star, HandFist, BadgeDollarSign, ChessQueen } from 'lucide-react';
+import { Skull, Zap, Sword, Shield, Coins, HandFist, BadgeDollarSign, ChessQueen } from 'lucide-react';
 import { EnemyStats } from '../services/statusService';
 import { useLocalization } from '../localization';
 import { STATUS_EFFECTS } from '../data/statusEffects';

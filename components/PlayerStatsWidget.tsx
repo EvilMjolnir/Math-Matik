@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { PlayerStats } from '../types';
 import { XP_TABLE, DEFAULT_USER_IMAGE } from '../constants';
 import { getAggregatedStats } from '../services/statusService';
-import { User, Heart, Coins, Shield, Crown, Maximize2, Star, LogOut, Footprints, Sword, Sparkles, Sigma, BicepsFlexed } from 'lucide-react';
+import { Heart, Coins, Shield, Crown, Maximize2, Star, LogOut, Footprints, Sword, Sparkles, Sigma, BicepsFlexed } from 'lucide-react';
 import { useLocalization } from '../localization';
 
 interface PlayerStatsWidgetProps {
