@@ -1,6 +1,3 @@
-
-
-
 import React from 'react';
 import { Companion, EffectType } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';

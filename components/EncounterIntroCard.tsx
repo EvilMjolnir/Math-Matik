@@ -1,6 +1,3 @@
-
-
-
 import React, { useEffect } from 'react';
 import { Encounter, EffectType } from '../types';
 import { Skull, Zap, Sword, Shield, Coins, Star, HandFist, BadgeDollarSign, ChessQueen } from 'lucide-react';

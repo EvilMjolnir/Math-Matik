@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { PlayerStats } from '../types';
 import { XP_TABLE, DEFAULT_USER_IMAGE } from '../constants';

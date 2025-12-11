@@ -1,6 +1,3 @@
-
-
-
 import React, { useState } from 'react';
 import { MinigameProps, Rarity, Item, MathProblem, EffectType, GameConfig } from '../types';
 import { generateFractionProblem } from '../services/mathService';

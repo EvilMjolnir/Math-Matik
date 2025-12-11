@@ -1,10 +1,7 @@
-
-
-
 import React, { useEffect } from 'react';
 import { Item, Rarity } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
-import { Gift, Coins, Star, Footprints, Sword, Sparkles, AlertTriangle, Shield, BicepsFlexed } from 'lucide-react';
+import { Gift, Coins, Star, Footprints, Sword, Sparkles, AlertTriangle, Shield, BicepsFlexed, Skull, Sprout } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound, playItemRevealSound, playEpicRevealSound, playFlipCardSound, fadeOutCurrentSound } from '../services/audioService';
 
@@ -94,6 +91,8 @@ const LootRewardCard: React.FC<LootRewardCardProps> = ({ item, onBack, solvedCor
     if (type === 'MOVEMENT_BONUS') return <Footprints className="w-4 h-4 text-green-400" />;
     if (type === 'COMBAT_SCORE_BONUS') return <Sword className="w-4 h-4 text-red-400" />;
     if (type === 'DEFENSE_BONUS') return <BicepsFlexed className="w-4 h-4 text-blue-400" />;
+    if (type === 'HEAL_TURN') return <Sprout className="w-4 h-4 text-pink-400" />;
+    if (type === 'WEAKEN_ENEMY') return <Skull className="w-4 h-4 text-purple-400" />;
     return <Sparkles className="w-4 h-4 text-purple-400" />;
   };
 
