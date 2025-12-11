@@ -45,7 +45,7 @@ const Home: React.FC<HomeProps> = ({
   onStartRecherche, 
   isAdmin, 
   onLogout, 
-  onUpdateInventory,
+  onUpdateInventory, 
   onProgressTome,
   onConsumeItem,
   onLevelUpCompanion,
@@ -99,7 +99,7 @@ const Home: React.FC<HomeProps> = ({
   const handleAdminJumpToBoss = () => {
       if (activeTome && !isInfinite && !isPanelAnimating) {
           // Calculate steps needed to reach (Total Distance - 1)
-          // We don't want to trigger it immediately, just get right before it so 1 movement triggers it
+          // We want to stop just before the end so one move triggers it
           const stepsNeeded = Math.max(0, activeTome.totalDistance - activeTome.currentDistance - 1);
           if (stepsNeeded > 0) {
               onProgressTome(stepsNeeded, true);
@@ -109,10 +109,12 @@ const Home: React.FC<HomeProps> = ({
 
   // Called by ActiveQuestPanel when animation finishes
   const handleAnimationComplete = () => {
-      if (queuedEncounter) {
-          onActivateEncounter();
-      }
+      // Always signal completion so App can handle any queued events (Level Up, Enounters, etc.)
+      onActivateEncounter();
   };
+
+  // Calculate if any blocking modal is open
+  const isAnyModalOpen = isLevelUpOpen || activeProfileTab !== null || showBlackMirror;
 
   const layoutProps: HomeLayoutProps = {
     player,
@@ -129,7 +131,7 @@ const Home: React.FC<HomeProps> = ({
     rechercheCost,
     isPanelAnimating,
     queuedEncounter,
-    isAnimPaused: isLevelUpOpen,
+    isAnimPaused: isAnyModalOpen,
     onAnimationComplete: handleAnimationComplete,
     onViewChange,
     onOpenTomes,

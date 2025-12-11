@@ -42,7 +42,17 @@ const playSound = (url: string, volume: number = 0.5, isLong: boolean = false, p
     currentLongSound = audio;
   }
 
-  audio.play().catch(e => console.error("Audio play failed", e));
+  const playPromise = audio.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(e => {
+        // Ignore "The play() request was interrupted by a call to pause()" error
+        // This commonly happens if the sound is stopped (e.g. faded out) before it finished loading/starting
+        if (e.name === 'AbortError' || e.message?.includes('interrupted')) {
+            return;
+        }
+        console.error("Audio play failed", e);
+    });
+  }
   
   // Clear reference when done
   if (isLong) {
@@ -106,7 +116,13 @@ export const playMeltingSound = () => {
 
     const targetVolume = 0.5;
 
-    audio.play().catch(e => console.error("Audio play failed", e));
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+        playPromise.catch(e => {
+            if (e.name === 'AbortError' || e.message?.includes('interrupted')) return;
+            console.error("Audio play failed", e);
+        });
+    }
 
     // Fade In (approx 500ms)
     const fadeInStep = 0.05;

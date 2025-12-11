@@ -42,11 +42,11 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({
   // Initialize state lazily from session storage to capture the "Old" value before the update
   const [displayDistance, setDisplayDistance] = useState<number>(() => {
     if (!activeTome) return 0;
-    // Strict reset if we are at 0
+    // Strict reset if we are at 0 (new tome or reset)
     if (activeTome.currentDistance === 0) return 0;
 
     const saved = sessionStorage.getItem(storageKey);
-    // If we have a saved value, use it (unless it's larger than current)
+    // If we have a saved value, use it (unless it's larger than current, which implies a reset/bug)
     if (saved) {
         const val = parseFloat(saved);
         return val <= activeTome.currentDistance ? val : activeTome.currentDistance;
@@ -54,132 +54,113 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({
     return activeTome.currentDistance;
   });
 
-  // Force snap to 0 if the prop is 0 (handles resets or tome switches properly)
-  useEffect(() => {
-    if (activeTome?.currentDistance === 0 && displayDistance !== 0) {
-      setDisplayDistance(0);
-      sessionStorage.setItem(storageKey, '0');
-    }
-  }, [activeTome?.currentDistance, storageKey]);
-
-  // Derived state: If display doesn't match target, we are (or should be) animating
-  const targetDistance = activeTome?.currentDistance || 0;
-  const isAnimating = displayDistance < targetDistance;
-
+  const [isFilling, setIsFilling] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const targetDistance = activeTome?.currentDistance || 0;
 
-  // --- Effect 1: Notify Parent of Animation State ---
+  // --- Effect: Handle Snap to Target if rolled back ---
+  useEffect(() => {
+      if (activeTome && displayDistance > targetDistance) {
+          setDisplayDistance(targetDistance);
+          sessionStorage.setItem(storageKey, targetDistance.toString());
+      }
+  }, [activeTome, displayDistance, targetDistance, storageKey]);
+
+  // --- Effect: Notify Parent ---
   useEffect(() => {
     if (onAnimating) {
-        // If paused, we are effectively not animating yet from the parent's perspective of blocking interactions
-        onAnimating(isAnimating);
+        onAnimating(isFilling);
     }
-    return () => {
-        if (onAnimating) onAnimating(false);
-    };
-  }, [isAnimating, onAnimating]);
+  }, [isFilling, onAnimating]);
 
-  // --- Effect 2: Handle Animation Loop & Sound ---
+  // --- Main Animation Logic ---
   useEffect(() => {
-    if (!activeTome) return;
+    if (!activeTome || isPaused) return;
 
-    // If we reached target, notify complete
-    if (!isAnimating && onAnimationComplete) {
-       onAnimationComplete();
-       return;
+    const startDist = parseFloat(sessionStorage.getItem(storageKey) || displayDistance.toString());
+    const diff = targetDistance - startDist;
+
+    // If no progress to animate (or barely any), just snap and return
+    if (diff <= 0.01) {
+        setDisplayDistance(targetDistance);
+        sessionStorage.setItem(storageKey, targetDistance.toString());
+        if (isFilling) setIsFilling(false);
+        // Important: Signal completion even if no animation occurred, so queued events (Level Up) can proceed
+        if (onAnimationComplete) onAnimationComplete();
+        return;
     }
 
-    if (isPaused) return; // Do not start animation if paused (e.g. Level Up modal open)
+    let delayTimer: ReturnType<typeof setTimeout>;
+    
+    const startAnimationSequence = () => {
+        setIsFilling(true);
 
-    // Only animate if the display (old) is less than the target (new)
-    if (isAnimating && targetDistance > 0) {
-      const diff = targetDistance - displayDistance;
-      const duration = 2000; // 2 seconds total animation
-      const steps = 60; // 60fps approx
-      const increment = diff / steps;
-      const intervalTime = duration / steps;
-      
-      let currentStep = 0;
-
-      // --- Sound Logic ---
-      const soundUrl = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/walking-in-bushes.mp3';
-      
-      // Ensure we don't stack sounds
-      if (!audioRef.current || audioRef.current.paused) {
-          const audio = new Audio(soundUrl);
-          audioRef.current = audio;
-          audio.volume = 0;
-          // Random start between 0 and 10s
-          audio.currentTime = Math.random() * 10;
-          
-          audio.play().then(() => {
-              // Fade In
-              let vol = 0;
-              const fadeInterval = setInterval(() => {
-                  if (vol < 0.5) {
-                      vol = Math.min(0.5, vol + 0.05);
-                      if (audioRef.current) audioRef.current.volume = vol;
-                  } else {
-                      clearInterval(fadeInterval);
-                  }
-              }, 100);
-          }).catch(e => console.warn("Audio play blocked:", e));
-      }
-
-      // Animation Loop
-      const timer = setInterval(() => {
-        currentStep++;
-        
-        setDisplayDistance(prev => {
-            const next = prev + increment;
-            if (next >= targetDistance) return targetDistance;
-            return next;
-        });
-
-        // Cleanup/End condition
-        if (currentStep >= steps) {
-          clearInterval(timer);
-          // Update storage to the new value so next time we don't re-animate
-          sessionStorage.setItem(storageKey, targetDistance.toString());
-          
-          // Fade Out Sound
-          if (audioRef.current) {
-              const fadeOut = setInterval(() => {
-                  if (audioRef.current && audioRef.current.volume > 0.05) {
-                      audioRef.current.volume -= 0.05;
-                  } else {
-                      if (audioRef.current) audioRef.current.pause();
-                      clearInterval(fadeOut);
-                  }
-              }, 100);
-          }
-
-          // Notify completion
-          if (onAnimationComplete) onAnimationComplete();
+        // --- Sound Setup ---
+        const soundUrl = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/walking-in-bushes.mp3';
+        if (!audioRef.current) {
+            const audio = new Audio(soundUrl);
+            audioRef.current = audio;
+            audio.loop = true; 
+            audio.volume = 0.5;
         }
-      }, intervalTime);
+        audioRef.current.play().catch(() => {});
 
-      return () => {
-        clearInterval(timer);
-      };
-    } else {
-        // Sync display if logic missed it (e.g. rapid updates or 0 start)
-        if (displayDistance !== targetDistance) {
-            setDisplayDistance(targetDistance);
-            sessionStorage.setItem(storageKey, targetDistance.toString());
+        // --- Animation Parameters ---
+        // Minimum 3 seconds (3000ms), or longer for big steps.
+        const duration = Math.max(3000, diff * 100); 
+        const startTime = performance.now();
+
+        const animate = (currentTime: number) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Linear Animation
+            const currentVal = startDist + (diff * progress);
+            setDisplayDistance(currentVal);
+
+            if (progress < 1) {
+                animationFrameRef.current = requestAnimationFrame(animate);
+            } else {
+                // Done
+                setDisplayDistance(targetDistance);
+                sessionStorage.setItem(storageKey, targetDistance.toString());
+                setIsFilling(false);
+                
+                if (audioRef.current) {
+                    audioRef.current.pause();
+                    audioRef.current = null;
+                }
+                
+                if (onAnimationComplete) {
+                    onAnimationComplete();
+                }
+            }
+        };
+
+        animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    // 0.5s Delay before starting everything
+    delayTimer = setTimeout(startAnimationSequence, 500);
+
+    return () => {
+        clearTimeout(delayTimer);
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
         }
-    }
-  }, [targetDistance, isAnimating, storageKey, activeTome, isPaused]); 
+        if (audioRef.current) {
+            audioRef.current.pause();
+        }
+    };
+  }, [targetDistance, isPaused, activeTome, storageKey]);
 
-  // Decide what to render: If animating, FORCE the progress view.
-  const showEncounter = activeEncounter && !isAnimating;
+  // Decide what to render
+  const showEncounter = activeEncounter && !isFilling;
   const isCompleted = activeTome?.isCompleted;
 
   // Progress Bar Logic
-  // We want a bar that goes from 0 to totalDistance-1, and a final segment for the boss.
-  // The 'boss segment' activates when currentDistance >= totalDistance.
   const bossNodeActive = activeTome && displayDistance >= activeTome.totalDistance;
-  // Percentage for the main bar (excluding boss node)
   const maxBarDistance = activeTome ? activeTome.totalDistance : 1;
   const progressPercent = activeTome ? Math.min(100, (displayDistance / maxBarDistance) * 100) : 0;
 
@@ -223,11 +204,9 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({
               <div className="flex justify-between items-center mb-3">
                 <span className="text-parchment-100 font-serif flex items-center text-xl shadow-black drop-shadow-md">
                   <Map className="w-6 h-6 mr-2 text-amber-500" />
-                  {/* In compact mode, we omit "Current Quest" label text, keeping just Icon + Tome Name */}
                   {!compact && <span className="mr-2">{t.home.currentQuest}:</span>} 
                   <span className="text-amber-400 font-bold">{getTomeTitle(activeTome)}</span>
                 </span>
-                {/* In compact mode, steps are moved inside bar */}
                 {!compact && (
                     <span className="text-sm text-parchment-200 font-bold bg-black/40 px-2 py-1 rounded">{Math.floor(displayDistance)} / {activeTome.totalDistance}</span>
                 )}
@@ -238,7 +217,7 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({
                   {/* Main Bar Track */}
                   <div className="flex-1 h-5 bg-black/60 rounded-l-full overflow-hidden border border-gray-500 relative mr-1">
                       <div 
-                        className="h-full bg-gradient-to-r from-blue-700 to-cyan-500 transition-all duration-75 absolute top-0 left-0 bottom-0"
+                        className={`h-full bg-gradient-to-r from-blue-700 to-cyan-500 transition-all duration-75 absolute top-0 left-0 bottom-0 ${isFilling ? 'animate-pulse brightness-125' : ''}`}
                         style={{ width: `${progressPercent}%` }}
                       />
                       

@@ -35,7 +35,7 @@ const GameContent: React.FC = () => {
   
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [leveledUpTo, setLeveledUpTo] = useState(1);
-  const [pendingLevelUp, setPendingLevelUp] = useState<number | null>(null);
+  const [pendingLevelUpStats, setPendingLevelUpStats] = useState<Partial<PlayerStats> | null>(null);
   
   const [showTomeModal, setShowTomeModal] = useState(false);
   const [activeEncounter, setActiveEncounter] = useState<Encounter | null>(null);
@@ -171,8 +171,8 @@ const GameContent: React.FC = () => {
       }
 
       if (newLevel > prev.level) {
-        // Defer the modal, just set the state for now
-        setPendingLevelUp(newLevel);
+        // Calculate new stats but do NOT apply them to the player yet.
+        // We only update XP so the bar fills up. The rest is pending.
         const levelDiff = newLevel - prev.level;
         const hpIncrease = levelDiff * 10;
         const attackIncrease = levelDiff * 1;
@@ -180,17 +180,22 @@ const GameContent: React.FC = () => {
         const newAgility = Math.floor(newLevel / 3);
         // Defense increases by 1 every 4 levels (Level 4, 8, 12...)
         const newDefense = Math.floor(newLevel / 4);
+        
+        const newMaxHp = prev.maxHp + hpIncrease;
 
-        return {
-          ...prev,
-          currentXp: newXp,
+        const pendingStats = {
           level: newLevel,
-          maxHp: prev.maxHp + hpIncrease,
-          // currentHp remains same until modal is dismissed
+          maxHp: newMaxHp,
+          currentHp: newMaxHp, // Heal completely on level up
           attack: (prev.attack || 5) + attackIncrease,
           agility: newAgility,
           defense: newDefense
         };
+
+        // Queue the pending stats. Using setTimeout to break out of the reducer render cycle.
+        setTimeout(() => setPendingLevelUpStats(pendingStats), 0);
+
+        return { ...prev, currentXp: newXp };
       }
 
       return { ...prev, currentXp: newXp };
@@ -280,27 +285,19 @@ const GameContent: React.FC = () => {
       });
   };
 
-  const checkPendingLevelUp = () => {
-    if (pendingLevelUp) {
-      setLeveledUpTo(pendingLevelUp);
-      setShowLevelUp(true);
-      setPendingLevelUp(null);
-    }
-  };
-
   // Called when closing the Level Up Modal
   const handleDismissLevelUp = () => {
       setShowLevelUp(false);
-      // Restore HP fully upon level up dismissal
-      setPlayer(prev => ({
-          ...prev,
-          currentHp: prev.maxHp
-      }));
+      
+      // If we have a queued encounter, trigger it now that level up is done
+      if (queuedEncounter) {
+          setActiveEncounter(queuedEncounter);
+          setQueuedEncounter(null);
+      }
   };
 
   const handleBackToHome = () => {
     setCurrentView(GameView.HOME);
-    checkPendingLevelUp();
   };
 
   // Helper to consume potion charges after an encounter
@@ -544,7 +541,23 @@ const GameContent: React.FC = () => {
   };
 
   // Called by Home after animation completes
-  const handleActivateEncounter = () => {
+  const handleAnimationSequenceComplete = () => {
+      // 1. PRIORITY: Check for Pending Level Up first
+      if (pendingLevelUpStats) {
+          // Apply pending stats (Healing and Level Increase happens NOW)
+          setPlayer(prev => ({
+              ...prev,
+              ...pendingLevelUpStats
+          }));
+          setLeveledUpTo(pendingLevelUpStats.level || (player.level + 1));
+          setShowLevelUp(true);
+          setPendingLevelUpStats(null);
+          // Return immediately. Don't trigger encounter yet.
+          // Encounter will be triggered in handleDismissLevelUp
+          return;
+      }
+
+      // 2. Trigger Encounter if queued (and no level up pending)
       if (queuedEncounter) {
           setActiveEncounter(queuedEncounter);
           setQueuedEncounter(null);
@@ -571,8 +584,6 @@ const GameContent: React.FC = () => {
              setTomes(newTomes);
         }
     }
-    
-    checkPendingLevelUp();
   };
 
   const handleSelectTome = (id: string) => {
@@ -726,7 +737,7 @@ const GameContent: React.FC = () => {
                 onConsumeItem={handleConsumeItem}
                 onLevelUpCompanion={handleLevelUpCompanion}
                 queuedEncounter={queuedEncounter}
-                onActivateEncounter={handleActivateEncounter}
+                onActivateEncounter={handleAnimationSequenceComplete}
                 isLevelUpOpen={showLevelUp}
             />
         );
