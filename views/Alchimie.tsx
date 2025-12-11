@@ -1,4 +1,6 @@
 
+
+
 import React, { useState } from 'react';
 import { MinigameProps, Rarity, Item, MathProblem, EffectType, GameConfig } from '../types';
 import { generateFractionProblem } from '../services/mathService';
@@ -6,7 +8,7 @@ import { STATUS_EFFECTS } from '../data/statusEffects';
 import Keypad from '../components/Keypad';
 import LootRewardCard from '../components/LootRewardCard';
 import ItemDetailOverlay from '../components/ItemDetailOverlay';
-import { ChevronLeft, FlaskConical, Sigma, Sparkles, Eye, Star, Coins, Footprints, Sword, Shield, Heart, Hand, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, FlaskConical, Sigma, Sparkles, Eye, Star, Coins, Footprints, Sword, Shield, Heart, Hand, AlertTriangle, BicepsFlexed, Skull, Sprout } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound, playFlipCardSound, playDamageSound, playGlassBreakSound, playCorrectSound, playWrongSound } from '../services/audioService';
 
@@ -83,10 +85,10 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
         case EffectType.GOLD_MULTIPLIER: return <Coins className="w-3 h-3 text-amber-400" />;
         case EffectType.MOVEMENT_BONUS: return <Footprints className="w-3 h-3 text-green-400" />;
         case EffectType.COMBAT_SCORE_BONUS: return <Sword className="w-3 h-3 text-red-400" />;
-        case EffectType.DEFENSE_BONUS: return <Shield className="w-3 h-3 text-blue-400" />;
-        case EffectType.HEAL_TURN: return <Heart className="w-3 h-3 text-pink-400" />;
+        case EffectType.DEFENSE_BONUS: return <BicepsFlexed className="w-3 h-3 text-blue-400" />;
+        case EffectType.HEAL_TURN: return <Sprout className="w-3 h-3 text-pink-400" />;
         case EffectType.INSTANT_HEAL: return <Heart className="w-3 h-3 text-red-500" />;
-        case EffectType.WEAKEN_ENEMY: return <Shield className="w-3 h-3 text-purple-400" />;
+        case EffectType.WEAKEN_ENEMY: return <Skull className="w-3 h-3 text-purple-400" />;
         default: return <Sparkles className="w-3 h-3 text-purple-400" />;
     }
   };

@@ -2,6 +2,8 @@
 import { GameConfig, Rarity, PlayerStats } from './types';
 import { STARTING_COMPANIONS } from './data/companions';
 
+export const DEFAULT_USER_IMAGE = "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/userIcon_default.png";
+
 export const DEFAULT_CONFIG: GameConfig = {
   movement: {
     minVal: 1,
@@ -39,6 +41,7 @@ export const DEFAULT_PLAYER: PlayerStats = {
   agility: 0,
   gold: 5, // Start with a little gold to try mechanics
   nums: 0,
+  photoURL: DEFAULT_USER_IMAGE,
   inventory: [],
   equipped: [], // New equipment slots
   itemBonuses: [], // Deprecated

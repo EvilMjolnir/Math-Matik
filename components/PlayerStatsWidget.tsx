@@ -1,8 +1,11 @@
+
+
+
 import React, { useState, useEffect, useRef } from 'react';
 import { PlayerStats } from '../types';
-import { XP_TABLE } from '../constants';
+import { XP_TABLE, DEFAULT_USER_IMAGE } from '../constants';
 import { getAggregatedStats } from '../services/statusService';
-import { User, Heart, Coins, Shield, Crown, Maximize2, Star, LogOut, Footprints, Sword, Sparkles, Sigma } from 'lucide-react';
+import { User, Heart, Coins, Shield, Crown, Maximize2, Star, LogOut, Footprints, Sword, Sparkles, Sigma, BicepsFlexed } from 'lucide-react';
 import { useLocalization } from '../localization';
 
 interface PlayerStatsWidgetProps {
@@ -57,12 +60,12 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
 
       {/* Header / Avatar */}
       <div className="relative mb-2">
-        <div className="w-28 h-28 bg-parchment-200 rounded-full border-4 border-amber-600 flex items-center justify-center shadow-inner overflow-hidden">
-            {player.photoURL ? (
-                <img src={player.photoURL} alt="Hero" className="w-full h-full object-cover" />
-            ) : (
-                <User className="w-16 h-16 text-parchment-800" />
-            )}
+        <div className="w-28 h-28 flex items-center justify-center overflow-hidden">
+            <img 
+                src={player.photoURL || DEFAULT_USER_IMAGE} 
+                alt="Hero" 
+                className="w-full h-full object-contain drop-shadow-lg" 
+            />
         </div>
         
         {/* Active Companion Bubble */}
@@ -176,7 +179,7 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
              )}
              {stats.totalDefense > player.defense && (
                 <div className="flex justify-between items-center">
-                  <span className="flex items-center"><Shield className="w-3 h-3 text-blue-400 mr-1" /> Defense</span>
+                  <span className="flex items-center"><BicepsFlexed className="w-3 h-3 text-blue-400 mr-1" /> Defense</span>
                   <span className="text-blue-400">+{stats.totalDefense - player.defense}</span>
                 </div>
              )}

@@ -1,7 +1,9 @@
+
 import React from 'react';
 import { PlayerStats } from '../types';
 import { User, Heart, Zap, Sword } from 'lucide-react';
 import { Translation } from '../localization/types';
+import { DEFAULT_USER_IMAGE } from '../constants';
 
 interface CombatPlayerPanelProps {
   playerStats?: PlayerStats;
@@ -24,11 +26,7 @@ const CombatPlayerPanel: React.FC<CombatPlayerPanelProps> = ({
     <div className="w-full md:w-1/4 bg-black/40 rounded-lg p-3 border-2 border-parchment-700 flex flex-col justify-center relative">
       <div className="flex items-center mb-2">
         <div className="w-10 h-10 rounded-full bg-parchment-300 border-2 border-amber-600 flex items-center justify-center mr-2 overflow-hidden">
-          {playerStats?.photoURL ? (
-            <img src={playerStats.photoURL} alt="Hero" className="w-full h-full object-cover" />
-          ) : (
-            <User className="w-6 h-6 text-parchment-900" />
-          )}
+            <img src={playerStats?.photoURL || DEFAULT_USER_IMAGE} alt="Hero" className="w-full h-full object-cover" />
         </div>
         <div className="overflow-hidden">
           <div className="text-parchment-100 font-bold truncate">{playerStats?.username || "Hero"}</div>

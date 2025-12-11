@@ -1,10 +1,12 @@
 
+
+
 import React from 'react';
 import { Companion, EffectType } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 import { COMPANION_LEVEL_COSTS } from '../constants';
 import { useLocalization } from '../localization';
-import { X, Star, Coins, Footprints, Sword, Sparkles, UserPlus, UserMinus, User, Shield, ChevronUp } from 'lucide-react';
+import { X, Star, Coins, Footprints, Sword, Sparkles, UserPlus, UserMinus, User, Shield, ChevronUp, BicepsFlexed } from 'lucide-react';
 import { playMenuBackSound, playMenuOpenSound } from '../services/audioService';
 
 interface CompanionDetailOverlayProps {
@@ -30,7 +32,7 @@ const CompanionDetailOverlay: React.FC<CompanionDetailOverlayProps> = ({ compani
         case EffectType.GOLD_MULTIPLIER: return <Coins className="w-4 h-4 text-amber-400" />;
         case EffectType.MOVEMENT_BONUS: return <Footprints className="w-4 h-4 text-green-400" />;
         case EffectType.COMBAT_SCORE_BONUS: return <Sword className="w-4 h-4 text-red-400" />;
-        case EffectType.DEFENSE_BONUS: return <Shield className="w-4 h-4 text-blue-400" />;
+        case EffectType.DEFENSE_BONUS: return <BicepsFlexed className="w-4 h-4 text-blue-400" />;
         default: return <Sparkles className="w-4 h-4 text-purple-400" />;
     }
   };

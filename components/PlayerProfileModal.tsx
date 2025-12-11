@@ -1,10 +1,12 @@
 
+
+
 import React, { useState, useEffect } from 'react';
 import { PlayerStats, Item, EffectType, Companion } from '../types';
-import { XP_TABLE, RARITY_TEXT_COLORS } from '../constants';
+import { XP_TABLE, RARITY_TEXT_COLORS, DEFAULT_USER_IMAGE } from '../constants';
 import { getAggregatedStats } from '../services/statusService';
 import { STATUS_EFFECTS } from '../data/statusEffects';
-import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Star, Backpack, Sparkles, Lock, Footprints, Sword, Link, Info, Sigma, Flame, ExternalLink, Zap } from 'lucide-react';
+import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Star, Backpack, Sparkles, Lock, Footprints, Sword, Link, Info, Sigma, Flame, ExternalLink, Zap, BicepsFlexed, Skull, Sprout } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound, playMenuOpenSound, playItemRevealSound } from '../services/audioService';
 import CompanionDetailOverlay from './CompanionDetailOverlay';
@@ -20,6 +22,9 @@ interface PlayerProfileModalProps {
   onLevelUpCompanion?: (id: string) => void;
   initialTab?: 'stats' | 'inventory' | 'companions';
 }
+
+const ICON_INVENTORY = "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/icon_inventory.png";
+const ICON_COMPANIONS = "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/icon_companion.png";
 
 const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({ 
   player, 
@@ -53,8 +58,13 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
         setViewItem(null); 
         setViewCompanion(null);
         setIsAnimatingDestroy(false);
+        
+        // Reset editing state on open
+        setIsEditing(false);
+        setTempName(player.username);
+        setTempPhoto(player.photoURL || '');
     }
-  }, [isOpen, initialTab]);
+  }, [isOpen, initialTab, player.username, player.photoURL]);
 
   if (!isOpen) return null;
 
@@ -187,9 +197,9 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
         case EffectType.GOLD_MULTIPLIER: return <Coins className="w-4 h-4 text-amber-400" />;
         case EffectType.MOVEMENT_BONUS: return <Footprints className="w-4 h-4 text-green-400" />;
         case EffectType.COMBAT_SCORE_BONUS: return <Sword className="w-4 h-4 text-red-400" />;
-        case EffectType.DEFENSE_BONUS: return <Shield className="w-4 h-4 text-blue-400" />;
-        case EffectType.HEAL_TURN: return <Heart className="w-4 h-4 text-pink-400" />;
-        case EffectType.WEAKEN_ENEMY: return <Shield className="w-4 h-4 text-purple-400" />; 
+        case EffectType.DEFENSE_BONUS: return <BicepsFlexed className="w-4 h-4 text-blue-400" />;
+        case EffectType.HEAL_TURN: return <Sprout className="w-4 h-4 text-pink-400" />;
+        case EffectType.WEAKEN_ENEMY: return <Skull className="w-4 h-4 text-purple-400" />;
         default: return <Sparkles className="w-4 h-4 text-purple-400" />;
     }
   };
@@ -265,6 +275,21 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
     }
   };
 
+  // Determine Header Icon and Styling based on Tab
+  let headerImgSrc = player.photoURL || DEFAULT_USER_IMAGE;
+  let headerContainerClass = "w-16 h-16 bg-parchment-100 rounded-full border-2 border-amber-600 flex items-center justify-center mr-4 overflow-hidden shrink-0";
+  let imgClass = "w-full h-full object-cover";
+
+  if (activeTab === 'inventory') {
+      headerImgSrc = ICON_INVENTORY;
+      headerContainerClass = "w-20 h-20 mr-4 flex items-center justify-center shrink-0";
+      imgClass = "w-full h-full object-contain";
+  } else if (activeTab === 'companions') {
+      headerImgSrc = ICON_COMPANIONS;
+      headerContainerClass = "w-16 h-16 mr-4 flex items-center justify-center shrink-0";
+      imgClass = "w-full h-full object-contain";
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
       <div className="relative w-full max-w-6xl bg-parchment-200 rounded-lg shadow-2xl border-4 border-parchment-800 transition-colors duration-500 flex flex-col max-h-[90vh]">
@@ -272,12 +297,8 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b-2 rounded-t-lg bg-parchment-300/50 border-parchment-400">
           <div className="flex items-center w-full">
-             <div className="w-16 h-16 bg-parchment-100 rounded-full border-2 border-amber-600 flex items-center justify-center mr-4 overflow-hidden shrink-0">
-                {player.photoURL ? (
-                    <img src={player.photoURL} alt="Avatar" className="w-full h-full object-cover" />
-                ) : (
-                    <User className="w-10 h-10 text-parchment-800" />
-                )}
+             <div className={headerContainerClass}>
+                <img src={headerImgSrc} alt="Header Icon" className={imgClass} />
              </div>
              <div className="flex-1">
                {isEditing ? (

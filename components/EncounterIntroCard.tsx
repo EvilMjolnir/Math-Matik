@@ -1,7 +1,9 @@
 
+
+
 import React, { useEffect } from 'react';
 import { Encounter, EffectType } from '../types';
-import { Skull, Zap, Sword, Shield, Coins, Star } from 'lucide-react';
+import { Skull, Zap, Sword, Shield, Coins, Star, HandFist, BadgeDollarSign, ChessQueen } from 'lucide-react';
 import { EnemyStats } from '../services/statusService';
 import { useLocalization } from '../localization';
 import { STATUS_EFFECTS } from '../data/statusEffects';
@@ -49,9 +51,9 @@ const EncounterIntroCard: React.FC<EncounterIntroCardProps> = ({ encounter, enem
   const getEffectIcon = (type: EffectType) => {
     switch (type) {
         case EffectType.ENEMY_HP_BONUS: return <Shield className="w-4 h-4 text-blue-400" />;
-        case EffectType.ENEMY_DAMAGE_BONUS: return <Sword className="w-4 h-4 text-red-400" />;
-        case EffectType.ENEMY_GOLD_REWARD_BONUS: return <Coins className="w-4 h-4 text-amber-400" />;
-        case EffectType.ENEMY_XP_REWARD_BONUS: return <Star className="w-4 h-4 text-yellow-400" />;
+        case EffectType.ENEMY_DAMAGE_BONUS: return <HandFist className="w-4 h-4 text-red-400" />;
+        case EffectType.ENEMY_GOLD_REWARD_BONUS: return <BadgeDollarSign className="w-4 h-4 text-amber-400" />;
+        case EffectType.ENEMY_XP_REWARD_BONUS: return <ChessQueen className="w-4 h-4 text-yellow-400" />;
         default: return <Zap className="w-4 h-4 text-purple-400" />;
     }
   };

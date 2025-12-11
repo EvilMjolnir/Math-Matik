@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType, Item, StorageMode, EffectType } from '../types';
-import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud, Sword, TestTube, X, Gift, Sparkles, Star, Footprints, Shield, Skull, ZoomIn, Music } from 'lucide-react';
+import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud, Sword, TestTube, X, Gift, Sparkles, Star, Footprints, Shield, Skull, ZoomIn, Music, HandFist, ChessQueen, BicepsFlexed, BadgeDollarSign, Sprout } from 'lucide-react';
 import * as localStore from '../services/storageService';
 import * as cloudStore from '../services/storageService_Live';
 import { lootData } from '../data/loot';
@@ -226,10 +226,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
         case EffectType.MOVEMENT_BONUS: return <Footprints className="w-5 h-5 text-green-500" />;
         case EffectType.COMBAT_SCORE_BONUS: return <Sword className="w-5 h-5 text-red-500" />;
         case EffectType.ENEMY_HP_BONUS: return <Shield className="w-5 h-5 text-blue-500" />;
-        case EffectType.ENEMY_DAMAGE_BONUS: return <Sword className="w-5 h-5 text-red-600" />;
-        case EffectType.ENEMY_GOLD_REWARD_BONUS: return <Coins className="w-5 h-5 text-amber-600" />;
-        case EffectType.ENEMY_XP_REWARD_BONUS: return <Star className="w-5 h-5 text-yellow-600" />;
-        case EffectType.DEFENSE_BONUS: return <Shield className="w-5 h-5 text-blue-400" />;
+        case EffectType.ENEMY_DAMAGE_BONUS: return <HandFist className="w-5 h-5 text-red-600" />;
+        case EffectType.ENEMY_GOLD_REWARD_BONUS: return <BadgeDollarSign className="w-5 h-5 text-amber-600" />;
+        case EffectType.ENEMY_XP_REWARD_BONUS: return <ChessQueen className="w-5 h-5 text-yellow-600" />;
+        case EffectType.DEFENSE_BONUS: return <BicepsFlexed className="w-5 h-5 text-blue-400" />;
         default: return <Sparkles className="w-5 h-5 text-purple-500" />;
     }
   };

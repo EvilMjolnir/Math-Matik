@@ -6,7 +6,7 @@ import { Item, EffectType } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 import { RARITY_TEXT_COLORS } from '../constants';
 import { useLocalization } from '../localization';
-import { X, Backpack, Star, Coins, Footprints, Sword, Sparkles, Shield } from 'lucide-react';
+import { X, Backpack, Star, Coins, Footprints, Sword, Sparkles, Shield, BicepsFlexed, Skull, Sprout } from 'lucide-react';
 import { playMenuBackSound } from '../services/audioService';
 
 interface ItemDetailOverlayProps {
@@ -28,7 +28,9 @@ const ItemDetailOverlay: React.FC<ItemDetailOverlayProps> = ({ item, onClose }) 
         case EffectType.GOLD_MULTIPLIER: return <Coins className="w-4 h-4 text-amber-400" />;
         case EffectType.MOVEMENT_BONUS: return <Footprints className="w-4 h-4 text-green-400" />;
         case EffectType.COMBAT_SCORE_BONUS: return <Sword className="w-4 h-4 text-red-400" />;
-        case EffectType.DEFENSE_BONUS: return <Shield className="w-4 h-4 text-blue-400" />;
+        case EffectType.DEFENSE_BONUS: return <BicepsFlexed className="w-4 h-4 text-blue-400" />;
+        case EffectType.HEAL_TURN: return <Sprout className="w-4 h-4 text-pink-400" />;
+        case EffectType.WEAKEN_ENEMY: return <Skull className="w-4 h-4 text-purple-400" />;
         default: return <Sparkles className="w-4 h-4 text-purple-400" />;
     }
   };
