@@ -33,18 +33,6 @@ const MathProblemDisplay: React.FC<MathProblemDisplayProps> = ({ problem, userIn
 
   const [_, top, op, bottom, result] = match;
 
-  // Determine what to display in each slot.
-  // If a slot is '?', we replace it with userInput (or empty if userInput is empty).
-  // Otherwise we show the number.
-  
-  const displayTop = top === '?' ? (userInput || '?') : top;
-  const displayBottom = bottom === '?' ? (userInput || '?') : bottom;
-  // Operator Mode: If op is missing (not captured well or special case), we might need logic, but current regex expects op.
-  // Note: Boss operator questions might be "5 ? 3 = 8". The regex above expects an op char.
-  // Let's adjust for Operator Mode "5 ? 3 = 8".
-  
-  const displayOp = op; // If op is '?', handled below? Actually generateBossProblem returns '?' as symbol in string.
-  
   // Special check for Hidden Operator mode: "5 ? 3 = 8"
   const opMatch = problem.question.match(/^(\?|[\d]+)\s*(\?|[+\-×÷])\s*(\?|[\d]+)\s*=\s*(\?|[\d]+)$/);
   
@@ -57,7 +45,7 @@ const MathProblemDisplay: React.FC<MathProblemDisplayProps> = ({ problem, userIn
       [, finalTop, finalOp, finalBottom, finalResult] = opMatch;
   }
 
-  const renderValue = (val: string, isOp: boolean = false) => {
+  const renderValue = (val: string) => {
       const isInputSlot = val === '?';
       const content = isInputSlot ? (userInput || '?') : val;
       
@@ -77,7 +65,7 @@ const MathProblemDisplay: React.FC<MathProblemDisplayProps> = ({ problem, userIn
         
         {/* Operator + Bottom Number */}
         <div className="flex items-center justify-end w-full border-b-4 border-parchment-900 pb-2 mb-2">
-            <span className="mr-6">{renderValue(finalOp, true)}</span>
+            <span className="mr-6">{renderValue(finalOp)}</span>
             <span className="pr-4">{renderValue(finalBottom)}</span>
         </div>
 
