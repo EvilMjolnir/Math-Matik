@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { PlayerStats } from '../types';
-import { XP_TABLE, DEFAULT_USER_IMAGE } from '../constants';
+import { XP_TABLE, DEFAULT_USER_IMAGE, LEVEL_TIERS } from '../constants';
 import { getAggregatedStats } from '../services/statusService';
 import { Heart, Coins, Shield, Crown, Maximize2, Star, LogOut, Footprints, Sword, Sparkles, Sigma, BicepsFlexed } from 'lucide-react';
 import { useLocalization } from '../localization';
@@ -31,6 +31,9 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
   // Generate a signature string for active effects to detect changes
   const effectsSignature = JSON.stringify(stats.effectDetails.map(e => e.id).sort());
   const prevEffectsRef = useRef<string>('');
+
+  // Calculate Title Tier for Crown Color
+  const currentTier = LEVEL_TIERS.find(t => player.level <= t.maxLevel) || LEVEL_TIERS[LEVEL_TIERS.length - 1];
 
   useEffect(() => {
     // Check if effects changed from previous render
@@ -84,7 +87,7 @@ const PlayerStatsWidget: React.FC<PlayerStatsWidgetProps> = ({ player, onExpand,
       <div className="text-center w-full mb-2">
         <h3 className="font-serif font-bold text-amber-500 text-2xl truncate px-2 mb-1">{player.username}</h3>
         <div className="flex items-center justify-center text-parchment-200 text-base mb-2">
-           <Crown className="w-5 h-5 mr-1 text-yellow-500" />
+           <Crown className={`w-5 h-5 mr-1 ${currentTier.color}`} />
            <span>{t.common.level} {player.level}</span>
         </div>
 

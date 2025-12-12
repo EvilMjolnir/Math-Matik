@@ -160,6 +160,14 @@ export interface Translation {
     meltingMode: string;
     meltConfirm: string;
   };
+  playerTitles: {
+    [key: string]: string;
+    novice: string;
+    apprentice: string;
+    adept: string;
+    master: string;
+    grandmaster: string;
+  };
   bonuses: {
     xp: string;
     gold: string;
@@ -182,10 +190,22 @@ export interface Translation {
     defense: string;
     activeEffects: string;
     travelAlone: string;
+    agility: string;
   };
   options: {
     gameplayTab: string;
     dataTab: string;
+    tutorialsTab: string;
+  };
+  tutorial: {
+    basicsTitle: string;
+    basicsBody: string;
+    pillarsTitle: string;
+    pillarsBody: string;
+    growthTitle: string;
+    growthBody: string;
+    advancedTitle: string;
+    advancedBody: string;
   };
   levelUp: {
     title: string;

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { PlayerStats, Item, EffectType, Companion } from '../types';
-import { XP_TABLE, RARITY_TEXT_COLORS, DEFAULT_USER_IMAGE } from '../constants';
+import { XP_TABLE, RARITY_TEXT_COLORS, DEFAULT_USER_IMAGE, LEVEL_TIERS } from '../constants';
 import { getAggregatedStats } from '../services/statusService';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Star, Backpack, Sparkles, Lock, Footprints, Sword, Link, Info, Sigma, Flame, Zap, BicepsFlexed, Skull, Sprout, ChevronLeft } from 'lucide-react';
@@ -333,6 +333,10 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
 
   const isDesktop = deviceType === 'desktop';
 
+  // Calculate Title based on Level
+  const currentTier = LEVEL_TIERS.find(t => player.level <= t.maxLevel) || LEVEL_TIERS[LEVEL_TIERS.length - 1];
+  const titleText = (t.playerTitles && t.playerTitles[currentTier.id]) ? t.playerTitles[currentTier.id] : "Mathematician";
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
       <div className="relative w-full max-w-6xl bg-parchment-200 rounded-lg shadow-2xl border-4 border-parchment-800 transition-colors duration-500 flex flex-col h-[90vh]">
@@ -376,7 +380,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                  <>
                    <div className="flex flex-col md:flex-row md:items-center group items-start">
                      <div className="flex items-center">
-                        <h2 className="text-3xl font-serif font-bold mr-3">
+                        <h2 className="text-3xl font-serif font-bold mr-3 text-teal-900 drop-shadow-md">
                             {activeTab === 'inventory' ? t.equipment.title : activeTab === 'companions' ? t.profile.companions : player.username}
                         </h2>
                         {activeTab === 'stats' && (
@@ -399,9 +403,9 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                      )}
                    </div>
                    {activeTab !== 'inventory' && (
-                        <div className="font-serif flex items-center mt-1 opacity-80">
-                            <Crown className="w-4 h-4 mr-1 text-amber-600" />
-                            {t.common.level} {player.level} Mathematician
+                        <div className="font-serif flex items-center mt-1 opacity-90 text-teal-900 drop-shadow-sm">
+                            <Crown className={`w-4 h-4 mr-1 ${currentTier.color}`} />
+                            {t.common.level} {player.level} {titleText}
                         </div>
                    )}
                  </>
@@ -422,57 +426,59 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
           {/* STATS TAB */}
           {activeTab === 'stats' && (
             <div className="space-y-6 flex flex-col h-full animate-fadeIn">
-              <h3 className="text-xl font-bold font-serif text-parchment-900 border-b border-parchment-400 pb-2">{t.stats.vitalStats}</h3>
+              <h3 className="text-xl font-bold font-serif text-teal-900 drop-shadow-md border-b border-parchment-400 pb-2">
+                  {t.stats.vitalStats}
+              </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between">
-                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                      <div className="flex items-center text-teal-900 drop-shadow-sm font-bold uppercase tracking-wider text-sm">
                           <Heart className="w-5 h-5 mr-3 text-red-600" />
                           {t.common.hp}
                       </div>
-                      <div className="font-mono font-bold text-xl text-parchment-900">{player.currentHp} / {player.maxHp}</div>
+                      <div className="font-mono font-bold text-xl text-teal-900 drop-shadow-sm">{player.currentHp} / {player.maxHp}</div>
                   </div>
                   <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between">
-                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                      <div className="flex items-center text-teal-900 drop-shadow-sm font-bold uppercase tracking-wider text-sm">
                           <Sword className="w-5 h-5 mr-3 text-red-600" />
                           {t.combat.attack}
                       </div>
-                      <div className="font-mono font-bold text-xl text-parchment-900">{activeStats.totalAttack}</div>
+                      <div className="font-mono font-bold text-xl text-teal-900 drop-shadow-sm">{activeStats.totalAttack}</div>
                   </div>
                   <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between">
-                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                      <div className="flex items-center text-teal-900 drop-shadow-sm font-bold uppercase tracking-wider text-sm">
                           <Shield className="w-5 h-5 mr-3 text-blue-600" />
                           {t.stats.defense}
                       </div>
-                      <div className="font-mono font-bold text-xl text-parchment-900">{activeStats.totalDefense}</div>
+                      <div className="font-mono font-bold text-xl text-teal-900 drop-shadow-sm">{activeStats.totalDefense}</div>
                   </div>
                   <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between">
-                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                      <div className="flex items-center text-teal-900 drop-shadow-sm font-bold uppercase tracking-wider text-sm">
                           <Footprints className="w-5 h-5 mr-3 text-green-600" />
                           {t.profile.agility}
                       </div>
-                      <div className="font-mono font-bold text-xl text-parchment-900">{player.agility || 0}</div>
+                      <div className="font-mono font-bold text-xl text-teal-900 drop-shadow-sm">{player.agility || 0}</div>
                   </div>
                   <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between">
-                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                      <div className="flex items-center text-teal-900 drop-shadow-sm font-bold uppercase tracking-wider text-sm">
                           <Coins className="w-5 h-5 mr-3 text-amber-600" />
                           {t.common.gold}
                       </div>
-                      <div className="font-mono font-bold text-xl text-amber-700">{player.gold}</div>
+                      <div className="font-mono font-bold text-xl text-amber-700 drop-shadow-sm">{player.gold}</div>
                   </div>
                   <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between">
-                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                      <div className="flex items-center text-teal-900 drop-shadow-sm font-bold uppercase tracking-wider text-sm">
                           <Sigma className="w-5 h-5 mr-3 text-cyan-600" />
                           {t.common.nums}
                       </div>
-                      <div className="font-mono font-bold text-xl text-cyan-700">{player.nums}</div>
+                      <div className="font-mono font-bold text-xl text-cyan-700 drop-shadow-sm">{player.nums}</div>
                   </div>
                   <div className="bg-parchment-100/50 p-3 rounded-lg border border-parchment-300 flex items-center justify-between col-span-1 md:col-span-2">
-                      <div className="flex items-center text-parchment-800 font-bold uppercase tracking-wider text-sm">
+                      <div className="flex items-center text-teal-900 drop-shadow-sm font-bold uppercase tracking-wider text-sm">
                           <Star className="w-5 h-5 mr-3 text-yellow-500" />
                           {t.stats.totalXp}
                       </div>
-                      <div className="font-mono font-bold text-xl text-parchment-900">
+                      <div className="font-mono font-bold text-xl text-teal-900 drop-shadow-sm">
                           {player.currentXp}
                           <span className="text-xs text-parchment-500 ml-2 font-normal">
                               ({(player.currentXp - (XP_TABLE[player.level - 1] || 0))} / {(XP_TABLE[player.level] || (XP_TABLE[XP_TABLE.length - 1] + 100)) - (XP_TABLE[player.level - 1] || 0)} {t.stats.nextLevel})
@@ -482,7 +488,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-xl font-bold font-serif text-parchment-900 border-b border-parchment-400 pb-2 mt-4 flex items-center">
+                <h3 className="text-xl font-bold font-serif text-teal-900 drop-shadow-md border-b border-parchment-400 pb-2 mt-4 flex items-center">
                   <Sparkles className="w-5 h-5 mr-2 text-purple-600" />
                   {t.stats.activeEffects}
                 </h3>
@@ -493,7 +499,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                       const source = (lang === 'fr' && detail.sourceName_fr) ? detail.sourceName_fr : detail.sourceName;
                       
                       return (
-                        <li key={idx} className="bg-purple-100 text-purple-900 px-3 py-2 rounded border border-purple-200 text-sm flex flex-col">
+                        <li key={idx} className="bg-purple-100 text-purple-900 px-3 py-2 rounded border border-purple-200 text-sm flex flex-col shadow-sm">
                             <div className="flex items-center font-bold">
                                 <div className="w-2 h-2 bg-purple-500 rounded-full mr-2 shrink-0"></div>
                                 {desc}
@@ -523,7 +529,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                 <div className="flex flex-col-reverse md:grid md:grid-cols-2 gap-4 h-full">
                     {/* Active Slots Section (Bottom on Mobile, Left on Desktop) */}
                     <div className="p-4 rounded border bg-parchment-300/30 border-parchment-400 shrink-0 flex flex-col">
-                        <h3 className="text-lg font-bold font-serif mb-3 text-parchment-900 border-b border-parchment-400 pb-1">
+                        <h3 className="text-lg font-bold font-serif mb-3 text-teal-900 drop-shadow-md border-b border-parchment-400 pb-1">
                             {t.equipment.title}
                         </h3>
                         <div className="grid grid-cols-3 gap-3">
@@ -533,24 +539,24 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                         {/* Current Bonuses Summary */}
                         {hasActiveBonuses ? (
                             <div className="mt-4 pt-3 border-t border-parchment-400">
-                                <h4 className="text-xs font-bold text-parchment-800 uppercase tracking-widest mb-2 flex items-center">
+                                <h4 className="text-xs font-bold text-teal-900 drop-shadow-sm uppercase tracking-widest mb-2 flex items-center">
                                     <Sparkles className="w-3 h-3 mr-1 text-purple-600" /> Active Bonuses
                                 </h4>
                                 <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs">
                                     {activeStats.xpMultiplier > 1 && (
-                                        <div className="flex justify-between"><span className="text-parchment-700">XP</span> <span className="font-bold text-yellow-700">+{Math.round((activeStats.xpMultiplier - 1) * 100)}%</span></div>
+                                        <div className="flex justify-between"><span className="text-teal-900">XP</span> <span className="font-bold text-yellow-700 drop-shadow-sm">+{Math.round((activeStats.xpMultiplier - 1) * 100)}%</span></div>
                                     )}
                                     {activeStats.goldMultiplier > 1 && (
-                                        <div className="flex justify-between"><span className="text-parchment-700">Gold</span> <span className="font-bold text-amber-700">+{Math.round((activeStats.goldMultiplier - 1) * 100)}%</span></div>
+                                        <div className="flex justify-between"><span className="text-teal-900">Gold</span> <span className="font-bold text-amber-700 drop-shadow-sm">+{Math.round((activeStats.goldMultiplier - 1) * 100)}%</span></div>
                                     )}
                                     {activeStats.movementMultiplier > 1 && (
-                                        <div className="flex justify-between"><span className="text-parchment-700">Speed</span> <span className="font-bold text-green-700">+{Math.round((activeStats.movementMultiplier - 1) * 100)}%</span></div>
+                                        <div className="flex justify-between"><span className="text-teal-900">Speed</span> <span className="font-bold text-green-700 drop-shadow-sm">+{Math.round((activeStats.movementMultiplier - 1) * 100)}%</span></div>
                                     )}
                                     {activeStats.attackMultiplier > 0 && (
-                                        <div className="flex justify-between"><span className="text-parchment-700">Attack</span> <span className="font-bold text-red-700">+{Math.round(activeStats.attackMultiplier * 100)}%</span></div>
+                                        <div className="flex justify-between"><span className="text-teal-900">Attack</span> <span className="font-bold text-red-700 drop-shadow-sm">+{Math.round(activeStats.attackMultiplier * 100)}%</span></div>
                                     )}
                                     {activeStats.totalDefense > player.defense && (
-                                        <div className="flex justify-between"><span className="text-parchment-700">Defense</span> <span className="font-bold text-blue-700">+{activeStats.totalDefense - player.defense}</span></div>
+                                        <div className="flex justify-between"><span className="text-teal-900">Defense</span> <span className="font-bold text-blue-700 drop-shadow-sm">+{activeStats.totalDefense - player.defense}</span></div>
                                     )}
                                 </div>
                             </div>
@@ -574,7 +580,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                             }
                         }}
                     >
-                         <h3 className="text-lg font-bold font-serif mb-3 text-parchment-900 border-b border-parchment-300 pb-1">
+                         <h3 className="text-lg font-bold font-serif mb-3 text-teal-900 drop-shadow-md border-b border-parchment-300 pb-1">
                              {t.equipment.backpack}
                          </h3>
                          <div className="overflow-y-auto pr-2 flex-1 custom-scrollbar space-y-2">
@@ -655,7 +661,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                         
                         <div className="flex-1">
                             <div className="flex items-center">
-                                <span className="font-bold text-parchment-900 text-lg">{comp.name}</span>
+                                <span className="font-bold text-teal-900 drop-shadow-md text-lg">{comp.name}</span>
                                 {isActive && (
                                     <span className="ml-2 px-2 py-0.5 bg-amber-600 text-white text-[10px] font-bold uppercase rounded-full">
                                         {t.tomes.active}

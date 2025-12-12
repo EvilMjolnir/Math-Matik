@@ -84,6 +84,14 @@ export const XP_TABLE = [
   4500  // Level 25
 ];
 
+export const LEVEL_TIERS = [
+  { maxLevel: 5, id: 'novice', color: 'text-parchment-400' },
+  { maxLevel: 10, id: 'apprentice', color: 'text-green-400' },
+  { maxLevel: 19, id: 'adept', color: 'text-blue-400' },
+  { maxLevel: 24, id: 'master', color: 'text-purple-400' },
+  { maxLevel: 100, id: 'grandmaster', color: 'text-yellow-500 drop-shadow-[0_0_5px_rgba(234,179,8,0.5)]' }
+];
+
 // Cost to upgrade TO the next level (Index 0 is cost from Lvl 1 to 2)
 export const COMPANION_LEVEL_COSTS = [
   150,   // To Level 2

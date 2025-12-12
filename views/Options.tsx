@@ -1,9 +1,10 @@
 
 import React, { useState } from 'react';
 import { GameConfig, StorageMode } from '../types';
-import { ChevronLeft, Info, Cloud, Database, Trash2, Gamepad2, Server, RefreshCw, Settings, Check, Globe, AlignJustify, AlignCenter } from 'lucide-react';
+import { ChevronLeft, Info, Cloud, Database, Trash2, Gamepad2, Server, RefreshCw, Settings, Check, Globe, AlignJustify, AlignCenter, BookOpen, Scroll } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound } from '../services/audioService';
+import { MarkdownLite } from '../components/MarkdownLite';
 
 interface OptionsProps {
   config: GameConfig;
@@ -18,7 +19,8 @@ interface OptionsProps {
 
 const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, storageMode, onStorageModeChange, onDeleteAccount, onResetProfile }) => {
   const { t, lang, setLang } = useLocalization();
-  const [activeTab, setActiveTab] = useState<'general' | 'gameplay' | 'data'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'gameplay' | 'data' | 'tutorials'>('general');
+  const [activeTutorial, setActiveTutorial] = useState<'basics' | 'pillars' | 'growth' | 'advanced'>('basics');
   
   const handleChange = (section: keyof GameConfig, field: string, value: number | boolean) => {
     setConfig({
@@ -65,6 +67,17 @@ const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, storageMod
             >
                 <Settings className="w-5 h-5 mr-3" />
                 General
+            </button>
+            <button 
+                onClick={() => setActiveTab('tutorials')}
+                className={`p-4 rounded-lg font-serif font-bold flex items-center transition-all text-left ${
+                    activeTab === 'tutorials' 
+                    ? 'bg-parchment-200 text-parchment-900 shadow-md border-l-4 border-amber-500' 
+                    : 'bg-parchment-900/50 text-parchment-400 hover:bg-parchment-800 hover:text-parchment-200'
+                }`}
+            >
+                <BookOpen className="w-5 h-5 mr-3" />
+                {t.options.tutorialsTab}
             </button>
             <button 
                 onClick={() => setActiveTab('gameplay')}
@@ -147,6 +160,52 @@ const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, storageMod
                     </div>
                 </section>
             </div>
+            )}
+
+            {/* TUTORIALS TAB */}
+            {activeTab === 'tutorials' && (
+                <div className="flex flex-col h-full animate-fadeIn p-4">
+                    <div className="flex flex-wrap gap-2 mb-4">
+                        {[
+                            { id: 'basics', label: 'Basics' },
+                            { id: 'pillars', label: 'Game Modes' },
+                            { id: 'growth', label: 'Growth' },
+                            { id: 'advanced', label: 'Advanced' }
+                        ].map((item) => (
+                            <button
+                                key={item.id}
+                                onClick={() => setActiveTutorial(item.id as any)}
+                                className={`px-4 py-2 rounded-full font-bold text-sm transition-colors border-2
+                                    ${activeTutorial === item.id 
+                                        ? 'bg-amber-600 text-white border-amber-400' 
+                                        : 'bg-parchment-300 text-parchment-900 border-parchment-400 hover:bg-parchment-400'}
+                                `}
+                            >
+                                {item.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="bg-parchment-100 p-6 rounded-lg border-2 border-parchment-400 shadow-md text-parchment-900 flex-1 overflow-y-auto">
+                        <div className="flex items-center mb-4 border-b-2 border-parchment-300 pb-2">
+                            <Scroll className="w-6 h-6 mr-2 text-amber-700" />
+                            <h2 className="text-2xl font-serif font-bold text-amber-800">
+                                {activeTutorial === 'basics' && t.tutorial.basicsTitle}
+                                {activeTutorial === 'pillars' && t.tutorial.pillarsTitle}
+                                {activeTutorial === 'growth' && t.tutorial.growthTitle}
+                                {activeTutorial === 'advanced' && t.tutorial.advancedTitle}
+                            </h2>
+                        </div>
+                        <div className="text-lg">
+                            <MarkdownLite content={
+                                activeTutorial === 'basics' ? t.tutorial.basicsBody :
+                                activeTutorial === 'pillars' ? t.tutorial.pillarsBody :
+                                activeTutorial === 'growth' ? t.tutorial.growthBody :
+                                t.tutorial.advancedBody
+                            } />
+                        </div>
+                    </div>
+                </div>
             )}
 
             {activeTab === 'data' && (

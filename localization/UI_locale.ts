@@ -161,6 +161,13 @@ export const UI_SOURCE = {
     meltingMode: { en: "MELTING MODE", fr: "MODE FUSION" },
     meltConfirm: { en: "Melt this item for {amount} Nems?", fr: "Fondre cet objet pour {amount} Nems ?" },
   },
+  playerTitles: {
+    novice: { en: "Novice", fr: "Novice" },
+    apprentice: { en: "Apprentice", fr: "Apprenti" },
+    adept: { en: "Adept", fr: "Adepte" },
+    master: { en: "Master", fr: "Maître" },
+    grandmaster: { en: "Arithmancer", fr: "Arithmancien" },
+  },
   bonuses: {
     xp: { en: "+{value}% XP Gain", fr: "+{value}% Gain d'XP" },
     gold: { en: "+{value}% Gold Gain", fr: "+{value}% Gain d'Or" },
@@ -183,10 +190,34 @@ export const UI_SOURCE = {
     defense: { en: "Defense", fr: "Défense" },
     activeEffects: { en: "Active Effects", fr: "Effets Actifs" },
     travelAlone: { en: "You travel alone...", fr: "Vous voyagez seul..." },
+    agility: { en: "Agility", fr: "Agilité" },
   },
   options: {
     gameplayTab: { en: "Gameplay & Difficulty", fr: "Jeu & Difficulté" },
     dataTab: { en: "Storage & Data", fr: "Stockage & Données" },
+    tutorialsTab: { en: "Tutorials & Guides", fr: "Tutoriels & Guides" },
+  },
+  tutorial: {
+    basicsTitle: { en: "1. Getting Started", fr: "1. Pour Commencer" },
+    basicsBody: { 
+        en: "Welcome, Mathematician! The Stats Panel displays your **HP**, **Level**, and **Gold**.\n\n### [icon:settings] Customizing Your Experience\nVisit the Options (Gear icon) to tailor the game:\n- **Vertical Math**: Toggle to stack numbers vertically (e.g., 5 over 3) instead of horizontally (5 + 3).", 
+        fr: "Bienvenue, Mathématicien ! Le panneau de stats affiche vos **PV**, **Niveau** et **Or**.\n\n### [icon:settings] Personnaliser votre Expérience\nVisitez les Options (icône Engrenage) pour régler le jeu :\n- **Maths Verticales** : Activez ceci pour empiler les nombres verticalement (ex : 5 sur 3) au lieu d'horizontalement (5 + 3)."
+    },
+    pillarsTitle: { en: "2. The 4 Pillars", fr: "2. Les 4 Piliers" },
+    pillarsBody: { 
+        en: "### [icon:footprints] Movement (Addition & Subtraction)\nTravel distance in your Tome. Solve problems to reach the Boss.\n\n### [icon:sword] Combat (Multiplication)\nFight enemies for **Gold** and **XP**. Speed matters!\n\n### [icon:search] Research (Division)\nSpend Gold to open chests and find **Equipment**.\n\n### [icon:flask] Alchemy (Fractions)\nSpend **Nems** to craft potions. Wrong answers break the flask!", 
+        fr: "### [icon:footprints] Mouvement (Addition & Soustraction)\nParcourez la distance pour atteindre le Boss.\n\n### [icon:sword] Combat (Multiplication)\nCombattez pour l'**Or** et l'**XP**. La vitesse compte !\n\n### [icon:search] Recherche (Division)\nDépensez l'Or pour trouver de l'**Équipement**.\n\n### [icon:flask] Alchimie (Fractions)\nDépensez des **Nems** pour créer des potions." 
+    },
+    growthTitle: { en: "3. Growth & Stats", fr: "3. Croissance & Stats" },
+    growthBody: { 
+        en: "- [icon:heart] **HP**: Health Points. If you get to 0, you lose battle. Level up to restore all your [icon:heart].\n- [icon:sword] **ATTACK**: Damage dealt to monsters.\n- [icon:shield] **DEFENSE**: Reduces damage taken.\n- **EQUIPMENT**: Drag items to slots to activate bonuses. Slots unlock at Lv 5, 10, 15.\n- **COMPANIONS**: Allies provide passive bonuses. Level them up with Gold!", 
+        fr: "- [icon:heart] **PV**: Points de Vie. Si ils atteignent 0, c'est la défaite. Monter de niveau restaure tout vos [icon:heart].\n- [icon:sword] **ATTAQUE**: Dégâts infligés aux monstres.\n- [icon:shield] **DÉFENSE**: Réduit les dégâts reçus.\n- **ÉQUIPEMENT**: Placez les objets pour activer les bonus. Slots débloqués Niv 5, 10, 15.\n- **COMPAGNONS**: Alliés donnant des bonus. Améliorez-les avec de l'Or !" 
+    },
+    advancedTitle: { en: "4. Advanced", fr: "4. Avancé" },
+    advancedBody: { 
+        en: "### [icon:flame] Black Mirror (Melting)\nMelt useless items in your Inventory to get **Nems** ([icon:sigma]) for Alchemy.\n\n### [icon:skull] Boss Battles\nTimer counts down continuously. 0 = Damage!\n\n### Hidden Operators\n'2 ? 2 = 4'. Use the Colored Keypad to pick the sign (+, -, x, /).", 
+        fr: "### [icon:flame] Miroir Noir (Fusion)\nFondez les objets inutiles pour obtenir des **Nems** ([icon:sigma]).\n\n### [icon:skull] Boss\nLe temps s'écoule en continu. 0 = Dégâts !\n\n### Opérateurs Cachés\n'2 ? 2 = 4'. Utilisez le Clavier Coloré pour choisir le signe (+, -, x, /)." 
+    },
   },
   levelUp: {
     title: { en: "Level Up!", fr: "Niveau Supérieur !" },

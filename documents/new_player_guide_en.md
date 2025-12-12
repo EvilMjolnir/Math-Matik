@@ -8,8 +8,13 @@ Welcome, Mathematician! Your journey through the realm of numbers is about to be
 ### The Main Hub
 When you enter the game, you are placed in your **Camp (Home Screen)**.
 *   **Top Bar**: Shows your current **Quest Progress** or active **Encounter**.
-*   **Left Panel (Desktop)** or **Menu (Mobile)**: Displays your Hero's stats (HP, Level, Gold).
+*   **Stats Panel**: Displays your Hero's vital statistics (HP, Level, Gold).
 *   **Center Menu**: The four magical disciplines you can practice.
+
+### Customizing Your Experience
+Visit the **Options** menu (Gear icon) to tailor the game:
+*   **Vertical Math**: Toggle this to stack numbers vertically (e.g., $\begin{smallmatrix} 5 \\ +3 \end{smallmatrix}$) instead of horizontally ($5 + 3$).
+*   **Language**: Switch between English and French at any time.
 
 ---
 
@@ -25,11 +30,14 @@ Success requires mastering four types of magic (mathematics).
 
 ### ⚔️ Combat (Multiplication)
 *   **Goal**: Defeat enemies blocking your path or earn Gold.
-*   **How to Play**:
-    *   **Normal Enemies**: You have a time limit to answer questions. Correct answers deal damage.
-    *   **Bosses**: A timer counts down continuously! Answer correctly to fill your **Action Gauge**. When full, you attack automatically.
+*   **Normal Enemies**: 
+    *   You have a time limit to answer questions. 
+    *   **Speed Bonus**: Answering quickly (while the timer is Gold or Green) deals extra damage!
+*   **Bosses**: 
+    *   A timer counts down continuously. If it hits 0, you take damage!
+    *   **Operator Mode**: Some bosses hide the operator (e.g., `2 ? 2 = 4`). Use the **Colored Keypad** to pick the right symbol (+, -, ×, ÷).
+    *   Correct answers fill your **Action Gauge**. When full, you attack automatically.
 *   **Reward**: XP and **Gold**.
-*   **Why?**: You need Gold to buy research items and upgrade companions.
 
 ### 🔍 Research (Division)
 *   **Goal**: Unlock magical chests to find equipment.
@@ -42,8 +50,11 @@ Success requires mastering four types of magic (mathematics).
 
 ### 🧪 Alchemy (Fractions)
 *   **Goal**: Craft consumable potions.
-*   **How to Play**: Spend **Nems** (obtained by melting unwanted items) to draft a recipe, then solve fraction problems to brew it.
+*   **How to Play**: 
+    1.  Spend **Nems** (Purple Currency) to draft a recipe.
+    2.  Solve fraction problems to stabilize the mixture.
 *   **Reward**: Potions (Healing, Buffs).
+*   **Warning**: Wrong answers can shatter the flask!
 
 ---
 
@@ -67,30 +78,36 @@ graph TD
 ## 4. Character Growth
 
 ### Stats
-*   **❤️ HP**: Health Points. If this reaches 0, you lose the battle. Increases with Level.
+*   **❤️ HP**: Health Points. If this reaches 0, you lose the battle. Increases with Level. **Leveling up fully restores your HP.**
 *   **⚔️ Attack**: How much damage you deal to monsters. Increases with Level and Items.
 *   **🛡️ Defense**: Reduces damage taken. Increases every 4 Levels.
 *   **🦶 Agility**: Bonus movement speed. Increases every 3 Levels.
 
 ### Equipment & Inventory
-1.  Click the **"Backpack"** icon (bottom left) or the **"Details"** button on your stat widget.
-2.  Drag and drop items from your **Backpack** into the numbered **Active Slots**.
+1.  Click the **"Inventory"** icon (Backpack).
+2.  **Drag and Drop** items from your storage into the numbered **Active Slots**.
+    *   *Mobile Users*: Tap an item to select it, then tap a slot to place it.
     *   *Note*: Slots 4, 5, and 6 are locked until you reach levels 5, 10, and 15!
-3.  Different items give different bonuses (e.g., "Scholar" items give more XP, "Fighter" items give more Attack).
+3.  **Active Bonuses**: Check the summary panel below your slots to see your total magical boosts (e.g., +20% Gold).
 
 ### Companions
 You are not alone!
-1.  Click the **"Companions"** icon (bottom left or in profile).
+1.  Click the **"Companions"** icon.
 2.  **Select** a companion to aid you. They provide passive bonuses (e.g., *Fib the Thief* grants extra gold).
 3.  **Level Up**: Use your Gold to train your companion. Higher levels mean stronger bonuses!
-    *   Level 2: 150g
-    *   Level 3: 450g
-    *   Level 4: 1,200g
-    *   Level 5: 3,000g
 
 ---
 
-## 5. Tips for Survival
-*   **Stuck on a Boss?** Go back to previous levels to grind Combat for Gold. Use that Gold to find better items in Research.
-*   **Need Healing?** Leveling up fully restores your HP.
-*   **Too many items?** Visit the **Black Mirror** (top right of Inventory) to melt common items into Nems for Alchemy.
+## 5. Advanced Mechanics
+
+### The Black Mirror (Melting)
+Have too many common items?
+1.  Open your **Inventory**.
+2.  Click the **"Black Mirror"** button (next to the title).
+3.  Select items to sacrifice.
+4.  **Melt** them to receive **Nems** ($\Sigma$).
+5.  Use Nems in **Alchemy** to craft powerful potions.
+
+### Boss Strategy
+*   **Hidden Operators**: Look closely at the numbers. `4 ? 2 = 2` could be Subtraction (-) or Division (÷). The buttons are color-coded to help you react faster.
+*   **Panic**: If the timer is running low, focus! A wrong answer reduces your timer even further.
