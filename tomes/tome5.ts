@@ -25,7 +25,7 @@ export const tome5: Tome = {
     },
     recherche: {
       divisionMaxDividend: 100,
-      baseCost: 10,
+      baseCost: 20,
       costIncrement: 3,
     },
     alchimie: {

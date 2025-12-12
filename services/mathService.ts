@@ -161,14 +161,21 @@ export const generateFractionProblem = (config: GameConfig['alchimie']): MathPro
   }
   
   if (type === 'add' || type === 'sub') {
-    // Simple common denominator or easy cross
+    // Common Denominator
     const den = randDen();
-    const num1 = randNum(den * 2);
-    const num2 = randNum(den * 2);
     
     if (type === 'add') {
+      // Ensure Sum <= 1 (Proper Fraction Result)
+      // num1 can be anything from 1 to den-1
+      const num1 = Math.floor(Math.random() * (den - 1)) + 1;
+      
+      // num2 must be <= den - num1
+      const maxNum2 = den - num1;
+      const num2 = Math.floor(Math.random() * maxNum2) + 1;
+      
       const resNum = num1 + num2;
       const divisor = gcd(resNum, den);
+      
       return {
         question: `${num1}/${den} + ${num2}/${den} = ?`,
         answer: `${resNum/divisor}/${den/divisor}`,
@@ -176,13 +183,18 @@ export const generateFractionProblem = (config: GameConfig['alchimie']): MathPro
         fractionAnswer: { num: resNum/divisor, den: den/divisor }
       };
     } else {
-      // Subtraction (ensure positive)
-      const n1 = Math.max(num1, num2);
-      const n2 = Math.min(num1, num2);
-      const resNum = n1 - n2;
+      // Subtraction (Result Positive)
+      // num1 from 2 to den-1 (at least 2 so we can subtract)
+      const num1 = Math.max(2, Math.floor(Math.random() * (den - 1)) + 1);
+      
+      // num2 must be less than num1
+      const num2 = Math.floor(Math.random() * (num1 - 1)) + 1;
+      
+      const resNum = num1 - num2;
       const divisor = gcd(resNum, den);
+      
       return {
-        question: `${n1}/${den} - ${n2}/${den} = ?`,
+        question: `${num1}/${den} - ${num2}/${den} = ?`,
         answer: `${resNum/divisor}/${den/divisor}`,
         type: 'fraction',
         fractionAnswer: { num: resNum/divisor, den: den/divisor }
@@ -206,17 +218,6 @@ export const generateFractionProblem = (config: GameConfig['alchimie']): MathPro
     };
   }
   
-  // Default fallback if logic slips or 'compare' selected but not impl yet
-  // Impl compare: > < =
-  if (type === 'compare') {
-      // Just generate two simple fractions
-      // const den = randDen();
-      // const num1 = randNum(den);
-      // const num2 = randNum(den);
-      
-      // Comparison logic not yet implemented for UI, fallback to reduction
-      return generateFractionProblem({...config, ops: ['reduce']});
-  }
-
+  // Default fallback
   return generateFractionProblem({...config, ops: ['reduce']});
 };

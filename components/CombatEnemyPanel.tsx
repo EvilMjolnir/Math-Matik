@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { Encounter } from '../types';
-import { Skull, Sword, Shield } from 'lucide-react';
+import { Encounter, EffectType } from '../types';
+import { Skull, Sword, Shield, HandFist, BadgeDollarSign, ChessQueen, Zap, Star, Coins } from 'lucide-react';
 import { Translation } from '../localization/types';
+import { STATUS_EFFECTS } from '../data/statusEffects';
 
 interface CombatEnemyPanelProps {
   encounter?: Encounter; // Optional to handle "Training Mode"
@@ -48,6 +49,18 @@ const CombatEnemyPanel: React.FC<CombatEnemyPanelProps> = ({
       barWidth = Math.max(0, ((maxHp - currentHp) / maxHp) * 100);
   }
 
+  const getEffectIcon = (type: EffectType) => {
+    switch (type) {
+        case EffectType.ENEMY_HP_BONUS: return <Shield className="w-3 h-3 text-blue-400" />;
+        case EffectType.ENEMY_DAMAGE_BONUS: return <HandFist className="w-3 h-3 text-red-400" />;
+        case EffectType.ENEMY_GOLD_REWARD_BONUS: return <BadgeDollarSign className="w-3 h-3 text-amber-400" />;
+        case EffectType.ENEMY_XP_REWARD_BONUS: return <ChessQueen className="w-3 h-3 text-yellow-400" />;
+        case EffectType.XP_MULTIPLIER: return <Star className="w-3 h-3 text-yellow-400" />;
+        case EffectType.GOLD_MULTIPLIER: return <Coins className="w-3 h-3 text-amber-400" />;
+        default: return <Zap className="w-3 h-3 text-purple-400" />;
+    }
+  };
+
   return (
     <div className="w-full md:w-1/4 bg-red-950/40 rounded-lg p-3 border-2 border-red-800/60 flex flex-col justify-center relative">
       
@@ -89,7 +102,7 @@ const CombatEnemyPanel: React.FC<CombatEnemyPanelProps> = ({
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats & Effects */}
       <div className="space-y-2">
         <div className="flex items-center justify-between text-red-200 bg-white/5 p-2 rounded border border-red-900/30">
           <span className="text-xs uppercase font-bold">{t.combat.attack}</span>
@@ -97,13 +110,23 @@ const CombatEnemyPanel: React.FC<CombatEnemyPanelProps> = ({
             <Sword className="w-5 h-5 mr-1"/> {attackPower}
           </span>
         </div>
+        
+        {/* Active Effects List */}
         {encounter.tags && encounter.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 justify-start">
-            {encounter.tags.map(tag => (
-              <span key={tag} className="text-[10px] bg-red-900 text-red-200 px-1.5 py-0.5 rounded border border-red-700 font-bold uppercase">
-                {tag.replace('mon_', '')}
-              </span>
-            ))}
+          <div className="flex flex-col space-y-1 mt-1">
+            {encounter.tags.map(tag => {
+              const effect = STATUS_EFFECTS[tag];
+              if (!effect) return null;
+              
+              const description = (lang === 'fr' && effect.description_fr) ? effect.description_fr : effect.description;
+              
+              return (
+                <div key={tag} className="flex items-center text-[10px] bg-red-900/50 text-red-100 px-2 py-1 rounded border border-red-800/50">
+                  <span className="mr-2 opacity-90">{getEffectIcon(effect.type)}</span>
+                  <span className="font-bold">{description}</span>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

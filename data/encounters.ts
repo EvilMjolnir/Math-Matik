@@ -131,6 +131,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
 
   // --- Tome 3: Void (Levels 5-6) ---
   // HP increased by ~50%
+  // Gold increased by 20%
   t3_shade: {
     id: 't3_shade',
     name: 'Void Shade',
@@ -139,7 +140,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Une ombre qui consume les nombres.',
     monsterHP: 38, // Increased from 25
     attack: 20,
-    goldReward: 58,
+    goldReward: 24, // +20%
     xpReward: 100,
     tags: ['fierce_4'], // +40% Dmg (was Deadly)
     timerDuration: 7,
@@ -153,7 +154,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Il lance des sorts de confusion !',
     monsterHP: 53, // Increased from 35
     attack: 25,
-    goldReward: 87,
+    goldReward: 24, // +20%
     xpReward: 150,
     timerDuration: 10,
     image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/mad_wizard.png"
@@ -166,7 +167,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Cette créature ne peut être divisée que par deux choses : 1 et elle-même. Trouvez ses facteurs !',
     monsterHP: 42, // Increased from 28
     attack: 18,
-    goldReward: 12,
+    goldReward: 14, // +20%
     xpReward: 25,
     timerDuration: 8,
     image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/prime_slime.png"
@@ -179,7 +180,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Une équation flottante ! Isolez la variable pour bannir l’esprit.',
     monsterHP: 45, // Increased from 30
     attack: 20,
-    goldReward: 14,
+    goldReward: 17, // +20%
     xpReward: 30,
     timerDuration: 8,
     image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/algebra_wraith.png"
@@ -192,7 +193,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Son camouflage est basé sur les puissances. Trouvez l’exposant pour révéler sa position !',
     monsterHP: 47, // Increased from 31
     attack: 21,
-    goldReward: 15,
+    goldReward: 18, // +20%
     xpReward: 32,
     timerDuration: 8,
     image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/logarithm_lizard.png"
@@ -205,7 +206,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Un serpent ancien se consumant éternellement. Trouvez la pente au point où il mord sa queue !',
     monsterHP: 75,
     attack: 20,
-    goldReward: 58,
+    goldReward: 70, // +20%
     xpReward: 75,
     type: 'boss',
     timerDuration: 8,
@@ -214,6 +215,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
 
   // --- Tome 4: Summit (Levels 7-8) ---
   // HP doubled (x2.0). Attack capped at 40.
+  // Gold increased by 20%
   t4_trigonometry_troll: {
     id: 't4_trigonometry_troll',
     name: 'Trigonometry Troll',
@@ -222,7 +224,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Il garde le pont, exigeant que vous résolviez le sinus, le cosinus ou la tangente de sa massue géante !',
     monsterHP: 70, // Increased from 35
     attack: 25,
-    goldReward: 19,
+    goldReward: 23, // +20%
     xpReward: 40,
     tags: ['armored_3', 'fierce_2'],
     timerDuration: 10,
@@ -236,7 +238,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Il recueille l’aire sous la fonction. Trouvez l’aire totale pour faire taire son sort !',
     monsterHP: 72, // Increased from 36
     attack: 26,
-    goldReward: 20,
+    goldReward: 24, // +20%
     xpReward: 42,
     timerDuration: 10,
     image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/integration_imp.png"
@@ -249,7 +251,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Ses tentacules changent continuellement. Trouvez le taux de changement pour échapper à son emprise !',
     monsterHP: 76, // Increased from 38
     attack: 30,
-    goldReward: 23,
+    goldReward: 28, // +20%
     xpReward: 45,
     tags: ['elite_2'],
     timerDuration: 10,
@@ -263,7 +265,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Une menace éthérée qui attaque par hasard. Calculez les chances de victoire !',
     monsterHP: 78, // Increased from 39
     attack: 32,
-    goldReward: 26,
+    goldReward: 31, // +20%
     xpReward: 47,
     timerDuration: 10,
     image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/probability_phantom.png"
@@ -276,7 +278,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Elle pose une énigme de données. Calculez la moyenne, la médiane ou le mode pour passer !',
     monsterHP: 80, // Increased from 40
     attack: 35,
-    goldReward: 29,
+    goldReward: 35, // +20%
     xpReward: 50,
     timerDuration: 10,
     image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/statistic_sphinx.png"
@@ -289,7 +291,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Les murs du labyrinthe sont tapissés de chiffres. Multipliez correctement les tableaux pour trouver la sortie !',
     monsterHP: 150, // Increased from 45
     attack: 40, // Capped at 40 (was 40)
-    goldReward: 35,
+    goldReward: 42, // +20%
     xpReward: 55,
     tags: ['elite_3', 'wealthy_2'],
     type: 'boss',
@@ -299,6 +301,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
 
   // --- Tome 5: Chaos (Levels 9-10) ---
   // HP increased by ~150% (x2.5). Attack capped at 50.
+  // Gold increased by 20%
   t5_eigenvalue_elemental: {
     id: 't5_eigenvalue_elemental',
     name: 'Eigenvalue Elemental',
@@ -307,7 +310,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Une créature vaincue uniquement par son facteur d’échelle principal. Trouvez la valeur propre !',
     monsterHP: 120, // Increased from 48
     attack: 42, // Capped at 50
-    goldReward: 37,
+    goldReward: 44, // +20%
     xpReward: 57,
     tags: ['armored_4'],
     timerDuration: 12,
@@ -321,7 +324,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Une créature espiègle qui brouille les chemins. Ordonnez les possibilités pour la coincer !',
     monsterHP: 125, // Increased from 50
     attack: 45, // Capped at 50
-    goldReward: 41,
+    goldReward: 49, // +20%
     xpReward: 60,
     timerDuration: 12,
     image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/permutation_puck.png"
@@ -334,7 +337,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Il approche l’infini ! Déterminez la valeur qu’il n’atteint jamais tout à fait pour le blesser !',
     monsterHP: 130, // Increased from 52
     attack: 47, // Capped at 50
-    goldReward: 43,
+    goldReward: 52, // +20%
     xpReward: 63,
     tags: ['fierce_3'],
     timerDuration: 12,
@@ -348,7 +351,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Il crée des anneaux de confusion qui se chevauchent. Trouvez la bonne intersection ou union pour frapper !',
     monsterHP: 138, // Increased from 55
     attack: 50, // Capped at 50 (was 50)
-    goldReward: 46,
+    goldReward: 55, // +20%
     xpReward: 70,
     timerDuration: 12,
     image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/theory_serpent.png"
@@ -361,7 +364,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Il lance des sorts sans fin. Calculez si la somme infinie converge ou diverge pour contrer !',
     monsterHP: 145, // Increased from 58
     attack: 50, // Capped at 50 (was 55)
-    goldReward: 52,
+    goldReward: 62, // +20%
     xpReward: 75,
     tags: ['elite_4'],
     timerDuration: 12,
@@ -375,7 +378,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Le chemin se divise en une courbe parabolique. Utilisez la formule quadratique pour trouver les deux racines !',
     monsterHP: 150, // Increased from 60
     attack: 50, // Capped at 50 (was 60)
-    goldReward: 58,
+    goldReward: 70, // +20%
     xpReward: 80,
     timerDuration: 12,
     image: "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/encounters/monsters/quadric_quest.png"
@@ -388,7 +391,7 @@ export const ENCOUNTERS: Record<string, Encounter> = {
     description_fr: 'Une séquence de terreur infinie et non répétitive ! Récitez les chiffres corrects pour le bannir !',
     monsterHP: 225, // Increased from 65
     attack: 50, // Capped at 50 (was 70)
-    goldReward: 69,
+    goldReward: 83, // +20%
     xpReward: 90,
     tags: ['elite_5', 'fierce_5'],
     type: 'boss',

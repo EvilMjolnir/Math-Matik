@@ -93,19 +93,13 @@ const EncounterIntroCard: React.FC<EncounterIntroCardProps> = ({ encounter, enem
             <h2 className="text-3xl font-serif font-bold uppercase tracking-wider drop-shadow-md">
                 {encounterName}
             </h2>
-            <div className={`text-xs font-bold uppercase tracking-[0.3em] mt-1 ${isBossMode ? 'text-purple-400' : 'text-red-400'}`}>
-                {isBossMode ? 'Boss' : t.combat.encounterStart}
+            <div className="flex items-center justify-center mt-1">
+                {isBossMode && <Skull className="w-4 h-4 text-amber-500 mr-2 animate-pulse" />}
+                <div className={`text-xs font-bold uppercase tracking-[0.3em] ${isBossMode ? 'text-purple-400' : 'text-red-400'}`}>
+                    {isBossMode ? 'Boss' : t.combat.encounterStart}
+                </div>
+                {isBossMode && <Skull className="w-4 h-4 text-amber-500 ml-2 animate-pulse" />}
             </div>
-            {isBossMode && (
-                <div className="absolute top-0 right-0 p-2">
-                    <Skull className="w-6 h-6 text-amber-500 animate-pulse" />
-                </div>
-            )}
-            {isBossMode && (
-                <div className="absolute top-0 left-0 p-2">
-                    <Skull className="w-6 h-6 text-amber-500 animate-pulse" />
-                </div>
-            )}
         </div>
 
         {/* 2. TOP SECTION: Image Frame */}

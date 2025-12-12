@@ -213,6 +213,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
 
   // Calc Stats
   const activeStats = getAggregatedStats(player);
+  const hasActiveBonuses = activeStats.xpMultiplier > 1 || activeStats.goldMultiplier > 1 || activeStats.movementMultiplier > 1 || activeStats.attackMultiplier > 0 || activeStats.totalDefense > player.defense;
   
   const getItemName = (item: Item) => (lang === 'fr' && item.name_fr) ? item.name_fr : item.name;
   const getItemDesc = (item: Item) => (lang === 'fr' && item.description_fr) ? item.description_fr : item.description;
@@ -521,13 +522,43 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
 
                 <div className="flex flex-col-reverse md:grid md:grid-cols-2 gap-4 h-full">
                     {/* Active Slots Section (Bottom on Mobile, Left on Desktop) */}
-                    <div className="p-4 rounded border bg-parchment-300/30 border-parchment-400 shrink-0">
+                    <div className="p-4 rounded border bg-parchment-300/30 border-parchment-400 shrink-0 flex flex-col">
                         <h3 className="text-lg font-bold font-serif mb-3 text-parchment-900 border-b border-parchment-400 pb-1">
                             {t.equipment.title}
                         </h3>
                         <div className="grid grid-cols-3 gap-3">
                             {[0, 1, 2, 3, 4, 5].map((idx) => renderSlot(idx))}
                         </div>
+
+                        {/* Current Bonuses Summary */}
+                        {hasActiveBonuses ? (
+                            <div className="mt-4 pt-3 border-t border-parchment-400">
+                                <h4 className="text-xs font-bold text-parchment-800 uppercase tracking-widest mb-2 flex items-center">
+                                    <Sparkles className="w-3 h-3 mr-1 text-purple-600" /> Active Bonuses
+                                </h4>
+                                <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-xs">
+                                    {activeStats.xpMultiplier > 1 && (
+                                        <div className="flex justify-between"><span className="text-parchment-700">XP</span> <span className="font-bold text-yellow-700">+{Math.round((activeStats.xpMultiplier - 1) * 100)}%</span></div>
+                                    )}
+                                    {activeStats.goldMultiplier > 1 && (
+                                        <div className="flex justify-between"><span className="text-parchment-700">Gold</span> <span className="font-bold text-amber-700">+{Math.round((activeStats.goldMultiplier - 1) * 100)}%</span></div>
+                                    )}
+                                    {activeStats.movementMultiplier > 1 && (
+                                        <div className="flex justify-between"><span className="text-parchment-700">Speed</span> <span className="font-bold text-green-700">+{Math.round((activeStats.movementMultiplier - 1) * 100)}%</span></div>
+                                    )}
+                                    {activeStats.attackMultiplier > 0 && (
+                                        <div className="flex justify-between"><span className="text-parchment-700">Attack</span> <span className="font-bold text-red-700">+{Math.round(activeStats.attackMultiplier * 100)}%</span></div>
+                                    )}
+                                    {activeStats.totalDefense > player.defense && (
+                                        <div className="flex justify-between"><span className="text-parchment-700">Defense</span> <span className="font-bold text-blue-700">+{activeStats.totalDefense - player.defense}</span></div>
+                                    )}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="mt-4 pt-3 border-t border-parchment-400 text-xs text-parchment-500 italic text-center">
+                                No active bonuses.
+                            </div>
+                        )}
                     </div>
 
                     {/* Backpack Section (Top on Mobile, Right on Desktop) */}
@@ -688,8 +719,11 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                     )}
 
                     {viewItem.tags && viewItem.tags.length > 0 && (
-                         <div className="w-full max-w-sm bg-white/50 p-4 rounded-lg border border-parchment-300">
-                             <h4 className="font-bold text-parchment-900 mb-3 border-b border-parchment-300 pb-1">{t.profile.effects}</h4>
+                         <div className="w-full max-w-sm bg-slate-900/95 p-4 rounded-lg border border-slate-700 shadow-xl">
+                             <h4 className="font-bold text-purple-300 mb-3 border-b border-slate-700 pb-1 flex items-center">
+                                 <Sparkles className="w-4 h-4 mr-2 text-purple-400"/> 
+                                 {t.profile.effects}
+                             </h4>
                              <div className="space-y-2">
                                 {viewItem.tags.map(tag => {
                                     const effect = STATUS_EFFECTS[tag];
@@ -697,13 +731,13 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                                     const effectName = (lang === 'fr' && effect.name_fr) ? effect.name_fr : effect.name;
                                     const effectDesc = (lang === 'fr' && effect.description_fr) ? effect.description_fr : effect.description;
                                     return (
-                                        <div key={tag} className="flex items-start text-left bg-white/5 p-2 rounded hover:bg-white/10 transition-colors">
-                                           <div className="mt-1 mr-2 p-1 bg-black/50 rounded-full">
+                                        <div key={tag} className="flex items-start text-left bg-black/40 p-2 rounded border border-white/5 hover:bg-white/5 transition-colors">
+                                           <div className="mt-1 mr-2 p-1 bg-slate-800 rounded-full border border-slate-600">
                                                {getEffectIcon(effect.type)}
                                            </div>
                                            <div>
                                                <div className="font-bold text-parchment-100 text-sm">{effectName}</div>
-                                               <div className="text-xs text-parchment-400">{effectDesc}</div>
+                                               <div className="text-xs text-slate-400">{effectDesc}</div>
                                            </div>
                                         </div>
                                     )
