@@ -5,6 +5,9 @@ import { STARTING_COMPANIONS } from './data/companions';
 export const DEFAULT_USER_IMAGE = "https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/icons/userIcon_default.png";
 
 export const DEFAULT_CONFIG: GameConfig = {
+  ui: {
+    verticalMath: false,
+  },
   movement: {
     minVal: 1,
     maxVal: 20,
@@ -49,6 +52,7 @@ export const DEFAULT_PLAYER: PlayerStats = {
   activeCompanionId: undefined,
   activeTomeId: 'tome_1',
   researchPlayCount: 0,
+  tomeProgress: {},
 };
 
 // Cumulative XP required to reach each level (Index 0 = Level 1, Index 1 = Level 2, etc.)

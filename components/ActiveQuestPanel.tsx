@@ -236,7 +236,7 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({
                   {/* Main Bar Track */}
                   <div className="flex-1 h-5 bg-black/60 rounded-l-full overflow-hidden border border-gray-500 relative mr-1">
                       <div 
-                        className={`h-full bg-gradient-to-r from-blue-700 to-cyan-500 transition-all duration-75 absolute top-0 left-0 bottom-0 ${isFilling ? 'animate-pulse brightness-125' : ''}`}
+                        className={`h-full bg-gradient-to-r from-blue-700 to-cyan-500 absolute top-0 left-0 bottom-0 ${isFilling ? 'animate-pulse brightness-125' : 'transition-all duration-500'}`}
                         style={{ width: `${progressPercent}%` }}
                       />
                       

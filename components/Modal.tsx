@@ -13,11 +13,17 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({ title, children, actionLabel, onAction, isOpen, colorClass = "bg-parchment-200", isButtonOutside = false }) => {
   if (!isOpen) return null;
 
+  const isDark = colorClass.includes('text-white');
+  const headerStyle = isDark ? { textShadow: '-0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px 0.5px 0 #000, 0.5px 0.5px 0 #000' } : {};
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fadeIn">
       <div className="flex flex-col items-center w-full max-w-md">
         <div className={`relative w-full p-6 rounded-lg shadow-2xl border-4 border-parchment-800 ${colorClass} text-parchment-900`}>
-          <h2 className="text-3xl font-serif font-bold text-center mb-4 border-b-2 border-parchment-800 pb-2">
+          <h2 
+            className="text-3xl font-serif font-bold text-center mb-4 border-b-2 border-parchment-800 pb-2"
+            style={headerStyle}
+          >
             {title}
           </h2>
           <div className="mb-4 text-center text-lg font-serif">

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item, StorageMode, EffectType } from './types';
+import { GameConfig, GameView, PlayerStats, Tome, Encounter, LootWeight, Item, StorageMode, EffectType, TomeProgress } from './types';
 import { DEFAULT_CONFIG, DEFAULT_PLAYER, XP_TABLE, RARITY_WEIGHTS, COMPANION_LEVEL_COSTS } from './constants';
 import { ALL_TOMES } from './tomes';
 import Movement from './views/Movement';
@@ -79,11 +79,58 @@ const GameContent: React.FC = () => {
       agility: loadedPlayer.agility !== undefined ? loadedPlayer.agility : Math.floor((loadedPlayer.level || 1) / 3), // Backfill agility based on level if missing
       defense: loadedPlayer.defense !== undefined ? loadedPlayer.defense : Math.floor((loadedPlayer.level || 1) / 4), // Backfill defense based on level
       nums: loadedPlayer.nums !== undefined ? loadedPlayer.nums : 0, // Backfill nums
+      tomeProgress: loadedPlayer.tomeProgress || {} // Ensure this exists
     };
+
+    // Rehydrate Tomes from Player Data
+    if (modernizedPlayer.tomeProgress) {
+        const restoredTomes = ALL_TOMES.map(t => {
+            const saved = modernizedPlayer.tomeProgress[t.id];
+            if (saved) {
+                return { 
+                    ...t, 
+                    currentDistance: saved.currentDistance, 
+                    isUnlocked: saved.isUnlocked, 
+                    isCompleted: saved.isCompleted 
+                };
+            }
+            return t;
+        });
+        setTomes(restoredTomes);
+    } else {
+        // Fallback reset if no progress
+        setTomes(JSON.parse(JSON.stringify(ALL_TOMES)));
+    }
+
     setStorageMode(mode);
     setPlayer(modernizedPlayer);
     setIsAuthenticated(true);
   };
+
+  // Sync Tome Changes to Player State for Persistence
+  useEffect(() => {
+      if(!isAuthenticated) return;
+
+      const currentProgressStr = JSON.stringify(player.tomeProgress || {});
+      
+      const newProgress: Record<string, TomeProgress> = {};
+      tomes.forEach(t => {
+          newProgress[t.id] = {
+              id: t.id,
+              currentDistance: t.currentDistance,
+              isUnlocked: t.isUnlocked,
+              isCompleted: t.isCompleted
+          };
+      });
+      const newProgressStr = JSON.stringify(newProgress);
+
+      if (currentProgressStr !== newProgressStr) {
+          setPlayer(prev => ({
+              ...prev,
+              tomeProgress: newProgress
+          }));
+      }
+  }, [tomes, isAuthenticated, player.tomeProgress]);
 
   const handleLogout = () => {
     setIsAuthenticated(false);
@@ -628,7 +675,10 @@ const GameContent: React.FC = () => {
     const defaultBoss = DEFAULT_CONFIG.boss || { timerDuration: 15, actionsPerTurn: 5 };
     const tomeBoss = tome.config.boss || {};
     
+    // Merge UI preferences from main config into active config so minigames get it
+    // The main config holds the UI prefs (verticalMath)
     return {
+      ui: config.ui, // Inherit global UI settings
       movement: { ...DEFAULT_CONFIG.movement, ...tome.config.movement },
       combat: { ...DEFAULT_CONFIG.combat, ...tome.config.combat },
       recherche: { ...DEFAULT_CONFIG.recherche, ...tome.config.recherche },
@@ -668,11 +718,12 @@ const GameContent: React.FC = () => {
       onAddGold: addGold,
       onPlayerDefeat: handlePlayerDefeat,
       isAdmin: isAdmin,
+      verticalMath: activeConfig.ui.verticalMath, // Pass UI preference
     };
 
     switch (currentView) {
       case GameView.MOVEMENT:
-        return <Movement config={activeConfig.movement} {...commonProps} />;
+        return <Movement config={activeConfig.movement} playerStats={player} {...commonProps} />;
       case GameView.COMBAT:
         return (
           <Combat 

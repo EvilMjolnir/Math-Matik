@@ -11,6 +11,7 @@ import { useLocalization } from '../localization';
 import Modal from '../components/Modal';
 import { playMenuOpenSound, playMenuBackSound, fadeOutCurrentSound, playCorrectSound, playWrongSound } from '../services/audioService';
 import { useDeviceType } from '../hooks/useDeviceType';
+import MathProblemDisplay from '../components/MathProblemDisplay';
 
 interface RechercheProps extends MinigameProps {
   config: GameConfig['recherche'];
@@ -35,7 +36,7 @@ const CHEST_IMAGES: Record<Rarity, string> = {
   [Rarity.MYTHIC]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/Mythic.png',
 };
 
-const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddItem, playerGold = 0, lootWeights = [], isAdmin }) => {
+const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddItem, playerGold = 0, lootWeights = [], isAdmin, verticalMath }) => {
   const { t } = useLocalization();
   const deviceType = useDeviceType();
   const [phase, setPhase] = useState<'select' | 'solve' | 'result'>('select');
@@ -318,12 +319,13 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddIte
                  ${feedback === 'correct' ? 'border-green-500 bg-green-100' : ''}
                  ${feedback === 'wrong' ? 'border-red-500 bg-red-100' : 'border-parchment-300 bg-parchment-200'}
               `}>
-                <div className="text-5xl font-serif font-bold text-parchment-900 mb-4 text-center">
-                  {problem.question}
-                </div>
-                <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
-                  {userInput}
-                </div>
+                <MathProblemDisplay problem={problem} userInput={userInput} isVertical={verticalMath} />
+                
+                {!verticalMath && (
+                    <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
+                        {userInput}
+                    </div>
+                )}
               </div>
             </div>
            )}

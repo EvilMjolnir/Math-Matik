@@ -1,23 +1,26 @@
 
 import React, { useState, useEffect } from 'react';
-import { GameConfig, MathProblem, MinigameProps } from '../types';
+import { GameConfig, MathProblem, MinigameProps, PlayerStats } from '../types';
 import { generateAdditionSubtraction } from '../services/mathService';
+import { getAggregatedStats } from '../services/statusService';
 import Keypad from '../components/Keypad';
 import Modal from '../components/Modal';
 import { ChevronLeft, Footprints, ShieldCheck, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound, playCorrectSound, playWrongSound } from '../services/audioService';
 import { useDeviceType } from '../hooks/useDeviceType';
+import MathProblemDisplay from '../components/MathProblemDisplay';
 
 interface MovementProps extends MinigameProps {
   config: GameConfig['movement'];
+  playerStats?: PlayerStats;
 }
 
 type SegmentStatus = 'empty' | 'correct' | 'wrong';
 
 const XP_PER_CORRECT = 4;
 
-const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgressTome, isAdmin }) => {
+const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgressTome, isAdmin, playerStats, verticalMath }) => {
   const { t } = useLocalization();
   const deviceType = useDeviceType();
   const [problem, setProblem] = useState<MathProblem | null>(null);
@@ -27,6 +30,7 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
   const [showSuccess, setShowSuccess] = useState(false);
   const [feedback, setFeedback] = useState<'none' | 'correct' | 'wrong'>('none');
   const [stepsTaken, setStepsTaken] = useState(0);
+  const [bonusSteps, setBonusSteps] = useState(0);
 
   useEffect(() => {
     setSegmentResults(Array(config.targetSegments).fill('empty'));
@@ -101,6 +105,19 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
        const correctCount = prev.filter(s => s === 'correct').length;
        setStepsTaken(correctCount);
        
+       let calculatedBonus = 0;
+       if (correctCount > 0 && playerStats) {
+           const agility = playerStats.agility || 0;
+           const agilityBonus = agility * correctCount;
+           
+           const stats = getAggregatedStats(playerStats);
+           const totalBase = correctCount + agilityBonus;
+           const finalSteps = Math.floor(totalBase * stats.movementMultiplier);
+           
+           calculatedBonus = finalSteps - correctCount;
+       }
+       setBonusSteps(calculatedBonus);
+
        if (correctCount > 0) {
          onProgressTome(correctCount);
          onAddXp(correctCount * XP_PER_CORRECT);
@@ -143,12 +160,14 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
               ${feedback === 'correct' ? 'border-green-500 bg-green-100' : ''}
               ${feedback === 'wrong' ? 'border-red-500 bg-red-100' : 'border-parchment-300'}
             `}>
-              <div className="text-5xl font-serif font-bold text-parchment-900 mb-4 text-center">
-                {problem.question}
-              </div>
-              <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
-                {userInput}
-              </div>
+              <MathProblemDisplay problem={problem} userInput={userInput} isVertical={verticalMath} />
+              
+              {/* Only show standard input box if horizontal mode */}
+              {!verticalMath && (
+                <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
+                    {userInput}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -196,7 +215,14 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
           <Footprints className="w-16 h-16 text-parchment-800 mb-4" />
           <div className="mt-4 flex items-center justify-center space-x-4">
              <div className="text-center">
-               <div className="text-3xl font-bold text-green-700">{stepsTaken}</div>
+               <div className="text-3xl font-bold text-green-700 flex items-center justify-center">
+                 {stepsTaken}
+                 {bonusSteps !== 0 && (
+                    <span className={`text-lg ml-2 ${bonusSteps > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                        ({bonusSteps > 0 ? '+' : ''}{bonusSteps})
+                    </span>
+                 )}
+               </div>
                <div className="text-sm font-bold text-parchment-700 uppercase">{t.movement.steps}</div>
              </div>
              <div className="text-center">

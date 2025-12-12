@@ -54,6 +54,9 @@ export interface StatusEffect {
 export type FractionOp = 'add' | 'sub' | 'mult' | 'reduce' | 'compare';
 
 export interface GameConfig {
+  ui: {
+    verticalMath: boolean;
+  };
   movement: {
     minVal: number;
     maxVal: number;
@@ -151,6 +154,13 @@ export interface Tome {
   possibleEncounters: Encounter[];
 }
 
+export interface TomeProgress {
+  id: string;
+  currentDistance: number;
+  isUnlocked: boolean;
+  isCompleted: boolean;
+}
+
 export interface PlayerStats {
   uid?: string; // Firebase Auth UID
   username: string;
@@ -173,6 +183,7 @@ export interface PlayerStats {
   activeCompanionId?: string; // The ID of the currently selected companion
   activeTomeId: string;
   researchPlayCount: number;
+  tomeProgress: Record<string, TomeProgress>;
 }
 
 export interface LootWeight {
@@ -195,6 +206,7 @@ export interface MinigameProps {
   playerStats?: PlayerStats; // Passed down for calculating damage
   lootWeights?: LootWeight[]; // Added for dynamic loot
   isAdmin?: boolean;
+  verticalMath?: boolean;
 }
 
 // Props used by Home Layouts (Mobile, Tablet, Desktop)

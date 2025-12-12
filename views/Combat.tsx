@@ -12,6 +12,7 @@ import { useLocalization } from '../localization';
 import { ChevronLeft, Timer, Skull, Trophy, Check, X, ShieldCheck } from 'lucide-react';
 import { playMenuBackSound, playHitSound, playDamageSound, playVictoryTrumpetSound, fadeOutCurrentSound, playCorrectSound, playWrongSound } from '../services/audioService';
 import { useDeviceType } from '../hooks/useDeviceType';
+import MathProblemDisplay from '../components/MathProblemDisplay';
 
 interface CombatProps extends MinigameProps {
   config: GameConfig['combat'];
@@ -34,7 +35,8 @@ const Combat: React.FC<CombatProps> = ({
   onEncounterComplete,
   onTakeDamage,
   playerStats,
-  isAdmin
+  isAdmin,
+  verticalMath
 }) => {
   const { t, lang } = useLocalization();
   const deviceType = useDeviceType();
@@ -595,12 +597,13 @@ const Combat: React.FC<CombatProps> = ({
                     ${feedback === 'correct' ? 'border-green-500 scale-105 shadow-[0_0_20px_rgba(34,197,94,0.5)]' : ''}
                     ${feedback === 'wrong' ? 'border-red-500 rotate-2 shadow-[0_0_20px_rgba(239,68,68,0.5)]' : 'border-parchment-800'}
                 `}>
-                <div className="text-4xl md:text-5xl font-serif font-bold text-parchment-900 mb-6 text-center">
-                    {currentProblem.question}
-                </div>
-                <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-40 mx-auto">
-                    {userInput}
-                </div>
+                <MathProblemDisplay problem={currentProblem} userInput={userInput} isVertical={verticalMath} />
+                
+                {!verticalMath && (
+                    <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-40 mx-auto">
+                        {userInput}
+                    </div>
+                )}
                 </div>
             </div>
            )}
