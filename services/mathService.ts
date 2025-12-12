@@ -1,3 +1,4 @@
+
 import { MathProblem, GameConfig } from '../types';
 
 export const generateAdditionSubtraction = (min: number, max: number): MathProblem => {
@@ -59,21 +60,40 @@ export const generateBossProblem = (difficulty: number): MathProblem => {
   if (type === 'addition') {
     a = Math.floor(Math.random() * (difficulty * 2)) + 1;
     b = Math.floor(Math.random() * (difficulty * 2)) + 1;
+    
+    // Anti-Ambiguity for Operator Mode: Avoid 2+2=4 (conflicts with 2*2=4)
+    if (hiddenPart === 2 && a === 2 && b === 2) a = 3;
+
     result = a + b;
     opSymbol = '+';
   } else if (type === 'subtraction') {
     b = Math.floor(Math.random() * (difficulty * 2)) + 1;
     result = Math.floor(Math.random() * (difficulty * 2)) + 1;
+    
+    // Anti-Ambiguity for Operator Mode: Avoid 4-2=2 (conflicts with 4/2=2)
+    if (hiddenPart === 2 && result === 2 && b === 2) result = 3;
+
     a = result + b;
     opSymbol = '-';
   } else if (type === 'multiplication') {
     a = Math.floor(Math.random() * difficulty) + 1;
     b = Math.floor(Math.random() * difficulty) + 1;
+
+    // Anti-Ambiguity for Operator Mode: Avoid 2*2=4 (conflicts with 2+2=4)
+    if (hiddenPart === 2 && a === 2 && b === 2) a = 3;
+    
+    // Anti-Ambiguity for Operator Mode: Avoid 1*1=1 (conflicts with 1/1=1)
+    if (hiddenPart === 2 && a === 1 && b === 1) a = 2;
+
     result = a * b;
     opSymbol = '×';
   } else if (type === 'division') {
     b = Math.floor(Math.random() * 9) + 2;
     result = Math.floor(Math.random() * difficulty) + 1;
+
+    // Anti-Ambiguity for Operator Mode: Avoid 4/2=2 (conflicts with 4-2=2)
+    if (hiddenPart === 2 && result === 2 && b === 2) result = 3;
+
     a = b * result;
     opSymbol = '÷';
   }

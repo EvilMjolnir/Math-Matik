@@ -2,7 +2,8 @@
 import React from 'react';
 import DrawingCanvas from './DrawingCanvas';
 import { useLocalization } from '../localization';
-import { PencilLine, X } from 'lucide-react';
+import { PencilLine, X, ChevronLeft } from 'lucide-react';
+import { useDeviceType } from '../hooks/useDeviceType';
 
 interface ScratchpadModalProps {
   isOpen: boolean;
@@ -11,8 +12,11 @@ interface ScratchpadModalProps {
 
 const ScratchpadModal: React.FC<ScratchpadModalProps> = ({ isOpen, onClose }) => {
   const { t } = useLocalization();
+  const deviceType = useDeviceType();
 
   if (!isOpen) return null;
+
+  const isDesktop = deviceType === 'desktop';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
@@ -22,15 +26,15 @@ const ScratchpadModal: React.FC<ScratchpadModalProps> = ({ isOpen, onClose }) =>
 
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b-2 border-parchment-300 relative z-10">
-          <h2 className="text-2xl font-serif font-bold text-parchment-900 flex items-center">
+          <h2 className="text-2xl font-serif font-bold text-parchment-900 flex items-center pl-12 md:pl-0">
             <PencilLine className="w-6 h-6 mr-2 text-parchment-700" />
             {t.titles.scratchpad}
           </h2>
           <button 
             onClick={onClose} 
-            className="p-2 hover:bg-parchment-300 rounded-full transition-colors text-parchment-800"
+            className="p-1 hover:bg-parchment-300 rounded-full transition-colors text-parchment-800 absolute top-1 left-1 md:relative md:top-auto md:left-auto md:p-2"
           >
-            <X className="w-6 h-6" />
+            {isDesktop ? <X className="w-6 h-6" /> : <ChevronLeft className="w-8 h-8" />}
           </button>
         </div>
 

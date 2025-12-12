@@ -72,7 +72,7 @@ export const createAdminProfile = async (): Promise<void> => {
         const adminUser: PlayerStats = {
             ...DEFAULT_PLAYER,
             username: "Gandalf",
-            password: "//zz",
+            password: "zlzl",
             level: 100,
             gold: 99999,
             maxHp: 9999,

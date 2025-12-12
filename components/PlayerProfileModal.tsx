@@ -4,10 +4,11 @@ import { PlayerStats, Item, EffectType, Companion } from '../types';
 import { XP_TABLE, RARITY_TEXT_COLORS, DEFAULT_USER_IMAGE } from '../constants';
 import { getAggregatedStats } from '../services/statusService';
 import { STATUS_EFFECTS } from '../data/statusEffects';
-import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Star, Backpack, Sparkles, Lock, Footprints, Sword, Link, Info, Sigma, Flame, Zap, BicepsFlexed, Skull, Sprout } from 'lucide-react';
+import { User, Heart, Coins, Shield, Crown, X, Edit2, Check, Star, Backpack, Sparkles, Lock, Footprints, Sword, Link, Info, Sigma, Flame, Zap, BicepsFlexed, Skull, Sprout, ChevronLeft } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound, playMenuOpenSound, playItemRevealSound } from '../services/audioService';
 import CompanionDetailOverlay from './CompanionDetailOverlay';
+import { useDeviceType } from '../hooks/useDeviceType';
 
 interface PlayerProfileModalProps {
   player: PlayerStats;
@@ -36,6 +37,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
   initialTab = 'stats'
 }) => {
   const { t, lang } = useLocalization();
+  const deviceType = useDeviceType();
   const [isEditing, setIsEditing] = useState(false);
   const [tempName, setTempName] = useState(player.username);
   const [tempPhoto, setTempPhoto] = useState(player.photoURL || '');
@@ -49,6 +51,9 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
 
   const [viewCompanion, setViewCompanion] = useState<Companion | null>(null);
   
+  // Mobile Click-to-Move State
+  const [moveSelection, setMoveSelection] = useState<{index: number, source: 'inventory' | 'equipped'} | null>(null);
+
   // Sync activeTab with initialTab when modal opens
   useEffect(() => {
     if (isOpen) {
@@ -56,6 +61,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
         setViewItem(null); 
         setViewCompanion(null);
         setIsAnimatingDestroy(false);
+        setMoveSelection(null);
         
         // Reset editing state on open
         setIsEditing(false);
@@ -112,24 +118,12 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
       }
   };
 
-  // Drag and Drop Logic
-  const handleDragStart = (e: React.DragEvent, index: number, source: 'inventory' | 'equipped') => {
-    e.dataTransfer.setData('sourceIndex', index.toString());
-    e.dataTransfer.setData('sourceType', source);
-  };
-
-  const handleDrop = (e: React.DragEvent, targetIndex: number, targetType: 'inventory' | 'equipped') => {
-    e.preventDefault();
-
-    const sourceIndex = parseInt(e.dataTransfer.getData('sourceIndex'));
-    const sourceType = e.dataTransfer.getData('sourceType') as 'inventory' | 'equipped';
-
-    if (isNaN(sourceIndex)) return;
-
+  // Reusable Move Logic
+  const performMove = (sourceIndex: number, sourceType: 'inventory' | 'equipped', targetIndex: number, targetType: 'inventory' | 'equipped') => {
     const newInventory = [...(player.inventory || [])];
     const newEquipped = [...(player.equipped || [])];
 
-    // Slot Unlocking Logic
+    // Slot Unlocking Logic Check
     if (targetType === 'equipped') {
        if (targetIndex >= 3 && player.level < 5) return;
        if (targetIndex >= 4 && player.level < 10) return;
@@ -179,8 +173,42 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
     onUpdateInventory(cleanedInventory, newEquipped);
   };
 
+  // Drag and Drop Logic (Desktop)
+  const handleDragStart = (e: React.DragEvent, index: number, source: 'inventory' | 'equipped') => {
+    e.dataTransfer.setData('sourceIndex', index.toString());
+    e.dataTransfer.setData('sourceType', source);
+  };
+
+  const handleDrop = (e: React.DragEvent, targetIndex: number, targetType: 'inventory' | 'equipped') => {
+    e.preventDefault();
+    const sourceIndex = parseInt(e.dataTransfer.getData('sourceIndex'));
+    const sourceType = e.dataTransfer.getData('sourceType') as 'inventory' | 'equipped';
+    if (isNaN(sourceIndex)) return;
+    
+    performMove(sourceIndex, sourceType, targetIndex, targetType);
+  };
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+  };
+
+  // Mobile Click Logic
+  const handleMobileItemClick = (item: Item, index: number, source: 'inventory' | 'equipped') => {
+      // If we tap the same item twice, open details
+      if (moveSelection && moveSelection.index === index && moveSelection.source === source) {
+          handleItemClick(item, index, source);
+          setMoveSelection(null);
+      } else {
+          // Select for moving
+          setMoveSelection({ index, source });
+      }
+  };
+
+  const handleMobileSlotClick = (targetIndex: number, targetType: 'inventory' | 'equipped') => {
+      if (moveSelection) {
+          performMove(moveSelection.index, moveSelection.source, targetIndex, targetType);
+          setMoveSelection(null);
+      }
   };
 
   // Calc Stats
@@ -210,19 +238,31 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
     if (index === 4) { isLocked = player.level < 10; }
     if (index === 5) { isLocked = player.level < 15; }
 
+    // Check if this slot is selected for move on mobile
+    const isSelected = moveSelection?.source === 'equipped' && moveSelection.index === index;
+
     let borderClass = 'border-parchment-400';
-    if (item) {
+    if (isSelected) {
+        borderClass = 'border-amber-400 animate-pulse border-4';
+    } else if (item) {
         const rarityText = RARITY_TEXT_COLORS[item.rarity];
         borderClass = rarityText.replace('text-', 'border-') + ' border-4';
     } else if (isLocked) {
         borderClass = 'border-gray-600';
     }
 
+    const isDesktop = deviceType === 'desktop';
+
     return (
         <div 
             key={index}
-            onDrop={(e) => !isLocked && handleDrop(e, index, 'equipped')}
-            onDragOver={!isLocked ? handleDragOver : undefined}
+            onDrop={(e) => !isLocked && isDesktop && handleDrop(e, index, 'equipped')}
+            onDragOver={!isLocked && isDesktop ? handleDragOver : undefined}
+            onClick={() => {
+                if (!isLocked && !isDesktop && moveSelection) {
+                    handleMobileSlotClick(index, 'equipped');
+                }
+            }}
             className={`
                 relative w-full aspect-square rounded-lg flex items-center justify-center transition-all overflow-hidden
                 ${isLocked ? 'bg-gray-800' : (item ? 'bg-gray-700 shadow-inner' : 'bg-parchment-100')} 
@@ -236,9 +276,13 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                 </div>
             ) : item ? (
                 <div 
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, index, 'equipped')}
-                    onClick={() => handleItemClick(item, index, 'equipped')}
+                    draggable={isDesktop}
+                    onDragStart={(e) => isDesktop && handleDragStart(e, index, 'equipped')}
+                    onClick={(e) => {
+                        e.stopPropagation(); // Prevent slot click
+                        if (isDesktop) handleItemClick(item, index, 'equipped');
+                        else handleMobileItemClick(item, index, 'equipped');
+                    }}
                     className={`absolute inset-0 w-full h-full flex flex-col cursor-grab active:cursor-grabbing hover:scale-105 transition-transform`}
                 >
                      <div className="flex-1 w-full flex items-center justify-center p-1 min-h-0 bg-gradient-to-b from-white/5 to-transparent">
@@ -286,13 +330,15 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
       imgClass = "w-full h-full object-contain";
   }
 
+  const isDesktop = deviceType === 'desktop';
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
       <div className="relative w-full max-w-6xl bg-parchment-200 rounded-lg shadow-2xl border-4 border-parchment-800 transition-colors duration-500 flex flex-col h-[90vh]">
         
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b-2 rounded-t-lg bg-parchment-300/50 border-parchment-400 shrink-0">
-          <div className="flex items-center w-full">
+        <div className="flex justify-between items-center p-6 border-b-2 rounded-t-lg bg-parchment-300/50 border-parchment-400 shrink-0 relative">
+          <div className="flex items-center w-full pl-10 md:pl-0">
              <div className={headerContainerClass}>
                 <img src={headerImgSrc} alt="Header Icon" className={imgClass} />
              </div>
@@ -327,38 +373,44 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                  </div>
                ) : (
                  <>
-                   <div className="flex items-center group">
-                     <h2 className="text-3xl font-serif font-bold mr-3">
-                        {activeTab === 'inventory' ? t.equipment.title : activeTab === 'companions' ? t.profile.companions : player.username}
-                     </h2>
-                     {activeTab === 'stats' && (
-                        <button onClick={handleEditClick} className="opacity-0 group-hover:opacity-100 text-parchment-600 hover:text-amber-700 transition-opacity">
-                            <Edit2 className="w-5 h-5" />
+                   <div className="flex flex-col md:flex-row md:items-center group items-start">
+                     <div className="flex items-center">
+                        <h2 className="text-3xl font-serif font-bold mr-3">
+                            {activeTab === 'inventory' ? t.equipment.title : activeTab === 'companions' ? t.profile.companions : player.username}
+                        </h2>
+                        {activeTab === 'stats' && (
+                            <button onClick={handleEditClick} className="opacity-0 group-hover:opacity-100 text-parchment-600 hover:text-amber-700 transition-opacity">
+                                <Edit2 className="w-5 h-5" />
+                            </button>
+                        )}
+                     </div>
+                     
+                     {/* Black Mirror Button (Mobile/Tablet placement under title) */}
+                     {activeTab === 'inventory' && (
+                        <button 
+                            onClick={onOpenBlackMirror}
+                            className="flex items-center mt-2 md:mt-0 md:ml-4 px-3 py-1 rounded-full text-xs font-bold transition-all shadow-md bg-slate-900 text-purple-300 border border-purple-500 hover:bg-slate-800 hover:text-white"
+                            title={t.profile.blackMirror}
+                        >
+                            <Flame className="w-3 h-3 mr-1 text-purple-500" />
+                            <span>{t.profile.blackMirror}</span>
                         </button>
                      )}
                    </div>
-                   <div className="font-serif flex items-center mt-1 opacity-80">
-                     <Crown className="w-4 h-4 mr-1 text-amber-600" />
-                     {t.common.level} {player.level} Mathematician
-                   </div>
+                   {activeTab !== 'inventory' && (
+                        <div className="font-serif flex items-center mt-1 opacity-80">
+                            <Crown className="w-4 h-4 mr-1 text-amber-600" />
+                            {t.common.level} {player.level} Mathematician
+                        </div>
+                   )}
                  </>
                )}
              </div>
           </div>
           
           <div className="flex items-center space-x-2">
-            {activeTab === 'inventory' && (
-                <button 
-                    onClick={onOpenBlackMirror}
-                    className="flex items-center px-3 py-2 rounded-full text-xs font-bold transition-all shadow-md bg-slate-900 text-purple-300 border border-purple-500 hover:bg-slate-800 hover:text-white mr-2"
-                    title={t.profile.blackMirror}
-                >
-                    <Flame className="w-4 h-4 md:mr-2 text-purple-500" />
-                    <span className="hidden md:inline">{t.profile.blackMirror}</span>
-                </button>
-            )}
-            <button onClick={() => { playMenuBackSound(); onClose(); }} className="p-2 hover:bg-white/20 rounded-full transition-colors shrink-0">
-                <X className="w-8 h-8" />
+            <button onClick={() => { playMenuBackSound(); onClose(); }} className="p-1 hover:bg-white/20 rounded-full transition-colors shrink-0 absolute top-1 left-1 z-50 md:static md:z-auto text-parchment-900 md:text-parchment-900 md:p-2">
+                {isDesktop ? <X className="w-8 h-8" /> : <ChevronLeft className="w-8 h-8" />}
             </button>
           </div>
         </div>
@@ -464,7 +516,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
             <div className="flex flex-col h-full animate-fadeIn relative">
                 <div className="text-center text-sm mb-4 italic flex items-center justify-center text-parchment-600">
                     <Sparkles className="w-4 h-4 mr-2" />
-                    {t.equipment.dragHint}
+                    {isDesktop ? t.equipment.dragHint : "Tap item to select, tap slot to place"}
                 </div>
 
                 <div className="flex flex-col-reverse md:grid md:grid-cols-2 gap-4 h-full">
@@ -481,21 +533,32 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                     {/* Backpack Section (Top on Mobile, Right on Desktop) */}
                     <div 
                         className="p-4 rounded border flex flex-col h-full overflow-hidden bg-parchment-100 border-parchment-400 flex-1"
-                        onDrop={(e) => handleDrop(e, 0, 'inventory')}
-                        onDragOver={handleDragOver}
+                        onDrop={(e) => isDesktop && handleDrop(e, 0, 'inventory')}
+                        onDragOver={isDesktop ? handleDragOver : undefined}
+                        onClick={() => {
+                            // If user clicks empty area in backpack, they might want to unequip
+                            if (!isDesktop && moveSelection && moveSelection.source === 'equipped') {
+                                performMove(moveSelection.index, 'equipped', 0, 'inventory'); // Target index ignored for unequip
+                                setMoveSelection(null);
+                            }
+                        }}
                     >
                          <h3 className="text-lg font-bold font-serif mb-3 text-parchment-900 border-b border-parchment-300 pb-1">
                              {t.equipment.backpack}
                          </h3>
                          <div className="overflow-y-auto pr-2 flex-1 custom-scrollbar space-y-2">
                              {player.inventory && player.inventory.length > 0 ? (
-                                player.inventory.map((item, idx) => (
+                                player.inventory.map((item, idx) => {
+                                    const isSelected = moveSelection?.source === 'inventory' && moveSelection.index === idx;
+                                    return (
                                     <div 
                                         key={idx}
-                                        draggable
-                                        onDragStart={(e) => handleDragStart(e, idx, 'inventory')}
-                                        onClick={() => handleItemClick(item, idx, 'inventory')}
-                                        className="p-2 rounded border shadow-sm flex items-start transition-all cursor-grab bg-white border-parchment-300 hover:bg-parchment-50"
+                                        draggable={isDesktop}
+                                        onDragStart={(e) => isDesktop && handleDragStart(e, idx, 'inventory')}
+                                        onClick={() => isDesktop ? handleItemClick(item, idx, 'inventory') : handleMobileItemClick(item, idx, 'inventory')}
+                                        className={`p-2 rounded border shadow-sm flex items-start transition-all cursor-grab 
+                                            ${isSelected ? 'bg-amber-100 border-amber-500 ring-1 ring-amber-400' : 'bg-white border-parchment-300 hover:bg-parchment-50'}
+                                        `}
                                     >
                                         <div className={`w-10 h-10 shrink-0 bg-gray-100 rounded border mr-3 flex items-center justify-center ${RARITY_TEXT_COLORS[item.rarity].replace('text-', 'border-')}`}>
                                              {item.image ? (
@@ -518,7 +581,7 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
                                             )}
                                         </div>
                                     </div>
-                                ))
+                                )})
                              ) : (
                                 <div className="text-center py-10 text-parchment-500 italic">
                                     {t.profile.empty}
@@ -586,9 +649,9 @@ const PlayerProfileModal: React.FC<PlayerProfileModalProps> = ({
             <div className="absolute inset-0 bg-parchment-100/95 backdrop-blur-sm z-50 flex flex-col p-6 animate-fadeIn">
                 <button 
                     onClick={() => setViewItem(null)}
-                    className="absolute top-4 right-4 p-2 bg-parchment-300 rounded-full hover:bg-parchment-400 text-parchment-800"
+                    className="absolute top-1 left-1 md:top-4 md:right-4 p-1 md:p-2 bg-parchment-300 rounded-full hover:bg-parchment-400 text-parchment-800"
                 >
-                    <X className="w-6 h-6" />
+                    {isDesktop ? <X className="w-6 h-6" /> : <ChevronLeft className="w-8 h-8" />}
                 </button>
 
                 <div className="flex flex-col items-center flex-1 justify-center">

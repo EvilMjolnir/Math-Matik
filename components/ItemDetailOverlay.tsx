@@ -4,8 +4,9 @@ import { Item, EffectType } from '../types';
 import { STATUS_EFFECTS } from '../data/statusEffects';
 import { RARITY_TEXT_COLORS } from '../constants';
 import { useLocalization } from '../localization';
-import { X, Backpack, Star, Coins, Footprints, Sword, Sparkles, BicepsFlexed, Skull, Sprout } from 'lucide-react';
+import { X, Backpack, Star, Coins, Footprints, Sword, Sparkles, BicepsFlexed, Skull, Sprout, ChevronLeft } from 'lucide-react';
 import { playMenuBackSound } from '../services/audioService';
+import { useDeviceType } from '../hooks/useDeviceType';
 
 interface ItemDetailOverlayProps {
   item: Item | null;
@@ -14,6 +15,7 @@ interface ItemDetailOverlayProps {
 
 const ItemDetailOverlay: React.FC<ItemDetailOverlayProps> = ({ item, onClose }) => {
   const { lang } = useLocalization();
+  const deviceType = useDeviceType();
 
   if (!item) return null;
 
@@ -33,13 +35,15 @@ const ItemDetailOverlay: React.FC<ItemDetailOverlayProps> = ({ item, onClose }) 
     }
   };
 
+  const isDesktop = deviceType === 'desktop';
+
   return (
     <div className="fixed inset-0 bg-parchment-100/95 backdrop-blur-sm z-50 flex flex-col p-6 animate-fadeIn items-center justify-center">
         <button 
             onClick={() => { playMenuBackSound(); onClose(); }}
-            className="absolute top-4 right-4 p-2 bg-parchment-300 rounded-full hover:bg-parchment-400 text-parchment-800"
+            className="absolute top-1 left-1 md:top-4 md:right-4 p-1 md:p-2 bg-parchment-300 rounded-full hover:bg-parchment-400 text-parchment-800"
         >
-            <X className="w-6 h-6" />
+            {isDesktop ? <X className="w-6 h-6" /> : <ChevronLeft className="w-8 h-8" />}
         </button>
 
         <div className="flex flex-col items-center flex-1 justify-center max-w-lg w-full">

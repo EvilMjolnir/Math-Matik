@@ -88,6 +88,19 @@ const GameContent: React.FC = () => {
   const handleLogout = () => {
     setIsAuthenticated(false);
     setPlayer(JSON.parse(JSON.stringify(DEFAULT_PLAYER)));
+    
+    // Reset World State to prevent progress bleeding between sessions
+    setTomes(JSON.parse(JSON.stringify(ALL_TOMES)));
+    setActiveEncounter(null);
+    setQueuedEncounter(null);
+    
+    // Clear animation cache for progress bars
+    Object.keys(sessionStorage).forEach(key => {
+        if (key.startsWith('quest_progress_')) {
+            sessionStorage.removeItem(key);
+        }
+    });
+
     setCurrentView(GameView.HOME);
   };
 

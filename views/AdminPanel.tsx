@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tome, Encounter, LootWeight, Rarity, PlayerStats, GameConfig, EncounterType, Item, StorageMode, EffectType } from '../types';
 import { ChevronLeft, Edit3, Trash2, Sliders, Users, Crown, Coins, Download, Copy, Plus, Activity, Box, Database, Cloud, Sword, TestTube, X, Gift, Sparkles, Star, Footprints, Shield, Skull, ZoomIn, Music, HandFist, ChessQueen, BicepsFlexed, BadgeDollarSign, Sprout } from 'lucide-react';
@@ -256,7 +257,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
               <div className="w-full max-w-4xl h-full relative">
                   <button 
                       onClick={() => setTestView('none')}
-                      className="absolute top-4 right-4 z-50 p-2 bg-white rounded-full text-black hover:bg-gray-200"
+                      className="absolute top-1 left-1 md:top-4 md:right-4 z-50 p-1 md:p-2 bg-white rounded-full text-black hover:bg-gray-200"
                   >
                       <X className="w-6 h-6" />
                   </button>
@@ -277,7 +278,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                <div className="w-full max-w-4xl h-full relative flex items-center justify-center">
                   <button 
                       onClick={() => setTestView('none')}
-                      className="absolute top-4 right-4 z-50 p-2 bg-white rounded-full text-black hover:bg-gray-200"
+                      className="absolute top-1 left-1 md:top-4 md:right-4 z-50 p-1 md:p-2 bg-white rounded-full text-black hover:bg-gray-200"
                   >
                       <X className="w-6 h-6" />
                   </button>
@@ -486,7 +487,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
                                                     <input 
                                                         className="w-full p-1 border rounded bg-white text-gray-900 text-sm"
                                                         value={encounter.image || ''}
-                                                        placeholder="https://... (Optional)"
+                                                        placeholder="https://..."
                                                         onChange={(e) => updateEncounter(tome.id, encounter.id, 'image', e.target.value)}
                                                     />
                                                 </div>
@@ -872,7 +873,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ tomes, setTomes, lootWeights, s
       {/* Zoom Modal */}
       {zoomedImage && (
         <div className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn" onClick={() => setZoomedImage(null)}>
-            <button className="absolute top-4 right-4 text-white p-2 bg-white/20 rounded-full hover:bg-white/40">
+            <button className="absolute top-1 left-1 md:top-4 md:right-4 text-white p-1 md:p-2 bg-white/20 rounded-full hover:bg-white/40">
                 <X className="w-8 h-8" />
             </button>
             <img src={zoomedImage} alt="Zoomed Monster" className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl border-4 border-white" />

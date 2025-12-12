@@ -2,9 +2,10 @@
 import React, { useState } from 'react';
 import { PlayerStats, Item } from '../types';
 import { RARITY_TEXT_COLORS } from '../constants';
-import { X, Flame, Sigma, Backpack, Check, AlertTriangle } from 'lucide-react';
+import { X, Flame, Sigma, Backpack, Check, AlertTriangle, ChevronLeft } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound, playMeltingSound } from '../services/audioService';
+import { useDeviceType } from '../hooks/useDeviceType';
 
 interface BlackMirrorModalProps {
   player: PlayerStats;
@@ -22,6 +23,7 @@ const BlackMirrorModal: React.FC<BlackMirrorModalProps> = ({
   onUpdateInventory 
 }) => {
   const { t, lang } = useLocalization();
+  const deviceType = useDeviceType();
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
   const [isConfirming, setIsConfirming] = useState(false);
 
@@ -99,13 +101,15 @@ const BlackMirrorModal: React.FC<BlackMirrorModalProps> = ({
       return acc + (item ? getNemsValue(item.rarity) : 0);
   }, 0);
 
+  const isDesktop = deviceType === 'desktop';
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md p-4 animate-fadeIn">
       <div className="relative w-full max-w-4xl bg-slate-900 rounded-xl shadow-[0_0_50px_rgba(147,51,234,0.3)] border-4 border-purple-900 flex flex-col h-[85vh] overflow-hidden text-slate-200">
         
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-purple-800 bg-slate-950 relative z-20">
-          <div className="flex items-center">
+          <div className="flex items-center pl-12 md:pl-0">
              <div className="p-3 bg-purple-900/50 rounded-full border border-purple-500 mr-4 shadow-[0_0_15px_rgba(168,85,247,0.5)]">
                 <Flame className="w-8 h-8 text-purple-400 animate-pulse" />
              </div>
@@ -122,8 +126,8 @@ const BlackMirrorModal: React.FC<BlackMirrorModalProps> = ({
                   <Sigma className="w-5 h-5 text-cyan-400 mr-2" />
                   <span className="font-bold text-cyan-100 text-xl">{player.nums}</span>
               </div>
-              <button onClick={handleClose} className="p-2 hover:bg-white/10 rounded-full transition-colors text-slate-400 hover:text-white">
-                <X className="w-8 h-8" />
+              <button onClick={handleClose} className="p-1 hover:bg-white/10 rounded-full transition-colors text-slate-400 hover:text-white absolute top-1 left-1 md:static md:p-2">
+                {isDesktop ? <X className="w-8 h-8" /> : <ChevronLeft className="w-8 h-8" />}
               </button>
           </div>
         </div>

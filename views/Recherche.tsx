@@ -212,7 +212,7 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddIte
             </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 items-center">
+        <div className="grid grid-cols-3 gap-2 md:gap-6 flex-1 items-center">
           {cards.map((card) => {
             const diff = DIFFICULTY_CONFIG[card.rarity];
             return (
@@ -221,14 +221,14 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddIte
                 onClick={() => handleCardSelect(card)}
                 disabled={!!animatingCardId}
                 className={`
-                  h-80 rounded-xl border-4 shadow-lg transform transition-all relative overflow-hidden flex flex-col items-center p-0
+                  h-40 md:h-80 rounded-xl border-2 md:border-4 shadow-lg transform transition-all relative overflow-hidden flex flex-col items-center p-0
                   ${card.color}
                   ${animatingCardId === card.id ? 'slide-out-blurred-top' : (!animatingCardId ? 'hover:scale-105' : '')}
                 `}
               >
                 <div className="w-full h-3/5 relative bg-black/20 overflow-hidden flex items-center justify-center border-b border-black/10">
                    {/* Fallback Icon behind image */}
-                   <Search className="w-16 h-16 text-white/20 absolute z-0" />
+                   <Search className="w-8 h-8 md:w-16 md:h-16 text-white/20 absolute z-0" />
                    
                    <img 
                       src={CHEST_IMAGES[card.rarity]} 
@@ -238,13 +238,13 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddIte
                    />
                 </div>
                 
-                <div className="w-full h-2/5 flex flex-col items-center justify-center bg-black/30 p-2">
-                    <span className="text-white font-serif font-bold text-xl uppercase tracking-wider shadow-black drop-shadow-md">
+                <div className="w-full h-2/5 flex flex-col items-center justify-center bg-black/30 p-1 md:p-2">
+                    <span className="text-white font-serif font-bold text-xs md:text-xl uppercase tracking-wider shadow-black drop-shadow-md">
                     {card.rarity}
                     </span>
-                    <div className="mt-2 text-white/90 text-xs font-bold flex items-center bg-black/50 px-3 py-1 rounded-full border border-white/10">
-                        <Lock className="w-3 h-3 mr-1" />
-                        {diff.wins} {diff.wins > 1 ? t.recherche.locks : t.recherche.lock}
+                    <div className="mt-1 md:mt-2 text-white/90 text-[10px] md:text-xs font-bold flex items-center bg-black/50 px-2 md:px-3 py-0.5 md:py-1 rounded-full border border-white/10">
+                        <Lock className="w-2 h-2 md:w-3 md:h-3 mr-1" />
+                        {diff.wins} {diff.wins > 1 ? (deviceType === 'mobile' ? t.recherche.lock : t.recherche.locks) : t.recherche.lock}
                     </div>
                 </div>
               </button>

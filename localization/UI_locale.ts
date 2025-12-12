@@ -170,7 +170,7 @@ export const UI_SOURCE = {
     none: { en: "No active magical effects.", fr: "Aucun effet magique actif." },
   },
   equipment: {
-    title: { en: "Active Equipment", fr: "Équipement Actif" },
+    title: { en: "Inventory", fr: "Inventaire" },
     backpack: { en: "Backpack", fr: "Sac à Dos" },
     dragHint: { en: "Drag items to slots to activate bonuses", fr: "Glissez les objets dans les emplacements pour activer les bonus" },
     locked: { en: "Locked", fr: "Verrouillé" },

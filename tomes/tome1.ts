@@ -35,7 +35,7 @@ export const tome1: Tome = {
       ops: ['reduce'] // Just reduction for tutorial level
     },
     boss: {
-      timerDuration: 20,
+      timerDuration: 30,
       actionsPerTurn: 4
     }
   },

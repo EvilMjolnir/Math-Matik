@@ -34,7 +34,7 @@ export const tome5: Tome = {
       ops: ['reduce', 'add', 'sub', 'mult']
     },
     boss: {
-      timerDuration: 10,
+      timerDuration: 20,
       actionsPerTurn: 5
     }
   },

@@ -91,10 +91,11 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({
         return;
     }
 
+    let isCancelled = false;
     let delayTimer: ReturnType<typeof setTimeout>;
     
     const startAnimationSequence = () => {
-        setIsFilling(true);
+        if (isCancelled) return;
 
         // --- Sound Setup ---
         const soundUrl = 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/sounds/walking-in-bushes.mp3';
@@ -104,47 +105,65 @@ const ActiveQuestPanel: React.FC<ActiveQuestPanelProps> = ({
             audio.loop = true; 
             audio.volume = 0.5;
         }
-        audioRef.current.play().catch(() => {});
 
-        // --- Animation Parameters ---
-        // Minimum 3 seconds (3000ms), or longer for big steps.
-        const duration = Math.max(3000, diff * 100); 
-        const startTime = performance.now();
+        const runAnimation = () => {
+            if (isCancelled) return;
+            setIsFilling(true);
 
-        const animate = (currentTime: number) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            
-            // Linear Animation
-            const currentVal = startDist + (diff * progress);
-            setDisplayDistance(currentVal);
+            // --- Animation Parameters ---
+            // Minimum 3 seconds (3000ms), or longer for big steps.
+            const duration = Math.max(3000, diff * 100); 
+            const startTime = performance.now();
 
-            if (progress < 1) {
-                animationFrameRef.current = requestAnimationFrame(animate);
-            } else {
-                // Done
-                setDisplayDistance(targetDistance);
-                sessionStorage.setItem(storageKey, targetDistance.toString());
-                setIsFilling(false);
+            const animate = (currentTime: number) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
                 
-                if (audioRef.current) {
-                    audioRef.current.pause();
-                    audioRef.current = null;
+                // Linear Animation
+                const currentVal = startDist + (diff * progress);
+                setDisplayDistance(currentVal);
+
+                if (progress < 1) {
+                    animationFrameRef.current = requestAnimationFrame(animate);
+                } else {
+                    // Done
+                    setDisplayDistance(targetDistance);
+                    sessionStorage.setItem(storageKey, targetDistance.toString());
+                    setIsFilling(false);
+                    
+                    if (audioRef.current) {
+                        audioRef.current.pause();
+                        audioRef.current = null;
+                    }
+                    
+                    if (onAnimationComplete) {
+                        onAnimationComplete();
+                    }
                 }
-                
-                if (onAnimationComplete) {
-                    onAnimationComplete();
-                }
-            }
+            };
+
+            animationFrameRef.current = requestAnimationFrame(animate);
         };
 
-        animationFrameRef.current = requestAnimationFrame(animate);
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                if (!isCancelled) runAnimation();
+            }).catch((e) => {
+                // Ignore AbortError, start animation anyway if sound fails
+                if (e.name !== 'AbortError') console.warn("Audio play failed, starting anim anyway", e);
+                if (!isCancelled) runAnimation();
+            });
+        } else {
+            if (!isCancelled) runAnimation();
+        }
     };
 
     // 0.5s Delay before starting everything
     delayTimer = setTimeout(startAnimationSequence, 500);
 
     return () => {
+        isCancelled = true;
         clearTimeout(delayTimer);
         if (animationFrameRef.current) {
             cancelAnimationFrame(animationFrameRef.current);

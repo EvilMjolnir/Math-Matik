@@ -42,6 +42,9 @@ const Combat: React.FC<CombatProps> = ({
   // -- General State --
   const [gameState, setGameState] = useState<'intro' | 'playing' | 'finished'>('intro');
   const [userInput, setUserInput] = useState('');
+  // Ref to track user input synchronously for timeout-based validation (Operator Mode)
+  const userInputRef = useRef(''); 
+
   const [feedback, setFeedback] = useState<'none' | 'correct' | 'wrong'>('none');
   const [isVictory, setIsVictory] = useState(false);
   const [sessionDamageTaken, setSessionDamageTaken] = useState(0);
@@ -84,6 +87,11 @@ const Combat: React.FC<CombatProps> = ({
 
   // Track initialization to prevent resets on parent re-renders
   const initializationRef = useRef<string | null>(null);
+
+  // Sync Ref with State
+  useEffect(() => {
+    userInputRef.current = userInput;
+  }, [userInput]);
 
   // Initialize
   useEffect(() => {
@@ -129,6 +137,14 @@ const Combat: React.FC<CombatProps> = ({
        finishGameNormal(false);
     }
   }, [playerStats?.currentHp, gameState]);
+
+  // Fail-safe: Ensure input is cleared when boss problem changes
+  useEffect(() => {
+    if (isBossMode) {
+      setUserInput('');
+      userInputRef.current = '';
+    }
+  }, [bossProblem, isBossMode]);
 
   // --- Normal Mode Timer Logic ---
   useEffect(() => {
@@ -398,9 +414,13 @@ const Combat: React.FC<CombatProps> = ({
   };
 
   const validateBoss = () => {
+      // Use Ref to ensure we validate against the latest input even if closure is stale
+      // This is critical for Operator Mode where input + validate happens in quick sequence
+      const valToValidate = userInputRef.current; 
+
       if (!bossProblem || feedback !== 'none') return;
       
-      const isCorrect = userInput.toString() === bossProblem.answer.toString();
+      const isCorrect = valToValidate.toString() === bossProblem.answer.toString();
 
       if (isCorrect) {
           handleCorrectAnswerBoss();
@@ -423,6 +443,15 @@ const Combat: React.FC<CombatProps> = ({
   };
 
   const handleInput = (num: number | string) => {
+    // In Boss mode with operator questions, we only want a single character.
+    // Replace the current input instead of appending to avoid "++" or "+-" errors.
+    if (isBossMode && bossProblem && bossProblem.type === 'operator') {
+        const val = num.toString();
+        setUserInput(val);
+        userInputRef.current = val; // Synchronously update ref for immediate validation
+        return;
+    }
+
     if (userInput.length < 5) setUserInput(prev => prev + num.toString());
   };
 
@@ -633,7 +662,7 @@ const Combat: React.FC<CombatProps> = ({
           onInput={handleInput} 
           onDelete={handleDelete} 
           onValidate={handleValidate}
-          disabled={feedback === 'correct' || gameState === 'finished'}
+          disabled={feedback !== 'none' || gameState === 'finished'}
           mode={isBossMode && currentProblem && currentProblem.type === 'operator' ? 'operator' : 'number'}
         />
       </div>
