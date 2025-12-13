@@ -7,6 +7,10 @@ export const DEFAULT_USER_IMAGE = "https://nccn8mr5ssa9nolp.public.blob.vercel-s
 export const DEFAULT_CONFIG: GameConfig = {
   ui: {
     verticalMath: false,
+    keypad: {
+      compact: false,
+      centered: false
+    }
   },
   movement: {
     minVal: 1,

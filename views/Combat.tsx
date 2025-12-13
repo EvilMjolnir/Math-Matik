@@ -36,7 +36,8 @@ const Combat: React.FC<CombatProps> = ({
   onTakeDamage,
   playerStats,
   isAdmin,
-  verticalMath
+  verticalMath,
+  keypadConfig
 }) => {
   const { t, lang } = useLocalization();
   const deviceType = useDeviceType();
@@ -530,6 +531,38 @@ const Combat: React.FC<CombatProps> = ({
   
   const currentProblem = isBossMode ? bossProblem : problems[currentIdx];
 
+  // Helper function to render timer to reduce duplication between center arena and floating keypad
+  const timerElement = (
+       <div className={`flex items-center justify-center w-24 h-24 rounded-full border-4 bg-gray-900 transition-all duration-500 shadow-xl
+            ${isBossMode 
+                ? getTimerColor(bossTimer, activeBossConfig.timerDuration) 
+                : getTimerColor(timeLeft, encounter ? normalMaxTime : DEFAULT_NORMAL_TIME)}
+       `}>
+            <div className="flex flex-col items-center">
+                <Timer className="w-6 h-6 mb-1 opacity-80" />
+                <span className="text-4xl font-bold font-mono tracking-tighter">
+                    {isBossMode ? bossTimer : timeLeft}
+                </span>
+            </div>
+       </div>
+  );
+
+  const problemCard = currentProblem && (
+    <div className={`
+        p-6 md:p-8 rounded-xl border-4 transition-all duration-200 bg-parchment-200 w-full shadow-2xl
+        ${feedback === 'correct' ? 'border-green-500 scale-105 shadow-[0_0_20px_rgba(34,197,94,0.5)]' : ''}
+        ${feedback === 'wrong' ? 'border-red-500 rotate-2 shadow-[0_0_20px_rgba(239,68,68,0.5)]' : 'border-parchment-800'}
+    `}>
+        <MathProblemDisplay problem={currentProblem} userInput={userInput} isVertical={verticalMath} />
+        
+        {!verticalMath && (
+            <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-40 mx-auto">
+                {userInput}
+            </div>
+        )}
+    </div>
+  );
+
   return (
     <div className="flex flex-col h-full max-w-6xl mx-auto p-4 relative">
       
@@ -575,36 +608,18 @@ const Combat: React.FC<CombatProps> = ({
              </div>
            )}
 
-           {/* BIG CENTERED TIMER */}
-           <div className={`mb-8 flex items-center justify-center w-24 h-24 rounded-full border-4 bg-gray-900 transition-all duration-500 shadow-xl
-                ${isBossMode 
-                    ? getTimerColor(bossTimer, activeBossConfig.timerDuration) 
-                    : getTimerColor(timeLeft, encounter ? normalMaxTime : DEFAULT_NORMAL_TIME)}
-           `}>
-                <div className="flex flex-col items-center">
-                    <Timer className="w-6 h-6 mb-1 opacity-80" />
-                    <span className="text-4xl font-bold font-mono tracking-tighter">
-                        {isBossMode ? bossTimer : timeLeft}
-                    </span>
-                </div>
-           </div>
+           {/* BIG CENTERED TIMER - Show here only if NOT using centered Keypad */}
+           {!keypadConfig?.centered && (
+               <div className="mb-8">
+                   {timerElement}
+               </div>
+           )}
 
            {/* PROBLEM CARD */}
-           {currentProblem && (
-            <div className="relative w-full flex justify-center z-10">
-                <div className={`
-                    p-6 md:p-8 rounded-xl border-4 transition-all duration-200 bg-parchment-200 w-full max-w-sm shadow-2xl
-                    ${feedback === 'correct' ? 'border-green-500 scale-105 shadow-[0_0_20px_rgba(34,197,94,0.5)]' : ''}
-                    ${feedback === 'wrong' ? 'border-red-500 rotate-2 shadow-[0_0_20px_rgba(239,68,68,0.5)]' : 'border-parchment-800'}
-                `}>
-                <MathProblemDisplay problem={currentProblem} userInput={userInput} isVertical={verticalMath} />
-                
-                {!verticalMath && (
-                    <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-40 mx-auto">
-                        {userInput}
-                    </div>
-                )}
-                </div>
+           {/* Render here only if centered keypad is OFF */}
+           {!keypadConfig?.centered && currentProblem && (
+            <div className="relative w-full flex justify-center z-10 max-w-sm">
+                {problemCard}
             </div>
            )}
 
@@ -667,7 +682,17 @@ const Combat: React.FC<CombatProps> = ({
           onValidate={handleValidate}
           disabled={feedback !== 'none' || gameState === 'finished'}
           mode={isBossMode && currentProblem && currentProblem.type === 'operator' ? 'operator' : 'number'}
-        />
+          compact={keypadConfig?.compact}
+          centered={keypadConfig?.centered}
+        >
+            {keypadConfig?.centered && (
+                <div className="flex flex-col items-center w-full gap-4">
+                    {/* Render Timer inside floating container if centered */}
+                    {timerElement}
+                    {problemCard}
+                </div>
+            )}
+        </Keypad>
       </div>
 
       <Modal 

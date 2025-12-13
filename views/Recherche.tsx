@@ -36,7 +36,7 @@ const CHEST_IMAGES: Record<Rarity, string> = {
   [Rarity.MYTHIC]: 'https://nccn8mr5ssa9nolp.public.blob.vercel-storage.com/images/containers/Mythic.png',
 };
 
-const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddItem, playerGold = 0, lootWeights = [], isAdmin, verticalMath }) => {
+const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddItem, playerGold = 0, lootWeights = [], isAdmin, verticalMath, keypadConfig }) => {
   const { t } = useLocalization();
   const deviceType = useDeviceType();
   const [phase, setPhase] = useState<'select' | 'solve' | 'result'>('select');
@@ -277,6 +277,22 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddIte
 
   // --- Render Solve Phase ---
   if (phase === 'solve') {
+    const problemFrame = problem && (
+      <div className={`
+         p-8 rounded-xl border-4 shadow-xl transition-all duration-300
+         ${feedback === 'correct' ? 'border-green-500 bg-green-100' : ''}
+         ${feedback === 'wrong' ? 'border-red-500 bg-red-100' : 'border-parchment-300 bg-parchment-200'}
+      `}>
+        <MathProblemDisplay problem={problem} userInput={userInput} isVertical={verticalMath} />
+        
+        {!verticalMath && (
+            <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
+                {userInput}
+            </div>
+        )}
+      </div>
+    );
+
     return (
       <div className="flex flex-col h-full max-w-2xl mx-auto p-4">
         
@@ -312,21 +328,9 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddIte
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-center relative">
-           {problem && (
-            <div className="relative">
-              <div className={`
-                 p-8 rounded-xl mb-8 border-4 shadow-xl transition-all duration-300
-                 ${feedback === 'correct' ? 'border-green-500 bg-green-100' : ''}
-                 ${feedback === 'wrong' ? 'border-red-500 bg-red-100' : 'border-parchment-300 bg-parchment-200'}
-              `}>
-                <MathProblemDisplay problem={problem} userInput={userInput} isVertical={verticalMath} />
-                
-                {!verticalMath && (
-                    <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
-                        {userInput}
-                    </div>
-                )}
-              </div>
+           {!keypadConfig?.centered && (
+            <div className="relative mb-8">
+              {problemFrame}
             </div>
            )}
         </div>
@@ -353,7 +357,11 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddIte
             onDelete={handleDelete} 
             onValidate={handleValidate}
             disabled={feedback !== 'none'} 
-          />
+            compact={keypadConfig?.compact}
+            centered={keypadConfig?.centered}
+          >
+            {keypadConfig?.centered && problemFrame}
+          </Keypad>
         </div>
       </div>
     );

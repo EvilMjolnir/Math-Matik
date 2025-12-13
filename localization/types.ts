@@ -196,6 +196,9 @@ export interface Translation {
     gameplayTab: string;
     dataTab: string;
     tutorialsTab: string;
+    compactKeypad: string;
+    floatingKeypad: string;
+    floatingDesc: string;
   };
   tutorial: {
     basicsTitle: string;

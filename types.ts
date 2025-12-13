@@ -56,6 +56,10 @@ export type FractionOp = 'add' | 'sub' | 'mult' | 'reduce' | 'compare';
 export interface GameConfig {
   ui: {
     verticalMath: boolean;
+    keypad: {
+      compact: boolean;
+      centered: boolean;
+    };
   };
   movement: {
     minVal: number;
@@ -207,6 +211,10 @@ export interface MinigameProps {
   lootWeights?: LootWeight[]; // Added for dynamic loot
   isAdmin?: boolean;
   verticalMath?: boolean;
+  keypadConfig?: {
+    compact: boolean;
+    centered: boolean;
+  };
 }
 
 // Props used by Home Layouts (Mobile, Tablet, Desktop)

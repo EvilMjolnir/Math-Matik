@@ -58,7 +58,7 @@ const RARITY_STYLES: Record<Rarity, { border: string; bg: string; text: string }
   },
 };
 
-const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerNems, onSpendNems, isAdmin, config }) => {
+const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerNems, onSpendNems, isAdmin, config, keypadConfig }) => {
   const { t, lang } = useLocalization();
   const deviceType = useDeviceType();
   const [phase, setPhase] = useState<AlchimiePhase>('select');
@@ -580,6 +580,42 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
 
   if (phase === 'craft') {
       const problem = problems[currentProblemIndex];
+      const craftingFrame = (
+        <div className="w-full flex flex-col gap-6">
+            {/* Problem Frame */}
+            <div className={`
+                w-full p-8 rounded-xl border-4 shadow-xl flex flex-col items-center justify-center min-h-[220px] transition-colors duration-300
+                ${feedback === 'unstable' ? 'bg-orange-100 border-orange-500' : 'bg-parchment-100 border-parchment-400'}
+            `}>
+                {feedback === 'unstable' ? (
+                    <div className="flex flex-col items-center animate-shake">
+                        <AlertTriangle className="w-16 h-16 text-orange-600 mb-2" />
+                        <div className="text-2xl font-bold text-orange-700">{t.alchimie.unstable}</div>
+                    </div>
+                ) : (
+                    <>
+                        <h3 className="text-lg font-bold uppercase tracking-widest text-parchment-600 mb-4 border-b-2 border-parchment-300 pb-1 w-full text-center">
+                            {getOperationText(problem.question)}
+                        </h3>
+                        <div className="text-6xl font-serif font-bold text-parchment-900 text-center tracking-tight">
+                            {problem.question}
+                        </div>
+                    </>
+                )}
+            </div>
+
+            {/* Answer Input Frame */}
+            <div 
+                className={`
+                    w-full p-6 rounded-xl border-4 bg-slate-800 shadow-inner flex justify-center transition-all duration-300
+                    ${feedback === 'correct' ? 'border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.3)]' : feedback === 'wrong' ? 'border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]' : feedback === 'unstable' ? 'border-orange-500 opacity-50' : 'border-slate-600'}
+                `}
+            >
+                {renderFractionInput()}
+            </div>
+        </div>
+      );
+
       return (
           <div className="flex flex-col h-full max-w-2xl mx-auto p-4 animate-fadeIn">
               <div className="text-center mb-6">
@@ -604,38 +640,7 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
               )}
 
               <div className="flex-1 flex flex-col items-center justify-center gap-6 w-full">
-                  
-                  {/* Problem Frame */}
-                  <div className={`
-                        w-full p-8 rounded-xl border-4 shadow-xl flex flex-col items-center justify-center min-h-[220px] transition-colors duration-300
-                        ${feedback === 'unstable' ? 'bg-orange-100 border-orange-500' : 'bg-parchment-100 border-parchment-400'}
-                    `}>
-                      {feedback === 'unstable' ? (
-                          <div className="flex flex-col items-center animate-shake">
-                              <AlertTriangle className="w-16 h-16 text-orange-600 mb-2" />
-                              <div className="text-2xl font-bold text-orange-700">{t.alchimie.unstable}</div>
-                          </div>
-                      ) : (
-                          <>
-                            <h3 className="text-lg font-bold uppercase tracking-widest text-parchment-600 mb-4 border-b-2 border-parchment-300 pb-1 w-full text-center">
-                                {getOperationText(problem.question)}
-                            </h3>
-                            <div className="text-6xl font-serif font-bold text-parchment-900 text-center tracking-tight">
-                                {problem.question}
-                            </div>
-                          </>
-                      )}
-                  </div>
-
-                  {/* Answer Input Frame */}
-                  <div 
-                    className={`
-                        w-full p-6 rounded-xl border-4 bg-slate-800 shadow-inner flex justify-center transition-all duration-300
-                        ${feedback === 'correct' ? 'border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.3)]' : feedback === 'wrong' ? 'border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)]' : feedback === 'unstable' ? 'border-orange-500 opacity-50' : 'border-slate-600'}
-                    `}
-                  >
-                      {renderFractionInput()}
-                  </div>
+                  {!keypadConfig?.centered && craftingFrame}
               </div>
 
               <div className={deviceType === 'tablet' ? "mt-auto mb-32" : "mt-auto mb-8"}>
@@ -644,7 +649,11 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
                     onDelete={handleKeypadDelete}
                     onValidate={handleKeypadValidate}
                     disabled={feedback !== 'none'}
-                  />
+                    compact={keypadConfig?.compact}
+                    centered={keypadConfig?.centered}
+                  >
+                    {keypadConfig?.centered && craftingFrame}
+                  </Keypad>
               </div>
           </div>
       );

@@ -718,7 +718,8 @@ const GameContent: React.FC = () => {
       onAddGold: addGold,
       onPlayerDefeat: handlePlayerDefeat,
       isAdmin: isAdmin,
-      verticalMath: activeConfig.ui.verticalMath, // Pass UI preference
+      verticalMath: activeConfig.ui.verticalMath, 
+      keypadConfig: activeConfig.ui.keypad, // Pass Keypad Config
     };
 
     switch (currentView) {

@@ -196,6 +196,9 @@ export const UI_SOURCE = {
     gameplayTab: { en: "Gameplay & Difficulty", fr: "Jeu & Difficulté" },
     dataTab: { en: "Storage & Data", fr: "Stockage & Données" },
     tutorialsTab: { en: "Tutorials & Guides", fr: "Tutoriels & Guides" },
+    compactKeypad: { en: "Compact Numpad (80%)", fr: "Pavé Numérique Compact (80%)" },
+    floatingKeypad: { en: "Floating Numpad", fr: "Pavé Numérique Flottant" },
+    floatingDesc: { en: "Center keypad on screen for easier reach.", fr: "Centrer le pavé à l'écran pour un accès plus facile." },
   },
   tutorial: {
     basicsTitle: { en: "1. Getting Started", fr: "1. Pour Commencer" },

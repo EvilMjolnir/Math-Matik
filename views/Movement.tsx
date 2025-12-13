@@ -20,7 +20,7 @@ type SegmentStatus = 'empty' | 'correct' | 'wrong';
 
 const XP_PER_CORRECT = 4;
 
-const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgressTome, isAdmin, playerStats, verticalMath }) => {
+const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgressTome, isAdmin, playerStats, verticalMath, keypadConfig }) => {
   const { t } = useLocalization();
   const deviceType = useDeviceType();
   const [problem, setProblem] = useState<MathProblem | null>(null);
@@ -127,6 +127,23 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
     });
   };
 
+  // Extract the problem display so we can render it either in the flow or inside the keypad
+  const problemDisplay = problem && (
+    <div className={`p-8 rounded-xl border-4 transition-colors duration-300 bg-parchment-200
+      ${feedback === 'correct' ? 'border-green-500 bg-green-100' : ''}
+      ${feedback === 'wrong' ? 'border-red-500 bg-red-100' : 'border-parchment-300'}
+    `}>
+      <MathProblemDisplay problem={problem} userInput={userInput} isVertical={verticalMath} />
+      
+      {/* Only show standard input box if horizontal mode */}
+      {!verticalMath && (
+        <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
+            {userInput}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="flex flex-col h-full max-w-2xl mx-auto p-4 relative">
       <div className="flex items-center justify-between mb-8">
@@ -154,22 +171,11 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center relative">
-        {problem && (
-          <div className="relative">
-            <div className={`p-8 rounded-xl mb-8 border-4 transition-colors duration-300 bg-parchment-200
-              ${feedback === 'correct' ? 'border-green-500 bg-green-100' : ''}
-              ${feedback === 'wrong' ? 'border-red-500 bg-red-100' : 'border-parchment-300'}
-            `}>
-              <MathProblemDisplay problem={problem} userInput={userInput} isVertical={verticalMath} />
-              
-              {/* Only show standard input box if horizontal mode */}
-              {!verticalMath && (
-                <div className="text-4xl font-mono text-center h-12 text-parchment-800 border-b-2 border-dashed border-parchment-400 w-32 mx-auto">
-                    {userInput}
-                </div>
-              )}
+        {/* If centered keypad is OFF, render problem here normally */}
+        {!keypadConfig?.centered && (
+            <div className="relative mb-8">
+                {problemDisplay}
             </div>
-          </div>
         )}
       </div>
 
@@ -202,7 +208,12 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
           onDelete={handleDelete} 
           onValidate={handleValidate} 
           disabled={feedback !== 'none' || showSuccess}
-        />
+          compact={keypadConfig?.compact}
+          centered={keypadConfig?.centered}
+        >
+            {/* If centered keypad is ON, pass problem as child */}
+            {keypadConfig?.centered && problemDisplay}
+        </Keypad>
       </div>
 
       <Modal 

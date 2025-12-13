@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { GameConfig, StorageMode } from '../types';
-import { ChevronLeft, Info, Cloud, Database, Trash2, Gamepad2, Server, RefreshCw, Settings, Check, Globe, AlignJustify, AlignCenter, BookOpen, Scroll } from 'lucide-react';
+import { ChevronLeft, Info, Cloud, Database, Trash2, Gamepad2, Server, RefreshCw, Settings, Check, Globe, AlignJustify, AlignCenter, BookOpen, Scroll, Calculator, Move } from 'lucide-react';
 import { useLocalization } from '../localization';
 import { playMenuBackSound } from '../services/audioService';
 import { MarkdownLite } from '../components/MarkdownLite';
@@ -22,7 +22,7 @@ const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, storageMod
   const [activeTab, setActiveTab] = useState<'general' | 'gameplay' | 'data' | 'tutorials'>('general');
   const [activeTutorial, setActiveTutorial] = useState<'basics' | 'pillars' | 'growth' | 'advanced'>('basics');
   
-  const handleChange = (section: keyof GameConfig, field: string, value: number | boolean) => {
+  const handleChange = (section: keyof GameConfig, field: string, value: number | boolean | object) => {
     setConfig({
       ...config,
       [section]: {
@@ -30,6 +30,11 @@ const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, storageMod
         [field]: value
       }
     });
+  };
+
+  const handleKeypadChange = (field: 'compact' | 'centered', value: boolean) => {
+      const currentKeypad = config.ui.keypad || { compact: false, centered: false };
+      handleChange('ui', 'keypad', { ...currentKeypad, [field]: value });
   };
 
   const handleDeleteClick = () => {
@@ -142,7 +147,9 @@ const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, storageMod
                         <Settings className="w-6 h-6 mr-2" />
                         Interface
                     </h2>
-                    <div className="flex items-center justify-between bg-white p-4 rounded border border-parchment-300">
+                    
+                    {/* Vertical Math Toggle */}
+                    <div className="flex items-center justify-between bg-white p-4 rounded border border-parchment-300 mb-4">
                         <div className="flex items-center">
                             {config.ui.verticalMath ? <AlignJustify className="w-8 h-8 mr-3 text-parchment-600" /> : <AlignCenter className="w-8 h-8 mr-3 text-parchment-600" />}
                             <div>
@@ -156,6 +163,42 @@ const Options: React.FC<OptionsProps> = ({ config, setConfig, onBack, storageMod
                             className={`w-14 h-8 flex items-center rounded-full p-1 transition-colors ${config.ui.verticalMath ? 'bg-green-600' : 'bg-gray-400'}`}
                         >
                             <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform ${config.ui.verticalMath ? 'translate-x-6' : 'translate-x-0'}`} />
+                        </button>
+                    </div>
+
+                    {/* Compact Keypad Toggle */}
+                    <div className="flex items-center justify-between bg-white p-4 rounded border border-parchment-300 mb-4">
+                        <div className="flex items-center">
+                            <Calculator className="w-8 h-8 mr-3 text-parchment-600" />
+                            <div>
+                                <div className="font-bold text-lg">{t.options.compactKeypad}</div>
+                                <div className="text-sm text-parchment-600">Scale the numpad down for smaller screens.</div>
+                            </div>
+                        </div>
+                        
+                        <button 
+                            onClick={() => handleKeypadChange('compact', !config.ui.keypad?.compact)}
+                            className={`w-14 h-8 flex items-center rounded-full p-1 transition-colors ${config.ui.keypad?.compact ? 'bg-green-600' : 'bg-gray-400'}`}
+                        >
+                            <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform ${config.ui.keypad?.compact ? 'translate-x-6' : 'translate-x-0'}`} />
+                        </button>
+                    </div>
+
+                    {/* Floating Keypad Toggle */}
+                    <div className="flex items-center justify-between bg-white p-4 rounded border border-parchment-300">
+                        <div className="flex items-center">
+                            <Move className="w-8 h-8 mr-3 text-parchment-600" />
+                            <div>
+                                <div className="font-bold text-lg">{t.options.floatingKeypad}</div>
+                                <div className="text-sm text-parchment-600">{t.options.floatingDesc}</div>
+                            </div>
+                        </div>
+                        
+                        <button 
+                            onClick={() => handleKeypadChange('centered', !config.ui.keypad?.centered)}
+                            className={`w-14 h-8 flex items-center rounded-full p-1 transition-colors ${config.ui.keypad?.centered ? 'bg-green-600' : 'bg-gray-400'}`}
+                        >
+                            <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform ${config.ui.keypad?.centered ? 'translate-x-6' : 'translate-x-0'}`} />
                         </button>
                     </div>
                 </section>
