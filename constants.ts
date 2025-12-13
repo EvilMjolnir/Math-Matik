@@ -9,7 +9,7 @@ export const DEFAULT_CONFIG: GameConfig = {
     verticalMath: false,
     keypad: {
       compact: false,
-      centered: false
+      centered: true
     }
   },
   movement: {

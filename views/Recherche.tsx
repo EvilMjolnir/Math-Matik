@@ -12,6 +12,7 @@ import Modal from '../components/Modal';
 import { playMenuOpenSound, playMenuBackSound, fadeOutCurrentSound, playCorrectSound, playWrongSound } from '../services/audioService';
 import { useDeviceType } from '../hooks/useDeviceType';
 import MathProblemDisplay from '../components/MathProblemDisplay';
+import { useKeyboardInput } from '../hooks/useKeyboardInput';
 
 interface RechercheProps extends MinigameProps {
   config: GameConfig['recherche'];
@@ -194,6 +195,14 @@ const Recherche: React.FC<RechercheProps> = ({ config, onBack, onAddXp, onAddIte
       onBack();
     }
   };
+
+  // Keyboard Support
+  useKeyboardInput({
+    onInput: handleInput,
+    onDelete: handleDelete,
+    onValidate: handleValidate,
+    disabled: feedback !== 'none' || phase !== 'solve'
+  });
 
   // --- Render Select Phase ---
   if (phase === 'select') {

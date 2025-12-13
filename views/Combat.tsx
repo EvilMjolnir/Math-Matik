@@ -13,6 +13,7 @@ import { ChevronLeft, Timer, Skull, Trophy, Check, X, ShieldCheck } from 'lucide
 import { playMenuBackSound, playHitSound, playDamageSound, playVictoryTrumpetSound, fadeOutCurrentSound, playCorrectSound, playWrongSound } from '../services/audioService';
 import { useDeviceType } from '../hooks/useDeviceType';
 import MathProblemDisplay from '../components/MathProblemDisplay';
+import { useKeyboardInput } from '../hooks/useKeyboardInput';
 
 interface CombatProps extends MinigameProps {
   config: GameConfig['combat'];
@@ -474,6 +475,14 @@ const Combat: React.FC<CombatProps> = ({
       onBack();
     }
   };
+
+  // Keyboard Support
+  useKeyboardInput({
+    onInput: handleInput,
+    onDelete: handleDelete,
+    onValidate: handleValidate,
+    disabled: feedback !== 'none' || gameState === 'finished'
+  });
 
   // --- Admin Controls ---
   const adminWin = () => {

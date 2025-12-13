@@ -10,6 +10,8 @@ import { ChevronLeft, FlaskConical, Sigma, Sparkles, Eye, Star, Coins, Footprint
 import { useLocalization } from '../localization';
 import { playMenuBackSound, playFlipCardSound, playDamageSound, playGlassBreakSound, playCorrectSound, playWrongSound } from '../services/audioService';
 import { useDeviceType } from '../hooks/useDeviceType';
+import MathProblemDisplay from '../components/MathProblemDisplay';
+import { useKeyboardInput } from '../hooks/useKeyboardInput';
 
 interface AlchimieProps extends MinigameProps {
   onAddItem: (item: Item) => void;
@@ -365,6 +367,14 @@ const Alchimie: React.FC<AlchimieProps> = ({ onBack, onAddXp, onAddItem, playerN
       }
       setPhase('result');
   };
+
+  // Keyboard Support
+  useKeyboardInput({
+    onInput: handleKeypadInput,
+    onDelete: handleKeypadDelete,
+    onValidate: handleKeypadValidate,
+    disabled: feedback !== 'none' || phase !== 'craft'
+  });
 
   // UI Helpers
   const renderFractionInput = () => {

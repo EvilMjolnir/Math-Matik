@@ -10,6 +10,7 @@ import { useLocalization } from '../localization';
 import { playMenuBackSound, playCorrectSound, playWrongSound } from '../services/audioService';
 import { useDeviceType } from '../hooks/useDeviceType';
 import MathProblemDisplay from '../components/MathProblemDisplay';
+import { useKeyboardInput } from '../hooks/useKeyboardInput';
 
 interface MovementProps extends MinigameProps {
   config: GameConfig['movement'];
@@ -60,6 +61,14 @@ const Movement: React.FC<MovementProps> = ({ config, onBack, onAddXp, onProgress
     
     processResult(isCorrect);
   };
+
+  // Keyboard Support
+  useKeyboardInput({
+    onInput: handleInput,
+    onDelete: handleDelete,
+    onValidate: handleValidate,
+    disabled: feedback !== 'none' || showSuccess
+  });
 
   const processResult = (isCorrect: boolean) => {
     if (currentSegmentIndex >= config.targetSegments) return;
